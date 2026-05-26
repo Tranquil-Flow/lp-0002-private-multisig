@@ -9,7 +9,7 @@ https://github.com/Tranquil-Flow/lp-0002-private-multisig
 
 ## Demo video
 
-https://github.com/Tranquil-Flow/lp-0002-private-multisig/raw/refs/heads/master/submission/lp0002-narrated-demo.mp4
+HUMAN_RECORDED_DEMO_REQUIRED
 
 ## Public LEZ testnet/evaluator evidence
 

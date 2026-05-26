@@ -54,9 +54,9 @@
     "Public repository published under Tranquil-Flow",
     "Localnet accepted as the evaluator/public testnet target for LP-0002 evidence",
     "Structured TESTNET_EVIDENCE.json generated from confirmed localnet wrapper transaction",
-    "Narrated demo video rendered as public GitHub video asset",
+    "Human-recorded narrated demo still pending; generated draft asset is not final submission evidence",
     "Evaluator-run validation bundle documented in submission/CI_EVIDENCE.md"
   ],
-  "demo_video_url": "https://github.com/Tranquil-Flow/lp-0002-private-multisig/raw/refs/heads/master/submission/lp0002-narrated-demo.mp4",
+  "demo_video_url": "HUMAN_RECORDED_DEMO_REQUIRED",
   "heavy_lane": true
 }

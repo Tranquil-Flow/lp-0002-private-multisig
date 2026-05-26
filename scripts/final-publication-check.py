@@ -76,8 +76,10 @@ if not re.search(r"^\*\*Submitted by:\*\*.+[A-Za-z]", solution, re.MULTILINE):
     errors.append("solutions/LP-0002.md must include a non-empty Submitted by field")
 if not re.search(r"Terms (&|and) Conditions|TERMS\.md", solution, re.I):
     errors.append("solutions/LP-0002.md must acknowledge Terms & Conditions")
-if not re.search(r"https://(?:www\.)?(youtube\.com|youtu\.be|vimeo\.com|loom\.com)/\S+|https://github\.com/[^\s)]+\.(?:mp4|mov|m4v)", solution):
-    errors.append("solutions/LP-0002.md must include an accessible narrated demo video URL (YouTube/Vimeo/Loom or public GitHub video asset)")
+if "HUMAN_RECORDED_DEMO_REQUIRED" in solution:
+    errors.append("human-recorded narrated demo is still pending; generated/TTS draft video is not sufficient")
+elif not re.search(r"https://(?:www\.)?(youtube\.com|youtu\.be|vimeo\.com|loom\.com)/\S+|https://github\.com/[^\s)]+\.(?:mp4|mov|m4v)", solution):
+    errors.append("solutions/LP-0002.md must include an accessible human-recorded narrated demo video URL (YouTube/Vimeo/Loom or public GitHub video asset)")
 if not re.search(r"https://github\.com/.+/.+", solution):
     errors.append("solutions/LP-0002.md must include the public implementation repository URL")
 

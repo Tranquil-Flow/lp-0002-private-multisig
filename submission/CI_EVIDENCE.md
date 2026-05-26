@@ -19,6 +19,7 @@ Latest verified local results before publication:
 - `RISC0_SKIP_BUILD=1 cargo test --workspace` passed on the M4 Pro.
 - `bash scripts/demo-heavy-lane.sh --live-submit` passed and produced confirmed
   LEZ localnet/evaluator evidence in block 1995.
-- `python3 scripts/final-publication-check.py` passed after the narrated demo
-  video and TESTNET_EVIDENCE.json were attached.
+- `python3 scripts/final-publication-check.py` must pass after the human-recorded
+  narrated demo video and TESTNET_EVIDENCE.json are attached. The previous
+  generated/TTS draft video is not sufficient final evidence.
 - `RISC0_SKIP_BUILD=1 python3 scripts/validate-submission-readiness.py --skip-exec` passed.
