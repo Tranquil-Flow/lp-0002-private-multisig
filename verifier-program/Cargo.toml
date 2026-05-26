@@ -1,0 +1,12 @@
+[package]
+name = "lp0002-private-multisig-verifier"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+publish.workspace = true
+
+[dependencies]
+borsh.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+lp0002-private-multisig-core = { path = "../core" }

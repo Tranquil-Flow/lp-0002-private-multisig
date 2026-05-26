@@ -1,0 +1,809 @@
+{
+  "version": "0.1.0",
+  "name": "lp0002_private_multisig",
+  "instructions": [
+    {
+      "name": "create_multisig",
+      "discriminator": [
+        148,
+        146,
+        240,
+        10,
+        226,
+        215,
+        167,
+        174
+      ],
+      "execution": {
+        "public": true,
+        "private_owned": false
+      },
+      "accounts": [
+        {
+          "name": "multisig_state",
+          "writable": true,
+          "signer": false,
+          "init": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "arg",
+                "path": "create_key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "signer",
+          "writable": false,
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "create_key",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "threshold",
+          "type": "u16"
+        },
+        {
+          "name": "member_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "member_count",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "create_proposal",
+      "discriminator": [
+        132,
+        116,
+        68,
+        174,
+        216,
+        160,
+        198,
+        22
+      ],
+      "execution": {
+        "public": true,
+        "private_owned": false
+      },
+      "accounts": [
+        {
+          "name": "multisig_state",
+          "writable": true,
+          "signer": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "arg",
+                "path": "create_key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "proposal",
+          "writable": true,
+          "signer": false,
+          "init": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "arg",
+                "path": "create_key"
+              },
+              {
+                "kind": "arg",
+                "path": "proposal_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "signer",
+          "writable": false,
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "create_key",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "proposal_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "action_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "description",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "submit_approval",
+      "discriminator": [
+        94,
+        220,
+        223,
+        126,
+        112,
+        32,
+        166,
+        255
+      ],
+      "execution": {
+        "public": false,
+        "private_owned": true
+      },
+      "accounts": [
+        {
+          "name": "multisig_state",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "proposal",
+          "writable": true,
+          "signer": false
+        }
+      ],
+      "args": [
+        {
+          "name": "nullifier",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "execute_threshold",
+      "discriminator": [
+        96,
+        181,
+        45,
+        131,
+        9,
+        194,
+        73,
+        180
+      ],
+      "execution": {
+        "public": true,
+        "private_owned": false
+      },
+      "accounts": [
+        {
+          "name": "multisig_state",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "proposal",
+          "writable": true,
+          "signer": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "multisig_state.create_key"
+              },
+              {
+                "kind": "account",
+                "path": "proposal.proposal_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "target_accounts",
+          "writable": true,
+          "signer": false,
+          "rest": true
+        }
+      ],
+      "args": [
+        {
+          "name": "proof",
+          "type": {
+            "defined": "ThresholdProof"
+          }
+        },
+        {
+          "name": "action",
+          "type": {
+            "defined": "ProposalAction"
+          }
+        }
+      ]
+    },
+    {
+      "name": "verify_and_execute",
+      "discriminator": [
+        37,
+        165,
+        237,
+        189,
+        225,
+        188,
+        58,
+        41
+      ],
+      "execution": {
+        "public": true,
+        "private_owned": false
+      },
+      "accounts": [
+        {
+          "name": "multisig_state",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "proposal",
+          "writable": true,
+          "signer": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "arg",
+                "path": "create_key"
+              },
+              {
+                "kind": "arg",
+                "path": "proposal_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "target_accounts",
+          "writable": true,
+          "signer": false,
+          "rest": true
+        }
+      ],
+      "args": [
+        {
+          "name": "create_key",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "proposal_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "risc0_image_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "receipt_bytes",
+          "type": {
+            "vec": "u8"
+          }
+        },
+        {
+          "name": "proof_journal",
+          "type": {
+            "defined": "ThresholdJournal"
+          }
+        },
+        {
+          "name": "action",
+          "type": {
+            "defined": "ProposalAction"
+          }
+        }
+      ]
+    },
+    {
+      "name": "verify_and_execute_bytes",
+      "discriminator": [
+        97,
+        67,
+        5,
+        212,
+        151,
+        66,
+        231,
+        78
+      ],
+      "execution": {
+        "public": true,
+        "private_owned": false
+      },
+      "accounts": [
+        {
+          "name": "multisig_state",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "proposal",
+          "writable": true,
+          "signer": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "arg",
+                "path": "create_key"
+              },
+              {
+                "kind": "arg",
+                "path": "proposal_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "target_accounts",
+          "writable": true,
+          "signer": false,
+          "rest": true
+        }
+      ],
+      "args": [
+        {
+          "name": "create_key",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "proposal_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "risc0_image_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "receipt_sha256",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "receipt_journal_commitment",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "proof_journal_bytes",
+          "type": {
+            "vec": "u8"
+          }
+        },
+        {
+          "name": "action_borsh",
+          "type": {
+            "vec": "u8"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "MultisigState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "create_key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "threshold",
+            "type": "u16"
+          },
+          {
+            "name": "member_count",
+            "type": "u16"
+          },
+          {
+            "name": "member_root",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProposalState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "proposal_id",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "action_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "description",
+            "type": "String"
+          },
+          {
+            "name": "approval_count",
+            "type": "u16"
+          },
+          {
+            "name": "nullifiers",
+            "type": {
+              "vec": {
+                "array": [
+                  "u8",
+                  32
+                ]
+              }
+            }
+          },
+          {
+            "name": "executed",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "ThresholdJournal",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "domain",
+          "type": "String"
+        },
+        {
+          "name": "multisig_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "proposal_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "action_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "member_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "member_count",
+          "type": "u16"
+        },
+        {
+          "name": "threshold",
+          "type": "u16"
+        },
+        {
+          "name": "approval_count",
+          "type": "u16"
+        },
+        {
+          "name": "nullifiers",
+          "type": {
+            "vec": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        },
+        {
+          "name": "proof_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "ThresholdProof",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "journal",
+          "type": {
+            "defined": "ThresholdJournal"
+          }
+        },
+        {
+          "name": "receipt_seal",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProposalAction",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "Transfer",
+          "fields": [
+            {
+              "name": "to",
+              "type": "String"
+            },
+            {
+              "name": "amount",
+              "type": "u64"
+            },
+            {
+              "name": "denom",
+              "type": "String"
+            }
+          ]
+        },
+        {
+          "name": "SetParameter",
+          "fields": [
+            {
+              "name": "key",
+              "type": "String"
+            },
+            {
+              "name": "value",
+              "type": "String"
+            }
+          ]
+        },
+        {
+          "name": "Custom",
+          "fields": [
+            {
+              "name": "description",
+              "type": "String"
+            },
+            {
+              "name": "payload_hash",
+              "type": {
+                "array": [
+                  "u8",
+                  32
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ExecutionReceipt",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "proposal_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "multisig_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "action",
+          "type": {
+            "defined": "ProposalAction"
+          }
+        },
+        {
+          "name": "approval_count",
+          "type": "u16"
+        },
+        {
+          "name": "proof_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 100,
+      "name": "EmptyMemberSet",
+      "msg": "member set is empty"
+    },
+    {
+      "code": 101,
+      "name": "InvalidThreshold",
+      "msg": "invalid threshold for member count"
+    },
+    {
+      "code": 102,
+      "name": "InsufficientApprovals",
+      "msg": "insufficient approvals: threshold not met"
+    },
+    {
+      "code": 103,
+      "name": "DuplicateNullifier",
+      "msg": "duplicate approval nullifier"
+    },
+    {
+      "code": 104,
+      "name": "MultisigIdMismatch",
+      "msg": "multisig id mismatch"
+    },
+    {
+      "code": 105,
+      "name": "MultisigRootMismatch",
+      "msg": "multisig member root mismatch"
+    },
+    {
+      "code": 106,
+      "name": "ProposalMismatch",
+      "msg": "proposal mismatch"
+    },
+    {
+      "code": 107,
+      "name": "ThresholdMismatch",
+      "msg": "threshold mismatch"
+    },
+    {
+      "code": 108,
+      "name": "ReceiptSealMismatch",
+      "msg": "receipt seal mismatch"
+    },
+    {
+      "code": 109,
+      "name": "ApprovalCountNullifierMismatch",
+      "msg": "approval count does not match nullifier count"
+    },
+    {
+      "code": 200,
+      "name": "ProposalAlreadyExecuted",
+      "msg": "proposal already executed"
+    }
+  ]
+}

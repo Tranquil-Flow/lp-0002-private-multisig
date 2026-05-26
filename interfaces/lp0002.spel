@@ -1,0 +1,211 @@
+// LP-0002 Private M-of-N Multisig — SPEL Interface Definition
+// Matches: interfaces/lp0002.idl.json
+// See: https://github.com/logos-co/spel
+program lp0002_private_multisig
+
+// ---------------------------------------------------------------------------
+// Account types
+// ---------------------------------------------------------------------------
+
+account MultisigState {
+  create_key:   [u8; 32],
+  threshold:    u16,
+  member_count: u16,
+  member_root:  [u8; 32],
+  bump:         u8,
+}
+
+account ProposalState {
+  proposal_id:    [u8; 32],
+  action_hash:    [u8; 32],
+  description:    String,
+  approval_count: u16,
+  nullifiers:     Vec<[u8; 32]>,
+  executed:       bool,
+  bump:           u8,
+}
+
+// ---------------------------------------------------------------------------
+// Defined types
+// ---------------------------------------------------------------------------
+
+type ThresholdJournal {
+  domain:        String,
+  multisig_id:   [u8; 32],
+  proposal_id:   [u8; 32],
+  action_hash:   [u8; 32],
+  member_root:   [u8; 32],
+  member_count:  u16,
+  threshold:     u16,
+  approval_count: u16,
+  nullifiers:    Vec<[u8; 32]>,
+  proof_id:      [u8; 32],
+}
+
+type ThresholdProof {
+  journal:      ThresholdJournal,
+  receipt_seal: [u8; 32],
+}
+
+enum ProposalAction {
+  Transfer {
+    to:     String,
+    amount: u64,
+    denom:  String,
+  },
+  SetParameter {
+    key:   String,
+    value: String,
+  },
+  Custom {
+    description:  String,
+    payload_hash: [u8; 32],
+  },
+}
+
+type ExecutionReceipt {
+  proposal_id:   [u8; 32],
+  multisig_id:   [u8; 32],
+  action:        ProposalAction,
+  approval_count: u16,
+  proof_id:      [u8; 32],
+}
+
+// ---------------------------------------------------------------------------
+// Instructions
+// ---------------------------------------------------------------------------
+
+@public
+instruction create_multisig {
+  // Creates a new M-of-N private multisig account.
+  //
+  // PDA: multisig_state is derived from create_key.
+
+  multisig_state: MultisigState init pda(create_key),
+  signer:         signer,
+
+  args {
+    create_key:   [u8; 32],
+    threshold:    u16,
+    member_root:  [u8; 32],
+    member_count: u16,
+  }
+}
+
+@public
+instruction create_proposal {
+  // Creates a new proposal under an existing multisig.
+  //
+  // PDA: multisig_state is derived from create_key.
+  // PDA: proposal is derived from (create_key, proposal_id).
+
+  multisig_state: MultisigState mut pda(create_key),
+  proposal:       ProposalState init pda(create_key, proposal_id),
+  signer:         signer,
+
+  args {
+    create_key:   [u8; 32],
+    proposal_id:  [u8; 32],
+    action_hash:  [u8; 32],
+    description:  String,
+  }
+}
+
+@private_owned
+instruction submit_approval {
+  // Submits a shielded approval from a multisig member.
+  //
+  // Only the nullifier is revealed on-chain; the member's identity
+  // (commitment) remains private. The verifier links the nullifier to
+  // the hidden Merkle proof inside the RISC0 receipt.
+
+  multisig_state: MultisigState mut,
+  proposal:       ProposalState mut,
+
+  args {
+    nullifier: [u8; 32],
+  }
+}
+
+@public
+instruction execute_threshold {
+  // Executes a proposal action once the threshold proof validates.
+  //
+  // The caller provides a pre-generated ThresholdProof and the concrete
+  // ProposalAction. The verifier checks the proof journal against the
+  // on-chain multisig and proposal state, verifies the receipt seal,
+  // and executes the action (which may target additional accounts).
+
+  multisig_state: MultisigState mut,
+  proposal:       ProposalState mut pda(multisig_state.create_key, proposal.proposal_id),
+  target_accounts: ...mut,
+
+  args {
+    proof:  ThresholdProof,
+    action: ProposalAction,
+  }
+}
+
+@public
+instruction verify_and_execute {
+  // Verify a RISC0 threshold receipt and execute the action in one step.
+  //
+  // This is the combined entry point that verifies the RISC0 receipt bytes
+  // against the LP-0002 threshold proof image id and public journal, checks
+  // the journal against on-chain multisig/proposal state, then executes the
+  // action atomically. Replay protection is enforced via the proposal's
+  // executed flag.
+
+  multisig_state: MultisigState mut,
+  proposal:       ProposalState mut pda(create_key, proposal_id),
+  target_accounts: ...mut,
+
+  args {
+    create_key:    [u8; 32],
+    proposal_id:   [u8; 32],
+    risc0_image_id: [u8; 32],
+    receipt_bytes: Vec<u8>,
+    proof_journal: ThresholdJournal,
+    action:        ProposalAction,
+  }
+}
+
+@public
+instruction verify_and_execute_bytes {
+  // Byte-oriented wrapper for SPEL/NSSA tooling. The raw RISC0 receipt is too
+  // large for current public-program input limits, so the caller supplies a
+  // receipt/journal commitment. The full receipt remains retained and verified
+  // by the host-side evidence path before submission.
+
+  multisig_state: MultisigState mut,
+  proposal:       ProposalState mut pda(create_key, proposal_id),
+  target_accounts: ...mut,
+
+  args {
+    create_key:                  [u8; 32],
+    proposal_id:                 [u8; 32],
+    risc0_image_id:              [u8; 32],
+    receipt_sha256:              [u8; 32],
+    receipt_journal_commitment:  [u8; 32],
+    proof_journal_bytes:         Vec<u8>,
+    action_borsh:                Vec<u8>,
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Errors
+// ---------------------------------------------------------------------------
+
+errors {
+  100: EmptyMemberSet          "member set is empty",
+  101: InvalidThreshold        "invalid threshold for member count",
+  102: InsufficientApprovals   "insufficient approvals: threshold not met",
+  103: DuplicateNullifier      "duplicate approval nullifier",
+  104: MultisigIdMismatch      "multisig id mismatch",
+  105: MultisigRootMismatch    "multisig member root mismatch",
+  106: ProposalMismatch        "proposal mismatch",
+  107: ThresholdMismatch       "threshold mismatch",
+  108: ReceiptSealMismatch     "receipt seal mismatch",
+  109: ApprovalCountNullifierMismatch "approval count does not match nullifier count",
+  200: ProposalAlreadyExecuted "proposal already executed",
+}

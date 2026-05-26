@@ -1,0 +1,21 @@
+[package]
+name = "lp0002-private-multisig-guest"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[[bin]]
+name = "threshold_proof"
+path = "src/bin/threshold_proof.rs"
+
+[[bin]]
+name = "verify_and_execute_bytes"
+path = "src/bin/verify_and_execute_bytes.rs"
+
+[dependencies]
+borsh.workspace = true
+lp0002-private-multisig-core = { path = "../../core" }
+nssa_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", tag = "v0.2.0-rc1" }
+serde.workspace = true
+risc0-zkvm = { version = "=3.0.5", default-features = false, features = ["std"] }

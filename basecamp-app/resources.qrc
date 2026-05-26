@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/lp0002">
+    <file>qml/Lp0002PrivateMultisig.qml</file>
+  </qresource>
+</RCC>

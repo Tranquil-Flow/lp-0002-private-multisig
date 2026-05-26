@@ -1,0 +1,10 @@
+/target/
+**/target/
+.DS_Store
+*.pyc
+__pycache__/
+__pycache__/
+/.scaffold/
+
+# Basecamp native module build output
+basecamp-app/build/

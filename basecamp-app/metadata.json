@@ -1,0 +1,28 @@
+{
+  "name": "lp0002_private_multisig",
+  "version": "0.1.0",
+  "description": "LP-0002 Private M-of-N Multisig Basecamp module",
+  "author": "Tranquil-Flow",
+  "type": "ui",
+  "main": "lp0002_private_multisig",
+  "category": "privacy",
+  "prize": "LP-0002",
+  "build": {
+    "type": "cmake",
+    "files": [
+      "CMakeLists.txt",
+      "src/lp0002_plugin.cpp",
+      "src/lp0002_plugin.h",
+      "src/lp0002_widget.cpp",
+      "src/lp0002_widget.h",
+      "include/IComponent.h",
+      "qml/Lp0002PrivateMultisig.qml",
+      "resources.qrc"
+    ]
+  },
+  "capabilities": [
+    "ui_components",
+    "local_demo",
+    "proof_evidence_view"
+  ]
+}
