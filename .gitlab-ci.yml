@@ -1,0 +1,19 @@
+stages:
+  - validate
+
+validate-submission:
+  stage: validate
+  image: rust:1.88
+  variables:
+    RISC0_SKIP_BUILD: "1"
+  before_script:
+    - apt-get update
+    - apt-get install -y --no-install-recommends python3 nodejs ca-certificates
+  script:
+    - cargo test --workspace
+    - python3 scripts/validate-submission-readiness.py --skip-exec
+    - python3 scripts/final-publication-check.py
+    - bash scripts/demo-heavy-lane.sh
+    - bash demo.sh
+  rules:
+    - when: always

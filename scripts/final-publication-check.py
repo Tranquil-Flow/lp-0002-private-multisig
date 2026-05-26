@@ -54,6 +54,28 @@ solution = read("solutions/LP-0002.md")
 for phrase in ["pending public release", "TBD", "to be recorded", "placeholder"]:
     if phrase.lower() in solution.lower():
         errors.append(f"solutions/LP-0002.md still contains publication placeholder phrase: {phrase}")
+required_solution_sections = [
+    "## Summary",
+    "## Repository",
+    "## Approach",
+    "## Success Criteria Checklist",
+    "### Functionality",
+    "### Usability",
+    "### Reliability",
+    "### Performance",
+    "### Supportability",
+    "## FURPS Self-Assessment",
+    "## Terms & Conditions",
+]
+for section in required_solution_sections:
+    if section not in solution:
+        errors.append(f"solutions/LP-0002.md missing upstream validator section: {section}")
+if not re.search(r"^\s*-\s+\[[xX]\]", solution, re.MULTILINE):
+    errors.append("solutions/LP-0002.md must include checked success-criteria checklist items")
+if not re.search(r"^\*\*Submitted by:\*\*.+[A-Za-z]", solution, re.MULTILINE):
+    errors.append("solutions/LP-0002.md must include a non-empty Submitted by field")
+if not re.search(r"Terms (&|and) Conditions|TERMS\.md", solution, re.I):
+    errors.append("solutions/LP-0002.md must acknowledge Terms & Conditions")
 if not re.search(r"https://(?:www\.)?(youtube\.com|youtu\.be|vimeo\.com|loom\.com)/\S+|https://github\.com/[^\s)]+\.(?:mp4|mov|m4v)", solution):
     errors.append("solutions/LP-0002.md must include an accessible narrated demo video URL (YouTube/Vimeo/Loom or public GitHub video asset)")
 if not re.search(r"https://github\.com/.+/.+", solution):
@@ -117,11 +139,13 @@ if not (root / "submission" / "BASECAMP_NATIVE_BUILD.md").exists():
 # same in both cases.
 workflow_dir = root / ".github" / "workflows"
 workflows = list(workflow_dir.glob("*.yml")) + list(workflow_dir.glob("*.yaml"))
+ci_files = workflows + [p for p in [root / ".gitlab-ci.yml", root / "Jenkinsfile", root / ".circleci" / "config.yml"] if p.exists()]
 validation_surface = ""
-if workflows:
-    validation_surface = "\n".join(p.read_text(errors="replace") for p in workflows)
-else:
+if not ci_files:
+    errors.append("missing CI config required by upstream lambda-prize validator (.github/workflows, .gitlab-ci.yml, Jenkinsfile, or .circleci/config.yml)")
     validation_surface = read("submission/CI_EVIDENCE.md")
+else:
+    validation_surface = "\n".join(p.read_text(errors="replace") for p in ci_files if p.is_file())
 for token in ["cargo test --workspace", "validate-submission-readiness.py"]:
     if token not in validation_surface:
         errors.append(f"validation evidence missing local validation token: {token}")
