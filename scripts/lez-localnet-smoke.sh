@@ -69,4 +69,4 @@ cat "$MANIFEST"
 
 echo
 echo "PASS: RISC0 proof artifacts verified, LEZ wrapper execution accepted them, SPEL/NSSA payload plus file-backed transaction evidence were built, and LEZ localnet is reachable."
-echo "NEXT: for fresh inclusion evidence, run scripts/demo-heavy-lane.sh --live-submit; formal CU counters remain dependent on the target LEZ RPC/runtime exposing them."
+echo "NEXT: for fresh inclusion evidence, run scripts/demo-heavy-lane.sh --live-submit; CU metering is recorded as unavailable until the target LEZ RPC/runtime exposes stable counters."

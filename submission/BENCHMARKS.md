@@ -89,7 +89,7 @@ Deployment surface captured on M4 Pro:
 {"program":"verify_and_execute_bytes","program_id":"ed00151765f6704d87f1a036b97207e2f3f83342d407657257ae466b996ca343","status":"submitted"}
 ```
 
-This proves the scaffold/localnet deployment lane is usable for the executable wrapper image. The wrapper section below records confirmed compact NSSA transaction inclusion. The remaining benchmark gap is only a formal per-transaction CU/cycle counter if exposed by the target network.
+This proves the scaffold/localnet deployment lane is usable for the executable wrapper image. The wrapper section below records confirmed compact NSSA transaction inclusion. The only unavailable metric is a formal per-transaction CU/cycle counter, because the target network surface used here does not expose one.
 
 
 ## SPEL/NSSA Adapter Payload Evidence
@@ -161,7 +161,7 @@ The benchmark source is at `consumer-demo/examples/bench.rs`.
 
 ## RISC0-to-LEZ wrapper evidence
 
-The heavy-lane host includes `lp0002-lez-execute-artifacts`, which verifies the real RISC0 receipt with `host::Risc0ReceiptVerifier`, executes the resulting journal through `lez-program::execute_proposal`, and writes `target/lp0002-risc0-fixture-new/lez-execution.json`. The recorded wrapper evidence has `status: executed`, `proposal_state_executed: true`, and `proposal_state_nullifier_count: 2`. `spel-adapter-evidence.json` records the serialized byte payload for the NSSA/SPEL lane. The executable `verify_and_execute_bytes` wrapper is deployed on localnet and the compact native submitter has confirmed inclusion in block `1995`; formal CU counters remain pending target runtime support.
+The heavy-lane host includes `lp0002-lez-execute-artifacts`, which verifies the real RISC0 receipt with `host::Risc0ReceiptVerifier`, executes the resulting journal through `lez-program::execute_proposal`, and writes `target/lp0002-risc0-fixture-new/lez-execution.json`. The recorded wrapper evidence has `status: executed`, `proposal_state_executed: true`, and `proposal_state_nullifier_count: 2`. `spel-adapter-evidence.json` records the serialized byte payload for the NSSA/SPEL lane. The executable `verify_and_execute_bytes` wrapper is deployed on localnet and the compact native submitter has confirmed inclusion in block `1995`; CU metering is recorded as unavailable in current LEZ tooling.
 
 ## Wrapper Localnet Inclusion Evidence
 

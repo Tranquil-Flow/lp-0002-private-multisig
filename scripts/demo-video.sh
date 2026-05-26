@@ -139,7 +139,7 @@ LP-0002 is ready for PR review as a polished submission package:
   • nullifier-based double-vote prevention
   • replay-protected execution gate
   • high-level SDK for integrators
-  • clone-and-run consumer demo replacing the external-instance burden
+  • clone-and-run consumer integration matching the current one-instance criterion
   • native Qt/QML Basecamp package source and validation
   • real RISC0_DEV_MODE=0 proof artifacts retained as reproducible evidence
   • confirmed compact LEZ/NSSA localnet wrapper inclusion evidence

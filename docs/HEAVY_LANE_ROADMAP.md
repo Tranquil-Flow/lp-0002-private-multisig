@@ -7,7 +7,7 @@ The heavy lane adds real RISC0 `DEV_MODE=0` artifacts, a LEZ-shaped execution
 wrapper, and confirmed localnet/evaluator transaction inclusion.
 
 This document records the completed heavy-lane path, the precise trust boundary,
-and the remaining nice-to-have evidence that depends on future LEZ tooling.
+and the optional target-runtime metrics that depend on future LEZ tooling.
 
 ## Status update
 
@@ -51,7 +51,7 @@ Completed in this increment:
   the full receipt remains file-backed, host-verified evidence. For LP-0002, the
   LEZ localnet target is the evaluator/public-testnet target.
 
-Still dependent on future target-network tooling:
+Dependent on future target-network tooling:
 
 - Formal per-transaction CU measurements once exposed by the target LEZ runtime/RPC surface.
 
@@ -183,7 +183,7 @@ NSSA_WALLET_HOME_DIR=.scaffold/wallet cargo run -p lp0002-private-multisig-host 
   --query 596ddb4d798c3e45b2c4da9a15a33638ccf85f54aec7efa52cf822a87591d599
 ```
 
-### 5. Benchmarks and remaining target-runtime metric
+### 5. Benchmarks and target-runtime metric boundary
 
 Recorded in `submission/BENCHMARKS.md` and
 `submission/LEZ_COST_BENCHMARKS.json`:
@@ -194,8 +194,8 @@ Recorded in `submission/BENCHMARKS.md` and
 - account count and confirmed localnet block inclusion,
 - explicit `cu_metering.available=false` reason for the current LEZ toolchain.
 
-The only deferred metric is formal per-transaction CU once the target LEZ
-runtime/RPC exposes stable counters.
+The only unavailable metric is formal per-transaction CU; the current target LEZ
+runtime/RPC surface does not expose stable counters.
 
 ## Operational notes
 
