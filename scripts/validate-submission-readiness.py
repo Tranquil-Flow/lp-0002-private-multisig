@@ -230,8 +230,8 @@ for forbidden in [
         errors.append(f"Evaluator-facing docs contain stale/ambiguous phrase: {forbidden}")
 
 clarification = (root / "submission/MAINTAINER_CLARIFICATION.md").read_text()
-if "Mart1n" not in clarification or "consumer demo" not in clarification.lower():
-    errors.append("MAINTAINER_CLARIFICATION.md must mention Mart1n and consumer demo replacement evidence")
+if "one reproducible multisig" not in clarification.lower() or "consumer-demo" not in clarification.lower():
+    errors.append("MAINTAINER_CLARIFICATION.md must describe the current one-instance criterion and consumer-demo evidence")
 
 # Basecamp app checks.
 app_js = (root / "basecamp-app/app.js").read_text()

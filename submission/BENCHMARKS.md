@@ -132,16 +132,17 @@ The native file-backed submitter constructs a public `NSSATransaction::Public` d
 | Confirmed localnet tx hash | `596ddb4d798c3e45b2c4da9a15a33638ccf85f54aec7efa52cf822a87591d599` |
 | Inclusion status | Confirmed in block `1995`, transaction index `0` |
 
-LEZ v0.2.0-rc1 JSON-RPC exposes transaction/block inclusion but not per-transaction compute-unit counters. Successful localnet inclusion is now captured for the compact wrapper path; public testnet deployment and formal CU counters remain final gates.
+LEZ v0.2.0-rc1 JSON-RPC exposes transaction/block inclusion but not per-transaction compute-unit counters. Successful localnet inclusion is captured for the compact wrapper path; the missing formal CU counter is recorded as an explicit target-runtime limitation rather than estimated.
 
 ## LEZ Compute-Unit Costs
 
 LEZ (Logos Execution Zone) per-transaction compute-unit pricing/counters are not
 currently exposed by the v0.2.0-rc1 JSON-RPC surface used here. The compact wrapper
 path therefore records block inclusion, payload size/hash, receipt/journal commitment, and the
-sequencer RISC0 execution-time log line (`11.122875ms`). Public testnet/evaluator
-repetition and any formal CU/cycle counter exposed by that target remain final
-publication gates.
+sequencer RISC0 execution-time log line (`11.122875ms`). If a later public
+devnet/testnet exposes a stable CU/cycle counter, replace the machine-readable
+`cu_metering.available=false` note in `submission/LEZ_COST_BENCHMARKS.json` with
+the chain-native value.
 
 ## Reproducing
 

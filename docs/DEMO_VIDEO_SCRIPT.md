@@ -18,8 +18,9 @@ SECTION_PAUSE=0 COMMAND_PAUSE=0 SCENE_PAUSE=0 bash scripts/demo-video.sh
 Be precise: `scripts/demo-video.sh` is the **safe-lane consumer demo**. The
 heavy-lane evidence is now available separately via `scripts/demo-heavy-lane.sh`,
 which verifies real `RISC0_DEV_MODE=0` artifacts, builds compact wrapper payload
-evidence, and prints confirmed localnet inclusion. Formal public testnet/evaluator
-repetition and CU counters remain publication gates.
+evidence, and prints confirmed localnet inclusion. The current LEZ JSON-RPC
+surface does not expose stable per-transaction CU counters, so the submission
+records payload/account/receipt metrics plus an explicit CU-metering limitation.
 
 ## Suggested narration
 
@@ -28,8 +29,9 @@ repetition and CU counters remain publication gates.
 "This is LP-0002, private M-of-N multisig for the Logos Execution Zone. The goal
 is to let shielded members approve proposals without exposing which members
 approved, while still enforcing threshold approval and replay protection. This
-video demonstrates the safe-lane reference implementation and the consumer demo
-that Mart1n said is acceptable in place of the external-instance burden."
+video demonstrates the safe-lane reference implementation and the clone-and-run
+consumer integration. The current public LP-0002 spec asks for reproducible
+evidence for one multisig instance, not five external operators."
 
 ### Section 1 — Repository layout
 
@@ -42,9 +44,10 @@ consumer-demo application."
 
 "The compliance matrix is intentionally explicit about what is done and what is
 not. The safe-lane uses a deterministic mock receipt. The separate heavy-lane
-demo verifies real RISC0 artifacts and confirmed compact localnet inclusion, but
-public testnet repetition and formal CU counters are still final publication gates.
-I don't want to overclaim this as production-final ZK."
+demo verifies real RISC0 artifacts and confirmed compact localnet inclusion.
+Because this LEZ toolchain does not expose stable per-transaction CU counters,
+the submission records the available metrics and the limitation rather than
+inventing a cost number."
 
 ### Section 3 — Tests
 
@@ -77,9 +80,8 @@ for the private multisig flow."
 "This submission is ready for review as a thorough implementation: the protocol
 is modeled, tested, documented, and easy to integrate. For the heavy lane, run
 `scripts/demo-heavy-lane.sh` to show real RISC0 artifact verification, compact
-wrapper payload evidence, and confirmed localnet inclusion. The final remaining
-gates are public testnet/evaluator repetition, the narrated video URL, and any
-formal CU counter exposed by the target runtime."
+wrapper payload evidence, and confirmed localnet inclusion. The narrated demo
+asset and structured evidence are included in the submission package."
 
 ## Important phrases to avoid
 
@@ -94,4 +96,4 @@ Safe phrasing:
 - "safe-lane reference implementation"
 - "deterministic mock receipt"
 - "RISC0/LEZ heavy-lane localnet evidence available"
-- "clone-and-run consumer demo accepted by maintainer clarification"
+- "clone-and-run consumer integration matching the current public LP-0002 spec"

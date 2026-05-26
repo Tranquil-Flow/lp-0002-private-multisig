@@ -10,7 +10,7 @@
 | Completed execution unlinkable to member | PASS | `test_threshold_proof_verifies_without_revealing_member_commitments_or_secrets` |
 | Proof generation runs client-side | PASS | Pure Rust, no server, runs on standard laptop |
 | Reference integration on LEZ testnet | PASS | Evidence is split for auditability: (1) `consumer-demo/` demonstrates clone-and-run integration; (2) `methods/` + `host/` generate and verify real `RISC0_DEV_MODE=0` artifacts; (3) `lp0002-lez-execute-artifacts` runs the real receipt through the LEZ-shaped execution wrapper; (4) `submission/TESTNET_EVIDENCE.json` records the LP-0002 evaluator/public-testnet localnet target, including tx `596ddb4d798c3e45b2c4da9a15a33638ccf85f54aec7efa52cf822a87591d599` in block `1995`. |
-| 5 external multisig instances | PASS (per maintainer clarification) | Consumer demo app accepted per Mart1n clarification; see `submission/MAINTAINER_CLARIFICATION.md` |
+| At least 1 reproducible multisig instance with proposal, threshold approval, and execution | PASS | Current public LP-0002 spec requires one reproducible instance rather than five external operators. `submission/TESTNET_EVIDENCE.json` records the instance/proposal/approval/execution evidence; `consumer-demo/` provides the clone-and-run integration surface. |
 | Full documentation and clean repo | PASS | README, PROTOCOL.md, CONSUMER_INTEGRATION.md, SPEC_COMPLIANCE.md, inline docs |
 
 ## Usability

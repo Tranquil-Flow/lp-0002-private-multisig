@@ -1,3 +1,15 @@
-# Maintainer Clarification
+# LP-0002 Adoption-Criteria Update
 
-Evi clarified with Mart1n that the LP-0002 external-instance requirement may be satisfied using a consumer demo app analogous to the LP-0005 consumer integration evidence. This repo therefore includes `consumer-demo/` as the evaluator-cloneable external integration surface.
+The current public LP-0002 prize text requires at least one reproducible multisig
+instance with a proposal submitted, threshold approved, and executed. It no
+longer requires five distinct multisig instances operated by parties outside the
+submitting team.
+
+This repository therefore provides two complementary evaluator surfaces:
+
+- `consumer-demo/`: a clone-and-run integration app showing how a consumer uses
+  the SDK for threshold-gated actions, resumable approvals, errors, and replay
+  protection.
+- `submission/TESTNET_EVIDENCE.json`: structured evidence for the recorded
+  localnet/evaluator multisig instance, proposal, approvals/nullifiers, wrapper
+  execution transaction, and block inclusion.

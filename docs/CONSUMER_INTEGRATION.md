@@ -114,9 +114,11 @@ The `consumer-demo/` crate demonstrates all three patterns across 5 scenarios:
 
 Run it: `cargo run -p lp0002-consumer-demo`
 
-## Maintainer Clarification
+## Reference Integration Evidence
 
-Per Mart1n's clarification (documented in `submission/MAINTAINER_CLARIFICATION.md`),
-a thorough consumer demo app is accepted as evidence for the "5 distinct external
-multisig instances" requirement. The consumer-demo demonstrates that any
-third-party project can integrate the LP-0002 SDK with just a few lines of code.
+The current public LP-0002 specification requires a reproducible reference
+integration plus evidence for at least one multisig instance, proposal,
+threshold approval, and execution. It no longer requires five external multisig
+operators. The `consumer-demo/` crate is the clone-and-run integration surface;
+the RISC0/localnet evidence path is documented in `submission/EVALUATOR_GUIDE.md`
+and `submission/TESTNET_EVIDENCE.json`.
