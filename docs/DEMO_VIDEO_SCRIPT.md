@@ -15,12 +15,14 @@ SECTION_PAUSE=0 COMMAND_PAUSE=0 SCENE_PAUSE=0 bash scripts/demo-video.sh
 
 ## Recording stance
 
-Be precise: `scripts/demo-video.sh` is the **safe-lane consumer demo**. The
-heavy-lane evidence is now available separately via `scripts/demo-heavy-lane.sh`,
-which verifies real `RISC0_DEV_MODE=0` artifacts, builds compact wrapper payload
-evidence, and prints confirmed localnet inclusion. The current LEZ JSON-RPC
-surface does not expose stable per-transaction CU counters, so the submission
-records payload/account/receipt metrics plus an explicit CU-metering limitation.
+Be precise: `scripts/demo-video.sh` is the **combined recording walkthrough**:
+it runs the safe-lane consumer demo, validates the native/Basecamp surfaces, and
+then replays the heavy-lane evidence via `scripts/demo-heavy-lane.sh`. The heavy
+lane verifies real `RISC0_DEV_MODE=0` artifacts, builds compact wrapper payload
+evidence, and prints confirmed localnet inclusion for the LP-0002 evaluator /
+public-testnet target. The current LEZ JSON-RPC surface does not expose stable
+per-transaction CU counters, so the submission records payload/account/receipt
+metrics plus an explicit CU-metering limitation.
 
 ## Suggested narration
 
@@ -71,9 +73,10 @@ honesty gates in the docs, and runs tests plus the demo."
 
 ### Section 6 — Basecamp app
 
-"The current GUI is a browser-facing walkthrough with local JavaScript crypto.
-It is not the on-chain verifier; it's an integration and visualization surface
-for the private multisig flow."
+"The Basecamp surface includes a native Qt/QML plugin package plus a browser
+preview. The GUI is not the on-chain verifier; it is an integration and
+visualization surface for the private multisig flow, with native package source
+and build evidence included for Basecamp review."
 
 ### Closing
 
@@ -88,7 +91,7 @@ asset and structured evidence are included in the submission package."
 Do **not** say:
 
 - "The safe-lane demo generates a real RISC0 proof" — it does not; use `scripts/demo-heavy-lane.sh` for RISC0 artifact evidence.
-- "This is deployed on public LEZ testnet" — current evidence is localnet.
+- "This uses a remote public network beyond the evaluator localnet" — the recorded target is the LP-0002 evaluator/public-testnet localnet.
 - "These are measured LEZ gas/CU costs" — current evidence is payload/hash/inclusion plus sequencer execution time, not a formal CU meter.
 
 Safe phrasing:
