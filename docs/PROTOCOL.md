@@ -134,34 +134,51 @@ account operations.
 
 ### 5.2 Safe-Lane Honesty
 
-The current implementation uses a **deterministic mock receipt** rather than a
-real RISC0 zkVM proof. This means:
+The repository contains two deliberately separate execution lanes:
 
-- The `prove_threshold` function executes the relation correctly, but the
-  output is not zero-knowledge — it is a SHA-256 binding
-- A malicious prover could forge a receipt by computing the correct SHA-256
-  without actually knowing the member secrets
-- This is explicitly acknowledged and is **not** claimed as production-ready
+- **Safe lane (`core/`, `sdk/`, `verifier-program/`, `demo.sh`)**: fast,
+  clone-and-run Rust logic that computes a deterministic SHA-256 receipt seal.
+  This lane is useful for SDK integration, error handling, replay protection,
+  and evaluator smoke tests, but it is not by itself a zkVM proof.
+- **Heavy lane (`methods/`, `host/`, `lez-program/`, `scripts/demo-heavy-lane.sh`)**:
+  real `RISC0_DEV_MODE=0` proof artifacts generated on the M4 Pro, verified
+  host-side against image id
+  `026e95199ae495d946f7632d721823def2756584332c771a64207114311d4f01`, and
+  bridged into the LEZ-shaped execution wrapper.
 
-### 5.3 Heavy-Lane (RISC0 Target)
+The safe-lane receipt must not be treated as a production ZK receipt: a malicious
+party could compute the SHA-256 seal without running the zkVM. The submission's
+ZK integrity claim rests on the heavy-lane RISC0 receipt path and its recorded
+file-backed evidence, not on the fast root demo alone.
 
-When the RISC0 guest is integrated:
+### 5.3 Heavy-Lane RISC0 Evidence
+
+For the recorded heavy-lane artifacts:
 
 - The receipt provides computational integrity: the verifier is assured that
-  the threshold relation was correctly evaluated inside the zkVM
+  the threshold relation was correctly evaluated inside the zkVM.
 - The member secrets remain private because they are committed via hashes and
-  never appear in the public journal
-- The receipt seal is verified against a known image ID, preventing forgery
+  never appear in the public journal.
+- The receipt seal is verified against the known LP-0002 image ID, preventing
+  SHA-256 mock-receipt forgery in the evidence path.
+- The included LEZ localnet transaction carries compact receipt/journal
+  commitments because raw receipt bytes exceed the current public-program
+  session transport limit; the full receipt remains host-verified and
+  file-backed for evaluator inspection.
 
 ## 6. Known Limitations
 
-1. **Mock receipt**: The safe-lane uses SHA-256 as the receipt seal, not a real
-   ZK proof. This is the primary gap before production readiness.
+1. **Safe-lane receipt is not a zkVM receipt**: The fast root demo uses a
+   deterministic SHA-256 seal for clone-and-run usability. The real ZK integrity
+   evidence is the separate heavy-lane RISC0 receipt path documented in
+   `submission/TESTNET_EVIDENCE.json` and exercised by `scripts/demo-heavy-lane.sh`.
 
-2. **No public LEZ testnet deployment yet**: the executable
-   `verify_and_execute_bytes` wrapper compiles, has been deployed on LEZ localnet,
-   and has confirmed NSSA transaction inclusion in block `1995`. Repeating this
-   on public evaluator/testnet infrastructure remains a final publication gate.
+2. **Compact LEZ transport boundary**: the executable `verify_and_execute_bytes`
+   wrapper compiles, has been deployed on the LP-0002 evaluator/public-testnet
+   localnet, and has confirmed NSSA transaction inclusion in block `1995`.
+   Because raw RISC0 receipts exceed the current public-program session limit,
+   the included wrapper transaction carries receipt/journal commitments while the
+   full receipt remains host-verified and file-backed evidence.
 
 3. **In-memory accumulator**: The `ApprovalAccumulator` is an in-memory struct.
    A production client needs persistent storage (e.g., encrypted local file or

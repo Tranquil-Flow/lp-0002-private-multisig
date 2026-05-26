@@ -131,7 +131,7 @@ Implemented in `host/`. The host adapter:
 
 ### 3. Verifier integration
 
-Replace the mock seal check with real receipt verification:
+Implemented evidence path:
 
 ```rust
 receipt.verify(LP0002_THRESHOLD_GUEST_ID)?;
@@ -139,21 +139,27 @@ let journal = decode_receipt_journal(receipt.journal.bytes())?;
 verify_public_journal(config, proposal, &journal)?;
 ```
 
-Keep the existing safe-lane public-journal checks; they are still useful after
-RISC0 because they bind the receipt to the active on-chain state.
+`host::Risc0ReceiptVerifier` performs the concrete receipt/image check and
+journal binding. `lez-program::execute_proposal` then reuses the safe-lane public-
+journal checks against active account state so the heavy-lane receipt remains
+bound to the proposal, action, replay state, and wrapper transport commitments.
 
 ### 4. LEZ program / scaffold integration
 
-`verifier-program/` is the pure Rust execution gate; `lez-program/` now wraps it
-in LEZ-shaped account state and Borsh instruction payloads. A deployable scaffold
-adapter still needs to connect that wrapper to NSSA runtime account IO and submit
-transactions that:
+`verifier-program/` is the pure Rust execution gate; `lez-program/` wraps it in
+LEZ-shaped account state and Borsh instruction payloads. The recorded localnet
+path uses the executable `verify_and_execute_bytes` wrapper program plus a native
+file-backed NSSA submitter. For current LEZ public-program session limits, the
+submitted transaction carries compact receipt/journal commitments while the full
+receipt remains host-verified and file-backed evidence.
 
-- read accounts and instruction args via LEZ/NSSA input APIs,
-- call the concrete RISC0 receipt verifier for the LP-0002 image id,
-- use `lez-program::execute_proposal` for replay/journal/account checks,
-- write executed proposal state,
-- emit an execution receipt/event.
+The wrapper/evidence flow:
+
+- reads instruction args and account-style state through the LEZ-shaped boundary,
+- verifies the real receipt host-side before preparing compact transport,
+- uses `lez-program::execute_proposal` for replay/journal/account checks,
+- writes executed proposal state in the wrapper evidence,
+- records the included localnet transaction hash and block.
 
 Current workflow on the M4 Pro:
 
@@ -170,23 +176,32 @@ cargo run -p lp0002-private-multisig-host --bin lp0002-spel-adapter-evidence -- 
 # smoke-check scaffold and localnet
 scripts/lez-localnet-smoke.sh
 
-# next increment: submit this same instruction as a real NSSA transaction through the deployed wrapper
+# submit/query the recorded localnet wrapper transaction when localnet is live
+NSSA_WALLET_HOME_DIR=.scaffold/wallet cargo run -p lp0002-private-multisig-host --bin lp0002-submit-localnet -- \
+  --evidence-dir target/lp0002-risc0-fixture \
+  --program-id ed00151765f6704d87f1a036b97207e2f3f83342d407657257ae466b996ca343 \
+  --query 596ddb4d798c3e45b2c4da9a15a33638ccf85f54aec7efa52cf822a87591d599
 ```
 
-### 5. Real benchmarks
+### 5. Benchmarks and remaining target-runtime metric
 
-Update `submission/BENCHMARKS.md` with measured values:
+Recorded in `submission/BENCHMARKS.md` and
+`submission/LEZ_COST_BENCHMARKS.json`:
 
-- RISC0 guest build time,
-- RISC0 proof generation time for at least 2-of-3, 3-of-5, 10-of-20,
-- receipt size,
-- LEZ verification compute units,
-- end-to-end transaction latency.
+- safe-lane operation timings across multiple M-of-N sizes,
+- RISC0 image/proof identifiers and receipt/journal sizes,
+- wrapper instruction payload length and hash,
+- account count and confirmed localnet block inclusion,
+- explicit `cu_metering.available=false` reason for the current LEZ toolchain.
 
-## Environment requirements
+The only deferred metric is formal per-transaction CU once the target LEZ
+runtime/RPC exposes stable counters.
 
-This work should run on the M4 Pro, not the lightweight container, because it
-requires:
+## Operational notes
+
+The heavy-lane proof and localnet evidence have already been generated on the M4
+Pro for this submission. Re-running them from scratch still requires the M4 Pro
+or an equivalent machine because the full path needs:
 
 - `cargo-risczero` and RISC0 Rust target,
 - Docker Desktop in PATH and running,
@@ -195,14 +210,9 @@ requires:
 - LEZ localnet/testnet wallet and credentials,
 - enough memory/time for real proving.
 
-## Estimated effort
+## Reproducibility scope
 
-If the M4 Pro toolchain is healthy:
-
-- RISC0 guest + host prover: 2-4 hours
-- LEZ scaffold/deployment wrapper: 3-6 hours
-- localnet/testnet debugging and benchmarks: 2-5 hours
-- demo-video script update: 1 hour
-
-Total: roughly one focused day, with most risk in LEZ program/scaffold glue rather
-than in the threshold relation itself.
+The fast evaluator path is `./demo.sh` plus the validators. The heavy-lane path
+is reproducible on the M4 Pro toolchain; lightweight containers can inspect and
+verify the recorded evidence but may not have Docker/RISC0/localnet capacity to
+regenerate every proof artifact from scratch.

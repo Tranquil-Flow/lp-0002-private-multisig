@@ -65,6 +65,13 @@ Recording-safe evidence walkthrough:
 bash scripts/demo-heavy-lane.sh
 ```
 
+A fresh clone contains the audited proof artifacts under
+`submission/proof-artifacts/lp0002-risc0-fixture-new/`. The script copies them to
+`target/lp0002-risc0-fixture-new/` when the target directory is absent, checks
+artifact hashes and manifest freshness metadata, and prints the compact LEZ/NSSA
+evidence. Set `HEAVY_CARGO_VERIFY=1` on a machine with the Rust/RISC0 host deps to
+also run the Rust receipt verifier and regenerate derived evidence.
+
 The heavy lane consists of:
 
 - real `RISC0_DEV_MODE=0` proof artifacts generated and verified by `host/`

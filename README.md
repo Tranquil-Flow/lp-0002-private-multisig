@@ -178,9 +178,14 @@ program — incompatible with shielded accounts. Our design avoids this:
 | 10-of-20 | 6.6 μs | 8.6 μs | 173 ns | 216 ns | 562 B |
 | 25-of-50 | 15.6 μs | 20.0 μs | 461 ns | 527 ns | 1042 B |
 
-RISC0 heavy-lane proof generation is wired through `host/` and queued for
-measurement on the M4 Pro. The LEZ `execute_proposal` account/instruction
-wrapper is implemented in `lez-program/`; the executable `verify_and_execute_bytes` wrapper has confirmed localnet inclusion evidence via compact receipt/journal-commitment transport. Cost evidence is recorded in `submission/LEZ_COST_BENCHMARKS.json`; the current LEZ JSON-RPC surface exposes inclusion and payload/account metrics but not per-transaction CU counters, so that limitation is explicit rather than estimated.
+RISC0 heavy-lane proof generation is wired through `host/` and measured in
+`submission/BENCHMARKS.md`. The LEZ `execute_proposal` account/instruction
+wrapper is implemented in `lez-program/`; the executable `verify_and_execute_bytes`
+wrapper has confirmed localnet inclusion evidence via compact receipt/journal-
+commitment transport. Cost evidence is recorded in
+`submission/LEZ_COST_BENCHMARKS.json`; the current LEZ JSON-RPC surface exposes
+inclusion and payload/account metrics but not per-transaction CU counters, so
+that limitation is explicit rather than estimated.
 
 ## Test Coverage
 

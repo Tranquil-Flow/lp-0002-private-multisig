@@ -83,6 +83,7 @@ if not re.search(r"https://github\.com/.+/.+", solution):
 
 # 2. LEZ testnet evidence. For LP-0002, the evaluator/public testnet target is lgs/NSSA localnet.
 text_surface = "\n".join([
+    read("docs/PROTOCOL.md"),
     read("docs/SPEC_COMPLIANCE.md"),
     read("submission/BENCHMARKS.md"),
     read("docs/HEAVY_LANE_ROADMAP.md"),
@@ -92,7 +93,7 @@ if "localnet" in text_surface.lower() and "public testnet" not in text_surface.l
     warnings.append("docs mention localnet but not public testnet; check claim surface")
 if re.search(r"LEZ public testnet/evaluator deployment|LEZ testnet deployment", json.dumps(module)):
     errors.append("module.json still lists LEZ testnet deployment as pending")
-if "Public testnet deployment remains" in text_surface or "public testnet/evaluator deployment remains" in text_surface:
+if "Public testnet deployment remains" in text_surface or "public testnet/evaluator deployment remains" in text_surface or "No public LEZ testnet deployment yet" in text_surface:
     errors.append("docs still state public LEZ testnet deployment remains pending")
 
 # Require a structured evidence file so reviewers can audit all public tx ids.
@@ -153,9 +154,23 @@ if "lez-localnet-smoke.sh" not in validation_surface and "demo-heavy-lane.sh" no
     errors.append("validation evidence lacks LEZ/RISC0 evidence smoke command")
 
 evaluator_guide = read("submission/EVALUATOR_GUIDE.md")
-for token in ["./demo.sh", "final-publication-check.py", "demo-heavy-lane.sh", "TESTNET_EVIDENCE.json"]:
+for token in ["./demo.sh", "final-publication-check.py", "demo-heavy-lane.sh", "TESTNET_EVIDENCE.json", "submission/proof-artifacts"]:
     if token not in evaluator_guide:
         errors.append(f"submission/EVALUATOR_GUIDE.md missing evaluator command/evidence token: {token}")
+
+proof_artifacts = root / "submission" / "proof-artifacts" / "lp0002-risc0-fixture-new"
+for rel in [
+    "receipt.borsh",
+    "journal.borsh",
+    "manifest.txt",
+    "lez-execution.json",
+    "spel-adapter-evidence.json",
+    "nssa-submit-dry-run.json",
+    "nssa-submit-evidence.json",
+]:
+    p = proof_artifacts / rel
+    if not p.exists() or p.stat().st_size == 0:
+        errors.append(f"missing bundled heavy-lane proof artifact: {p.relative_to(root)}")
 
 # 4b. Claim-surface sanity: do not ship stale blocker/TODO language in evaluator docs.
 claim_surface = "\n".join([

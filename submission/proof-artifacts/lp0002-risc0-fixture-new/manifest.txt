@@ -1,0 +1,12 @@
+LP-0002 RISC0 threshold proof artifacts
+risc0_dev_mode=0
+image_id=026e95199ae495d946f7632d721823def2756584332c771a64207114311d4f01
+receipt_borsh=target/lp0002-risc0-fixture-new/receipt.borsh
+journal_borsh=target/lp0002-risc0-fixture-new/journal.borsh
+multisig_id=ffb35c09b5af67ca926b385a7ccf7b0e565714f79756fca603ebeca386f1fa09
+proposal_id=9f4e8e36d6535fd8283476938fab7951f7497532433890cd482740eec09ef351
+member_root=f405f8934d66fe3b56e27d8ed8cbb359ee7c467c2ab6204932370c9a3a24ae04
+threshold=2
+approval_count=2
+proof_id=9e6492e73d1e8382abfa0e94e91842100b9041516857f215fcad7276cbad8b11
+privacy_note=member secrets, selected approver commitments, and the full membership set stay private witness data

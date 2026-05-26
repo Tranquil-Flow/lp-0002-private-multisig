@@ -1,0 +1,32 @@
+{
+  "account_ids": [
+    "bf08f325f3458f1ed196d6c32554397d08f069a5d48248369e5e34a929ac4d75",
+    "7bdae6fdabaf103077452224adb376369e562e1bab61c84364973d6d5aa4af67"
+  ],
+  "action_borsh_len": 110,
+  "instruction": "verify_and_execute_bytes",
+  "instruction_data_len": 5492,
+  "instruction_data_sha256": "4a04669d3d183d659353f72a7fa0ca7adc61d41ca07b8d7de2642f861d96a677",
+  "instruction_index": 5,
+  "instruction_u32_words": 1373,
+  "lane": "risc0-heavy-lane-file-backed-nssa-submit",
+  "nonce_count": 0,
+  "program_id": "ed00151765f6704d87f1a036b97207e2f3f83342d407657257ae466b996ca343",
+  "proof_journal_bytes_len": 1100,
+  "proof_journal_bytes_sha256": "a8fe85f8d63f948409941b585cbe9244c2d0ae45082bf635173f753037ad4d8e",
+  "public_journal": {
+    "approval_count": 2,
+    "domain": "lp0002.private-multisig.threshold.v1",
+    "proof_id": "9e6492e73d1e8382abfa0e94e91842100b9041516857f215fcad7276cbad8b11",
+    "proposal_id": "9f4e8e36d6535fd8283476938fab7951f7497532433890cd482740eec09ef351",
+    "threshold": 2
+  },
+  "receipt_bytes_len": 270334,
+  "receipt_bytes_sha256": "8142fe9e92d144541d579521940ee873f09d15fb60aad4eb45f3c369fe3177ff",
+  "receipt_journal_commitment": "68141a959293adaaebffb41be3969ecccf30e43947e0008ed10726b8e03444e7",
+  "receipt_transport": "receipt-journal-commitment-in-wrapper-input; full receipt retained in artifact evidence because raw receipt bytes exceed the current LEZ/RISC0 public-program session limit",
+  "risc0_dev_mode": "0",
+  "signer_count": 0,
+  "status": "built_dry_run",
+  "threshold_proof_image_id": "026e95199ae495d946f7632d721823def2756584332c771a64207114311d4f01"
+}
