@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test-fast:
+    name: Fast tests (no guest build, no live sequencer)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Cache cargo registry + git deps
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Install logos-blockchain-circuits prerequisite
+        run: |
+          set -euo pipefail
+          cd /tmp
+          curl -fLO https://github.com/logos-blockchain/logos-blockchain-circuits/releases/download/v0.4.2/logos-blockchain-circuits-v0.4.2-linux-x86_64.tar.gz
+          tar -xzf logos-blockchain-circuits-v0.4.2-linux-x86_64.tar.gz
+          mv logos-blockchain-circuits-v0.4.2-linux-x86_64 ~/.logos-blockchain-circuits
+
+      - name: cargo fmt --check
+        run: cargo fmt --all --check
+
+      - name: cargo test (excluding risc0 guest)
+        env:
+          RISC0_SKIP_BUILD: "1"
+        run: |
+          cargo test --workspace \
+            --exclude lp0002-private-multisig-guest \
+            --exclude lp0002-private-multisig-methods \
+            --release
