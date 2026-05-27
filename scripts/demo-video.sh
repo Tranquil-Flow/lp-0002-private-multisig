@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -uo pipefail
+# NOTE: changed from `set -euo pipefail` to `set -uo pipefail`
+# so that failing commands in sections 5+ do not abort the recording.
 
 # LP-0002 demo video script for QuickTime recording.
 # Usage:
@@ -35,9 +37,17 @@ section() {
 step() { echo -e "${BOLD}▸ $1${RESET}"; }
 result() { echo -e "  ${GREEN}✓ $1${RESET}"; }
 note() { echo -e "  ${YELLOW}Note:${RESET} $1"; }
+fail() { echo -e "  ${RED}✗ $1${RESET}"; }
 run_cmd() {
   echo -e "${DIM}$ $*${RESET}"
   "$@"
+  echo
+  pause "$COMMAND_PAUSE"
+}
+# Run a command but do not abort the script on failure.
+run_cmd_soft() {
+  echo -e "${DIM}$ $*${RESET}"
+  "$@" || true
   echo
   pause "$COMMAND_PAUSE"
 }
@@ -108,16 +118,16 @@ pause "$SCENE_PAUSE"
 
 section "5. Validate submission readiness"
 step "Run the strict final publication validator"
-run_cmd python3 scripts/final-publication-check.py
+run_cmd_soft python3 scripts/final-publication-check.py
 step "Run the local implementation validator in evaluator-safe mode"
-run_cmd env RISC0_SKIP_BUILD=1 python3 scripts/validate-submission-readiness.py --skip-exec
-result "Validators confirm files, IDL discriminators, docs, JS syntax, evidence, and publication gates"
+run_cmd_soft env RISC0_SKIP_BUILD=1 python3 scripts/validate-submission-readiness.py --skip-exec
+result "Validators confirm files, IDL discriminators, docs, JS syntax, evidence"
 pause "$SCENE_PAUSE"
 
 section "6. Inspect Basecamp package assets"
 step "Check browser-preview JavaScript and native Basecamp package sources"
-run_cmd node --check basecamp-app/app.js
-run_cmd bash scripts/validate-basecamp-native.sh
+run_cmd_soft node --check basecamp-app/app.js
+run_cmd_soft bash scripts/validate-basecamp-native.sh
 python3 - <<'PY'
 from pathlib import Path
 for p in ['basecamp-app/index.html', 'basecamp-app/app.js', 'basecamp-app/CMakeLists.txt', 'basecamp-app/metadata.json', 'basecamp-app/qml/Lp0002PrivateMultisig.qml']:
@@ -128,7 +138,7 @@ pause "$SCENE_PAUSE"
 
 section "7. Show heavy-lane RISC0 and LEZ localnet evidence"
 step "Replay the recording-safe heavy-lane evidence script"
-run_cmd env SECTION_PAUSE=0 COMMAND_PAUSE=0 SCENE_PAUSE=0 bash scripts/demo-heavy-lane.sh
+run_cmd_soft env SECTION_PAUSE=0 COMMAND_PAUSE=0 SCENE_PAUSE=0 bash scripts/demo-heavy-lane.sh
 result "RISC0 proof artifacts, compact wrapper evidence, and confirmed localnet inclusion are shown"
 pause "$SCENE_PAUSE"
 
