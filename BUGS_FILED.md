@@ -4,7 +4,7 @@ Per λPrize submission guidance, this file lists upstream Logos issues encounter
 
 ## Filed upstream
 
-- **logos-blockchain/logos-blockchain-circuits#33** — README missing install path documentation for downstream tools (`~/.logos-blockchain-circuits` / `LOGOS_BLOCKCHAIN_CIRCUITS`). Hits any builder running `cargo install --git logos-co/spel` or compiling code that transitively depends on `logos-blockchain-pol`. https://github.com/logos-blockchain/logos-blockchain-circuits/issues/33
+- **logos-blockchain/logos-blockchain-circuits#33** (CLOSED 2026-05-27 by maintainer) — README missing install path documentation for downstream tools (`~/.logos-blockchain-circuits` / `LOGOS_BLOCKCHAIN_CIRCUITS`). Hits any builder running `cargo install --git logos-co/spel` or compiling code that transitively depends on `logos-blockchain-pol`. Maintainer closed noting the concern belongs against `logos-blockchain-node` (the actual consumer), and confirmed the team is migrating from binary releases to library-based circuits, which addresses the underlying first-run install panic. https://github.com/logos-blockchain/logos-blockchain-circuits/issues/33
 
 ## Worked around (candidates for upstream filing)
 
