@@ -49,9 +49,8 @@ required_files = [
     "scripts/run-risc0-fixture-m4.sh",
     "interfaces/lp0002.spel",
     "interfaces/lp0002.idl.json",
-    "basecamp-app/index.html",
-    "basecamp-app/app.js",
-    "basecamp-app/styles.css",
+    # Static HTML browser preview removed in favor of full native Qt/QML package
+    "basecamp-app/qml/Lp0002PrivateMultisig.qml",
     "solutions/LP-0002.md",
     "submission/BENCHMARKS.md",
     "submission/MAINTAINER_CLARIFICATION.md",
@@ -234,17 +233,15 @@ if "one reproducible multisig" not in clarification.lower() or "consumer-demo" n
     errors.append("MAINTAINER_CLARIFICATION.md must describe the current one-instance criterion and consumer-demo evidence")
 
 # Basecamp app checks.
-app_js = (root / "basecamp-app/app.js").read_text()
-if "encode..." in app_js:
-    errors.append("basecamp-app/app.js contains corrupted placeholder text 'encode...'")
-if "lp0002:member-secret" not in app_js:
-    errors.append("basecamp-app/app.js missing member-secret domain constant")
-
-node = shutil.which("node")
-if node:
-    run([node, "--check", str(root / "basecamp-app/app.js")])
+# Static HTML browser preview removed; native Qt/QML package is the primary surface.
+# Static files are intentionally absent from this validator.
+qml_main = root / "basecamp-app" / "qml" / "Lp0002PrivateMultisig.qml"
+if qml_main.exists():
+    qml_text = qml_main.read_text()
+    if "lp0002" not in qml_text.lower():
+        notes.append("basecamp-app/qml/Lp0002PrivateMultisig.qml may not reference lp0002")
 else:
-    notes.append("node not found; skipped JS syntax check")
+    notes.append("basecamp-app/qml/Lp0002PrivateMultisig.qml not found; native QML UI is expected for evaluator review")
 
 # Executable gates.
 if not args.skip_exec:
@@ -264,7 +261,7 @@ print(f"  - {len(required_crates)} workspace crates")
 print(f"  - IDL with {len(idl.get('instructions', [])) if idl else 0} instructions and verified discriminators")
 print(f"  - Protocol doc with {len(required_protocol)} required sections")
 print(f"  - Compliance matrix with {len(required_sections)} sections")
-print("  - Basecamp JS syntax checked")
+print("  - Basecamp native QML structure validated")
 print("  - Honesty gates present")
 print("  - NOTE: final publication gates are checked separately by scripts/final-publication-check.py")
 if args.skip_exec:

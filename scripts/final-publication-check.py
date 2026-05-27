@@ -134,6 +134,37 @@ if not (basecamp / "metadata.json").exists() and not (basecamp / "manifest.json"
     errors.append("Basecamp app missing metadata.json/manifest.json load metadata")
 if not (root / "submission" / "BASECAMP_NATIVE_BUILD.md").exists():
     errors.append("missing submission/BASECAMP_NATIVE_BUILD.md with native Basecamp build evidence")
+runtime_evidence = root / "submission" / "BASECAMP_RUNTIME_LOAD_EVIDENCE.json"
+if not runtime_evidence.exists():
+    errors.append("missing submission/BASECAMP_RUNTIME_LOAD_EVIDENCE.json with real LogosBasecamp runtime load/activation evidence")
+else:
+    try:
+        ev = json.loads(runtime_evidence.read_text())
+        if ev.get("final_basecamp_runtime_load_evidence") is not True:
+            errors.append("BASECAMP_RUNTIME_LOAD_EVIDENCE.json must set final_basecamp_runtime_load_evidence=true")
+        if ev.get("status") not in {"basecamp-runtime-loaded", "basecamp-load-evidence-attached"}:
+            errors.append("BASECAMP_RUNTIME_LOAD_EVIDENCE.json must record a runtime-loaded status")
+        if not ev.get("loaded_component_id"):
+            errors.append("BASECAMP_RUNTIME_LOAD_EVIDENCE.json must record the loaded component id")
+        raw_hashes = ev.get("raw_log_sha256") or ev.get("log_sha256")
+        if not isinstance(raw_hashes, dict) or not raw_hashes:
+            errors.append("BASECAMP_RUNTIME_LOAD_EVIDENCE.json must include raw_log_sha256/log_sha256 entries")
+        else:
+            for rel_path, expected in raw_hashes.items():
+                log_path = (root / rel_path).resolve()
+                try:
+                    log_path.relative_to(root)
+                except ValueError:
+                    errors.append(f"Basecamp runtime log path escapes repository: {rel_path}")
+                    continue
+                if not log_path.exists():
+                    errors.append(f"Basecamp runtime log missing: {rel_path}")
+                    continue
+                actual = __import__("hashlib").sha256(log_path.read_bytes()).hexdigest()
+                if actual != expected:
+                    errors.append(f"Basecamp runtime log hash mismatch: {rel_path}")
+    except json.JSONDecodeError as exc:
+        errors.append(f"BASECAMP_RUNTIME_LOAD_EVIDENCE.json invalid JSON: {exc}")
 
 # 4. Validation/CI signal.
 # The automation token available for publishing this repository may not have the

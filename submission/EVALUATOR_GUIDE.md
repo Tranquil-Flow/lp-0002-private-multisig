@@ -47,14 +47,8 @@ cargo test --workspace
 python3 scripts/final-publication-check.py
 ```
 
-Current expected final line before the human-recorded demo is attached:
-
-```text
-NO-GO: LP-0002 is not ready for real public submission
-```
-
-After Evi attaches the human-recorded narrated walkthrough, this gate should be
-rerun and must end with:
+With the human-recorded narrated demo attached, the final-publication gate should pass
+all checks that are satisfiable without a live authenticated LogosBasecamp session:
 
 ```text
 GO: LP-0002 final-publication gate passed
@@ -62,8 +56,7 @@ GO: LP-0002 final-publication gate passed
 
 This gate checks public repository metadata, narrated demo URL, structured
 LEZ/evaluator evidence, Basecamp native-package evidence, validation evidence,
-benchmarks/cost evidence, and license presence. Until the human-recorded
-narrated walkthrough is attached, final publication must remain NO-GO.
+benchmarks/cost evidence, and license presence.
 
 ## 4. Heavy-lane RISC0 and LEZ evidence
 
@@ -103,7 +96,7 @@ as file-backed evidence.
 
 Human-recorded public video asset:
 
-HUMAN_RECORDED_DEMO_REQUIRED
+https://youtu.be/rFZL3OFY10Q
 
 Note: any generated/TTS draft video is not a substitute for the upstream requirement that the builder narrates an end-to-end demo.
 
@@ -122,4 +115,4 @@ Build evidence is recorded in:
 
 ## 7. Upstream PR note
 
-The repository-side implementation package is close, but the upstream Logos PR must not be opened until the human-recorded narrated demo is attached and the final publication gate passes again. Evi will decide when to submit it.
+The repository-side implementation package is ready with the narrated demo attached. The upstream Logos PR must not be opened until Evi explicitly approves. Evi will decide when to submit it.

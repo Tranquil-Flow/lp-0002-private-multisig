@@ -33,4 +33,4 @@ Built plugin artifact:
 basecamp-app/build/modules/liblp0002_private_multisig.dylib
 ```
 
-Honesty note: this proves the native/QML plugin package builds locally against Qt 6 and exposes the Basecamp `IComponent` plugin interface. Final reviewer/evaluator acceptance may still require loading the package inside their current Logos Basecamp build, because the public Basecamp plugin packaging format is still moving.
+Honesty note: this proves the native/QML plugin package builds locally against Qt 6 and exposes the Basecamp `IComponent` plugin interface. It does **not** prove final LogosBasecamp runtime load/activation. Final publication must attach `submission/BASECAMP_RUNTIME_LOAD_EVIDENCE.json` with raw runtime logs, log hashes, a loaded component id, and `final_basecamp_runtime_load_evidence=true`.

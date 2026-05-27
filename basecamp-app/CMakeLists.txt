@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.20)
 project(Lp0002PrivateMultisigBasecamp VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -6,7 +6,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Widgets Quick Qml QuickWidgets)
+# ── Dual-path build: framework (logos-module-builder) or standalone Qt6 ──
+if(DEFINED ENV{LOGOS_MODULE_BUILDER_ROOT})
+    include("$ENV{LOGOS_MODULE_BUILDER_ROOT}/cmake/LogosModule.cmake")
+    # LogosModule.cmake handles Qt6 discovery, Logos SDK, and .lgx packaging
+else()
+    find_package(Qt6 REQUIRED COMPONENTS Core Widgets Quick Qml QuickWidgets)
+endif()
 
 add_library(lp0002_private_multisig SHARED
     src/lp0002_plugin.cpp
@@ -21,13 +27,15 @@ target_include_directories(lp0002_private_multisig PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(lp0002_private_multisig PRIVATE
-    Qt6::Core
-    Qt6::Widgets
-    Qt6::Quick
-    Qt6::Qml
-    Qt6::QuickWidgets
-)
+if(NOT DEFINED ENV{LOGOS_MODULE_BUILDER_ROOT})
+    target_link_libraries(lp0002_private_multisig PRIVATE
+        Qt6::Core
+        Qt6::Widgets
+        Qt6::Quick
+        Qt6::Qml
+        Qt6::QuickWidgets
+    )
+endif()
 
 set_target_properties(lp0002_private_multisig PROPERTIES
     OUTPUT_NAME "lp0002_private_multisig"

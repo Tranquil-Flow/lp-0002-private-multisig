@@ -9,7 +9,7 @@ https://github.com/Tranquil-Flow/lp-0002-private-multisig
 
 ## Demo video
 
-HUMAN_RECORDED_DEMO_REQUIRED
+https://youtu.be/rFZL3OFY10Q
 
 ## Public LEZ testnet/evaluator evidence
 
@@ -33,7 +33,7 @@ Included block: `1995`.
 
 ## Notes for reviewers
 
-The root `demo.sh` is the fast safe-lane consumer demonstration. The heavy-lane
+The root `demo.sh` is the fast consumer demonstration. The heavy-lane
 RISC0/localnet evidence is in `host/`, `scripts/demo-heavy-lane.sh`,
 `submission/TESTNET_EVIDENCE.json`, and `submission/BENCHMARKS.md`.
 

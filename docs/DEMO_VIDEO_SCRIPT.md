@@ -16,7 +16,7 @@ SECTION_PAUSE=0 COMMAND_PAUSE=0 SCENE_PAUSE=0 bash scripts/demo-video.sh
 ## Recording stance
 
 Be precise: `scripts/demo-video.sh` is the **combined recording walkthrough**:
-it runs the safe-lane consumer demo, validates the native/Basecamp surfaces, and
+it runs the consumer demo, validates the native/Basecamp surfaces, and
 then replays the heavy-lane evidence via `scripts/demo-heavy-lane.sh`. The heavy
 lane verifies real `RISC0_DEV_MODE=0` artifacts, builds compact wrapper payload
 evidence, and prints confirmed localnet inclusion for the LP-0002 evaluator /

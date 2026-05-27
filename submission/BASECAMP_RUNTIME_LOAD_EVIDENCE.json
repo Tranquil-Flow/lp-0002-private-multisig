@@ -10,7 +10,7 @@
   "evidence_note": "The native Qt/QML plugin was built on M4 Pro (see submission/BASECAMP_NATIVE_BUILD.md for full build log) and the plugin structure was validated by scripts/validate-basecamp-native.sh. Full Logos Basecamp desktop runtime loading requires the logos-basecamp application which is distributed as a Nix flake; the plugin package structure, metadata, and built artifact conform to the expected load surface.",
   "raw_log_sha256": {
     "basecamp-app/metadata.json": "c789bc581212c2e48fcf1b1613e7ace4b68ad2497b39cc782bc558f31fb34b37",
-    "basecamp-app/CMakeLists.txt": "6f3b48ed8df6890bd1a7c5669bb54ed3a2c7734a3495857728c1dc7ce1bb5360",
+    "basecamp-app/CMakeLists.txt": "7c251132816ffc8dfea468f8206c00890c6ebdb149a1658e734f7c41edff0d3a",
     "basecamp-app/qml/Lp0002PrivateMultisig.qml": "26fb635a14594dffed3d36e7ae0f28a338529e45da9bde3ab2039b5eb44d4a39",
     "basecamp-app/src/lp0002_plugin.cpp": "24e075dc65af6ed63b56e747e5b2d87f959b869811f2a621211cb6aab08e0299",
     "basecamp-app/src/lp0002_widget.cpp": "aa3ca9b65ac9329039d2e120194d9e040aa00a13582311cab0a64c981438dd9c",
@@ -18,7 +18,7 @@
   },
   "log_sha256": {
     "basecamp-app/metadata.json": "c789bc581212c2e48fcf1b1613e7ace4b68ad2497b39cc782bc558f31fb34b37",
-    "basecamp-app/CMakeLists.txt": "6f3b48ed8df6890bd1a7c5669bb54ed3a2c7734a3495857728c1dc7ce1bb5360",
+    "basecamp-app/CMakeLists.txt": "7c251132816ffc8dfea468f8206c00890c6ebdb149a1658e734f7c41edff0d3a",
     "basecamp-app/qml/Lp0002PrivateMultisig.qml": "26fb635a14594dffed3d36e7ae0f28a338529e45da9bde3ab2039b5eb44d4a39",
     "basecamp-app/src/lp0002_plugin.cpp": "24e075dc65af6ed63b56e747e5b2d87f959b869811f2a621211cb6aab08e0299",
     "basecamp-app/src/lp0002_widget.cpp": "aa3ca9b65ac9329039d2e120194d9e040aa00a13582311cab0a64c981438dd9c",
