@@ -1,6 +1,6 @@
 # LP-0002 Final Publication Audit
 
-Status: **SUBMISSION-READY for Evi sign-off. Human-recorded narrated demo attached at https://youtu.be/rFZL3OFY10Q. Do not open the upstream Logos PR without explicit approval.**
+Status: **NOT YET SUBMISSION-READY. `scripts/final-publication-check.py` returns NO-GO pending a fresh human-recorded narrated demo video (the prior video is historical only and must not be used as final evidence). Do not open the upstream Logos PR without explicit approval.**
 
 This file exists because the local implementation validator is not enough. The
 LP-0005 rejection showed that local demos, static HTML, and partial localnet
@@ -12,7 +12,7 @@ For LP-0002, do not submit until `scripts/final-publication-check.py` passes.
 | Gate | Current state | Required before submission |
 |---|---|---|
 | Public repository | PASS: public repo published at https://github.com/Tranquil-Flow/lp-0002-private-multisig | Keep public branch synchronized with this publication package |
-| Narrated video | PASS: human-recorded narrated demo at https://youtu.be/rFZL3OFY10Q | Verify the URL remains accessible and shows builder-narrated architecture/decisions/M-of-N approval/execution with terminal output proving RISC0_DEV_MODE=0 |
+| Narrated video | PENDING: fresh human-recorded narrated demo not yet recorded; the prior video is historical only and must not be used as final evidence | Record builder-narrated architecture/decisions/M-of-N approval/execution with terminal output proving RISC0_DEV_MODE=0, then insert the URL |
 | LEZ public testnet/devnet verifier | PASS: localnet is the evaluator/public testnet target; wrapper tx evidence is recorded in `submission/TESTNET_EVIDENCE.json` | Keep evidence JSON synchronized if rerun |
 | Public testnet multisig instance | PASS: confirmed localnet block/tx evidence accepted as testnet evidence for LP-0002 | Keep transaction hash and block id in final write-up |
 | Basecamp app | PARTIAL: native Qt/QML plugin package builds locally, but final LogosBasecamp runtime load/activation evidence is not attached | Replace `submission/BASECAMP_RUNTIME_LOAD_EVIDENCE.json` with raw runtime load/activation logs, loaded component id, and log hashes before claiming final Basecamp compliance |

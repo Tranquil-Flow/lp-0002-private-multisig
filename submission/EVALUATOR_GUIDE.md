@@ -47,7 +47,7 @@ cargo test --workspace
 python3 scripts/final-publication-check.py
 ```
 
-With the human-recorded narrated demo attached, the final-publication gate should pass
+Once the fresh human-recorded narrated demo is recorded and its URL inserted, the final-publication gate should pass
 all checks that are satisfiable without a live authenticated LogosBasecamp session:
 
 ```text
@@ -94,9 +94,7 @@ as file-backed evidence.
 
 ## 5. Narrated demo
 
-Human-recorded public video asset:
-
-https://youtu.be/rFZL3OFY10Q
+A fresh human-recorded narrated demo video is pending and will be recorded before resubmission. The prior video is historical only and must not be used as final evidence.
 
 Note: any generated/TTS draft video is not a substitute for the upstream requirement that the builder narrates an end-to-end demo.
 

@@ -44,7 +44,7 @@
 | CI/evaluator validation | PASS | `submission/CI_EVIDENCE.md` documents evaluator-run validation commands because the available publication token cannot push GitHub workflow files without `workflow` scope; local full validation has passed on the M4 Pro and fresh public-clone validators pass. |
 | README with E2E usage | PASS | `README.md` with quick start, architecture, SDK usage |
 | Reproducible demo script | PASS | `demo.sh` runs consumer-demo; `cargo test --workspace` |
-| Narrated video demo | PASS | Human-recorded narrated walkthrough attached: https://youtu.be/rFZL3OFY10Q |
+| Narrated video demo | NOT YET RECORDED | Fresh human-recorded narrated walkthrough not yet recorded; the prior video is historical only and must not be used as final evidence |
 
 ## Submission Requirements
 
@@ -52,7 +52,7 @@
 |---|---|---|
 | Public repository, MIT/Apache-2.0 | PASS | MIT license, clean git history |
 | Verifier deployed on LEZ testnet | PASS | Localnet wrapper deployment is confirmed and localnet is the LP-0002 evaluator/public testnet target; see `submission/TESTNET_EVIDENCE.json` |
-| Narrated demo video | PASS | Human-recorded narrated walkthrough attached: https://youtu.be/rFZL3OFY10Q |
+| Narrated demo video | NOT YET RECORDED | Fresh human-recorded narrated walkthrough not yet recorded; the prior video is historical only and must not be used as final evidence |
 | Write-up (threshold proof, nullifier, LEZ compat, security) | PASS | `docs/PROTOCOL.md` (8 sections) |
 | Proof generation time and cost benchmarks | PASS | `submission/BENCHMARKS.md` plus `submission/LEZ_COST_BENCHMARKS.json` record safe-lane timings, RISC0 fixture measurements, receipt/journal sizes, wrapper payload bytes, account count, localnet block inclusion, and the explicit CU-metering limitation of current LEZ tooling. |
 

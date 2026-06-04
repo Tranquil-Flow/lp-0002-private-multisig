@@ -54,9 +54,8 @@
     "Public repository published under Tranquil-Flow",
     "Localnet accepted as the evaluator/public testnet target for LP-0002 evidence",
     "Structured TESTNET_EVIDENCE.json generated from confirmed localnet wrapper transaction",
-    "Human-recorded narrated demo attached at https://youtu.be/rFZL3OFY10Q",
     "Evaluator-run validation bundle documented in submission/CI_EVIDENCE.md"
   ],
-  "demo_video_url": "https://youtu.be/rFZL3OFY10Q",
+  "demo_video_url": "",
   "heavy_lane": true
 }
