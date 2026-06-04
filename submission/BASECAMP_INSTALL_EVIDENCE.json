@@ -1,0 +1,35 @@
+{
+  "captured_at_utc": "2026-06-04T17:01:39.170561Z",
+  "evidence_kind": "basecamp_scaffold_lgx_build_and_profile_install",
+  "final_basecamp_runtime_load_evidence": false,
+  "build_and_install_evidence": true,
+  "runtime_launch_evidence": false,
+  "component_activation_evidence": false,
+  "m4_host": "m4pro",
+  "scaffold_command": "lgs basecamp setup && lgs basecamp install --print-output",
+  "lgx_path": "/Users/evinova-self/Projects/logos-basecamp/lp-0002-private-multisig/.scaffold/cache/basecamp/lgx-links/path__Users_evinova_self_Projects_logos_basecamp_lp_0002_private_multisig_lgx-e748bcc95212e897-result/lp0002-private-multisig-basecamp.lgx",
+  "lgx_sha256": "bf25baffdbbb3c06b932edcb78f8bc6c4e42a0dbd531d66fce8e10eb251dfc05",
+  "profiles": {
+    "alice": {
+      "plugins_dir": "/Users/evinova-self/Projects/logos-basecamp/lp-0002-private-multisig/.scaffold/basecamp/profiles/alice/xdg-data/Logos/LogosBasecampDev/plugins",
+      "file_count": 4,
+      "files": [
+        "lp0002_private_multisig/liblp0002_private_multisig.dylib",
+        "lp0002_private_multisig/lp0002_private_multisig.dylib",
+        "lp0002_private_multisig/manifest.json",
+        "lp0002_private_multisig/variant"
+      ]
+    },
+    "bob": {
+      "plugins_dir": "/Users/evinova-self/Projects/logos-basecamp/lp-0002-private-multisig/.scaffold/basecamp/profiles/bob/xdg-data/Logos/LogosBasecampDev/plugins",
+      "file_count": 4,
+      "files": [
+        "lp0002_private_multisig/liblp0002_private_multisig.dylib",
+        "lp0002_private_multisig/lp0002_private_multisig.dylib",
+        "lp0002_private_multisig/manifest.json",
+        "lp0002_private_multisig/variant"
+      ]
+    }
+  },
+  "honesty_note": "Proves .lgx build and lgpm install into scaffold Basecamp alice/bob profiles. Does not prove GUI launch/component activation; final publication remains blocked until launch evidence and fresh video are captured."
+}
