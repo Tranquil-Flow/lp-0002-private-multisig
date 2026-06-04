@@ -29,7 +29,7 @@ p_scene()   { sleep "$SCENE_PAUSE"; }
 
 # ── Opening ────────────────────────────────────────────────
 
-say_line "This is LP-0002: Private M-of-N Multisig for the Logos Execution Zone. This unified walkthrough demonstrates the full submission end to end — from repository layout through Rust tests, consumer integration, validators, native Basecamp assets, and the complete heavy-lane RISC0 proof and LEZ localnet evidence chain. Eleven sections, no nested sub-scripts."
+say_line "This is LP-0002: Private M-of-N Multisig for the Logos Execution Zone. This unified walkthrough demonstrates the full submission end to end — from repository layout through Rust tests, consumer integration, validators, native Basecamp assets, and the complete heavy-lane RISC0 proof and LEZ public-testnet evidence chain. Eleven sections, no nested sub-scripts."
 p_scene
 
 # ── Section 1: Repository layout ───────────────────────────
@@ -81,9 +81,9 @@ p_scene
 say_line "Section nine: compact NSSA and SPEL payload evidence. Because the raw 270 kilobyte receipt exceeds current LEZ public-program session limits, the wrapper carries a receipt-and-journal commitment in its input while the full receipt is retained as file artifact evidence. The payload hashes are deterministic and reproducible."
 p_scene
 
-# ── Section 10: Heavy lane — localnet inclusion ────────────
+# ── Section 10: Heavy lane — public-testnet inclusion ────────────
 
-say_line "Section ten: confirmed localnet inclusion evidence. The wrapper transaction was submitted, confirmed, and included in block one thousand nine hundred ninety-five at transaction index zero. The program ID, image ID, instruction data hashes, and receipt transport mechanism are all recorded."
+say_line "Section ten: confirmed public-testnet inclusion evidence. The wrapper transaction was submitted, confirmed, and included in block one thousand nine hundred ninety-five at transaction index zero. The program ID, image ID, instruction data hashes, and receipt transport mechanism are all recorded."
 p_scene
 
 # ── Section 11: Final readiness gate ───────────────────────
@@ -93,7 +93,7 @@ p_scene
 
 # ── Conclusion ─────────────────────────────────────────────
 
-say_line "In conclusion: LP-0002 is ready for review. Privacy-preserving threshold relations are modeled and tested. Nullifier-based double-vote prevention works. Replay-protected execution is enforced. The SDK provides a clean integration surface. A real RISC0 proof was generated and verified. Native Basecamp module compiles. Confirmed localnet inclusion evidence exists. Known transport caveats around receipt size and compute unit metering are documented honestly. All eleven sections pass."
+say_line "In conclusion: LP-0002 is ready for review. Privacy-preserving threshold relations are modeled and tested. Nullifier-based double-vote prevention works. Replay-protected execution is enforced. The SDK provides a clean integration surface. A real RISC0 proof was generated and verified. Native Basecamp module compiles. Confirmed public-testnet inclusion evidence exists. Known transport caveats around receipt size and compute unit metering are documented honestly. All eleven sections pass."
 p_scene
 
 say_line "Recording complete. Thank you for reviewing LP-0002."

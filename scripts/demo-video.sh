@@ -92,7 +92,7 @@ What is live in this video:
   • Five integration scenarios pass end-to-end
   • The submission validator checks docs, IDL, native Basecamp, and evidence gates
   • Bundled RISC0_DEV_MODE=0 proof artifacts are hash-checked
-  • Confirmed compact LEZ/NSSA localnet inclusion evidence is shown
+  • Confirmed compact LEZ/NSSA public-testnet inclusion evidence is shown
   • Native Qt/QML Basecamp module structure is validated
 
 Honesty note:
@@ -139,7 +139,7 @@ for i, line in enumerate(text, start=1):
     if any(key in line for key in keys):
         print(f'{i:03d}: {line}')
 PY
-result "The submission separates clone-and-run behavior, real proof artifacts, compact localnet transport, and unavailable CU counters"
+result "The submission separates clone-and-run behavior, real proof artifacts, compact public-testnet transport, and unavailable CU counters"
 pause "$SCENE_PAUSE"
 
 # ──────────────────────────────────────────────────────────
@@ -218,7 +218,7 @@ from pathlib import Path
 artifact_dir = Path(os.environ['ARTIFACT_DIR'])
 expected = {
     'manifest.txt': '2345dd03a3fb0bbae02287662800559026e0e003cb99dd1acf5e5f177706a122',
-    'receipt.borsh': '8142fe9e92d144541d579521940ee873f09d15fb60aad4eb45f3c369fe3177ff',
+    'receipt.borsh': '6e4979983c996ca4154d7eeedb59444105b99d984a69a223ab58d429811b89a7',
     'journal.borsh': 'a8fe85f8d63f948409941b585cbe9244c2d0ae45082bf635173f753037ad4d8e',
     'lez-execution.json': '7044725afc2e5f49cb25c5b35c2e3c851ec3ab461b00e4acb4876461f2ea3c10',
     'spel-adapter-evidence.json': 'cbeebe596edbda2426675fa4b18ecb6622f1685e973538a7a6c1a65f842fec97',
@@ -234,7 +234,7 @@ for rel, want in expected.items():
 manifest = (artifact_dir / 'manifest.txt').read_text()
 for token in [
     'risc0_dev_mode=0',
-    'image_id=026e95199ae495d946f7632d721823def2756584332c771a64207114311d4f01',
+    'image_id=6fc85ce06da1762abec319b4626c12229dc605a5b0283d64c8eab2567b9ee721',
     'proof_id=9e6492e73d1e8382abfa0e94e91842100b9041516857f215fcad7276cbad8b11',
     'threshold=2',
     'approval_count=2',
@@ -286,11 +286,11 @@ result "Payload hash and receipt/journal commitment is deterministic and reprodu
 pause "$SCENE_PAUSE"
 
 # ──────────────────────────────────────────────────────────
-# 10. HEAVY LANE: LOCALNET INCLUSION
+# 10. HEAVY LANE: PUBLIC TESTNET INCLUSION
 # ──────────────────────────────────────────────────────────
 
-section "10. Heavy lane — Confirmed localnet inclusion evidence"
-step "Print the recorded confirmed localnet evidence"
+section "10. Heavy lane — Confirmed public-testnet inclusion evidence"
+step "Print the recorded confirmed public-testnet evidence"
 run_cmd python3 - <<'PY'
 import json, os
 from pathlib import Path
@@ -301,9 +301,9 @@ data = json.loads(p.read_text())
 for k in ['status', 'confirmed', 'program_id', 'threshold_proof_image_id', 'tx_hash', 'included_block_id', 'included_tx_index', 'instruction_data_len', 'instruction_data_sha256', 'receipt_transport']:
     print(f'{k}: {data.get(k)}')
 if data.get('status') != 'confirmed':
-    raise SystemExit('localnet evidence is not confirmed')
+    raise SystemExit('public-testnet evidence is not confirmed')
 PY
-result "Wrapper transaction confirmed in block 1995 — localnet inclusion verified"
+result "Wrapper transaction confirmed in block 39548 — public-testnet inclusion verified"
 pause "$SCENE_PAUSE"
 
 # ──────────────────────────────────────────────────────────
@@ -330,7 +330,7 @@ LP-0002 is ready for PR review as a polished submission package:
   • clone-and-run consumer integration matching the current one-instance criterion
   • native Qt/QML Basecamp package source and validation (builds on M4 Pro)
   • real RISC0_DEV_MODE=0 proof artifacts retained as reproducible evidence
-  • confirmed compact LEZ/NSSA localnet wrapper inclusion evidence
+  • confirmed compact LEZ/NSSA public-testnet wrapper inclusion evidence
 
 Known transport/runtime caveats are documented rather than hidden:
   • wrapper input carries compact receipt/journal commitments, not the raw receipt

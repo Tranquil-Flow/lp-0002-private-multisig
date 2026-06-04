@@ -10,6 +10,8 @@ This repository therefore provides two complementary evaluator surfaces:
 - `consumer-demo/`: a clone-and-run integration app showing how a consumer uses
   the SDK for threshold-gated actions, resumable approvals, errors, and replay
   protection.
-- `submission/TESTNET_EVIDENCE.json`: structured evidence for the recorded
-  localnet/evaluator multisig instance, proposal, approvals/nullifiers, wrapper
-  execution transaction, and block inclusion.
+- `submission/TESTNET_EVIDENCE.json`: structured evidence for the multisig
+  instance, proposal, approvals/nullifiers, and wrapper execution transaction
+  deployed and executed on the public LEZ testnet (https://testnet.lez.logos.co/) —
+  deploy tx `82516880...` in block `39547`, execute tx `cb8bfd5a...` in block
+  `39548`, re-verifiable via `getTransaction` against the public sequencer.

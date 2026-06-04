@@ -11,10 +11,14 @@ https://github.com/Tranquil-Flow/lp-0002-private-multisig
 
 Pending: a fresh human-recorded narrated demo will be recorded before resubmission. The prior video is historical only and must not be used as final evidence.
 
-## Public LEZ testnet/evaluator evidence
+## Public LEZ testnet evidence
 
-The LP-0002 evaluator/public-testnet target is the lgs/NSSA LEZ localnet, per
-maintainer/user clarification. Structured evidence is attached in
+LP-0002 is deployed and executed on the public LEZ testnet
+(https://testnet.lez.logos.co/): deploy tx
+`82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56` in block
+`39547`, execute tx
+`cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697` in block
+`39548`. Structured evidence is attached in
 `submission/TESTNET_EVIDENCE.json`, including:
 
 - network interpretation
@@ -27,14 +31,14 @@ maintainer/user clarification. Structured evidence is attached in
 
 Confirmed execution tx:
 
-`596ddb4d798c3e45b2c4da9a15a33638ccf85f54aec7efa52cf822a87591d599`
+`cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697`
 
-Included block: `1995`.
+Included block: `39548`.
 
 ## Notes for reviewers
 
 The root `demo.sh` is the fast consumer demonstration. The heavy-lane
-RISC0/localnet evidence is in `host/`, `scripts/demo-heavy-lane.sh`,
+RISC0/public-testnet evidence is in `host/`, `scripts/demo-heavy-lane.sh`,
 `submission/TESTNET_EVIDENCE.json`, and `submission/BENCHMARKS.md`.
 
 The submission is careful about the boundary: the full RISC0 receipt is verified

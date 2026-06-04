@@ -120,5 +120,5 @@ The current public LP-0002 specification requires a reproducible reference
 integration plus evidence for at least one multisig instance, proposal,
 threshold approval, and execution. It no longer requires five external multisig
 operators. The `consumer-demo/` crate is the clone-and-run integration surface;
-the RISC0/localnet evidence path is documented in `submission/EVALUATOR_GUIDE.md`
+the RISC0/public-testnet evidence path is documented in `submission/EVALUATOR_GUIDE.md`
 and `submission/TESTNET_EVIDENCE.json`.

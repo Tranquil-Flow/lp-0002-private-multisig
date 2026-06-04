@@ -18,7 +18,7 @@ Now I run the focused Rust tests and the consumer demo. These show the privacy r
 
 ## Proof and LEZ evidence
 
-Next I show the bundled RISC0_DEV_MODE=0 proof artifact manifest and the LEZ/NSSA localnet evidence. The full receipt and journal are file-backed and hash-checked. The LEZ wrapper carries compact receipt and journal commitments because current transport cannot carry the raw receipt payload directly.
+Next I show the bundled RISC0_DEV_MODE=0 proof artifact manifest and the LEZ/NSSA public-testnet evidence. The full receipt and journal are file-backed and hash-checked. The LEZ wrapper carries compact receipt and journal commitments because current transport cannot carry the raw receipt payload directly.
 
 This limitation is documented honestly; the submission does not invent unavailable compute-unit counters or claim unsupported transport behavior.
 

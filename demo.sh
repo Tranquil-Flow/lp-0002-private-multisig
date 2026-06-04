@@ -6,7 +6,7 @@ cd "$(dirname "$0")"
 cat <<'EOF'
 LP-0002 Private M-of-N Multisig demo
 Mode: safe-lane reference implementation
-Note: this demo uses the deterministic mock receipt path. Real RISC0_DEV_MODE=0 proof artifacts and compact LEZ localnet wrapper
+Note: this demo uses the deterministic mock receipt path. Real RISC0_DEV_MODE=0 proof artifacts and compact LEZ public-testnet wrapper
       inclusion evidence exist separately; run scripts/demo-heavy-lane.sh.
 EOF
 

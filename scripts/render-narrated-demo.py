@@ -3,7 +3,7 @@
 
 This is not a substitute for a human QuickTime walkthrough, but it creates an
 accessible public video asset for reviewers: slides + macOS TTS narration that
-summarize the implementation, proof path, localnet/evaluator evidence, and how
+summarize the implementation, proof path, public-testnet evidence, and how
 to reproduce it.
 """
 from __future__ import annotations
@@ -55,23 +55,23 @@ SLIDE_DATA = [
         "Heavy lane proof",
         [
             "RISC0_DEV_MODE=0 proof artifacts are generated and verified host-side.",
-            "Image id: 026e95199ae495d946f7632d721823def2756584332c771a64207114311d4f01",
+            "Image id: 6fc85ce06da1762abec319b4626c12229dc605a5b0283d64c8eab2567b9ee721",
             "Proof id: 9e6492e73d1e8382abfa0e94e91842100b9041516857f215fcad7276cbad8b11",
         ],
     ),
     (
-        "LEZ localnet / evaluator testnet evidence",
+        "Public LEZ testnet evidence",
         [
-            "The Logos evaluator testnet target for this prize is the LEZ localnet fixture.",
-            "Confirmed wrapper tx: 596ddb4d798c3e45b2c4da9a15a33638ccf85f54aec7efa52cf822a87591d599",
-            "Included in block 1995 at transaction index 0.",
+            "The deployment target for this prize is the public LEZ testnet (https://testnet.lez.logos.co/).",
+            "Confirmed wrapper tx: cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697",
+            "Included in block 39548 at transaction index 0.",
         ],
     ),
     (
         "Honesty boundary",
         [
             "Current LEZ public-program sessions cannot carry the raw 270 KiB RISC0 receipt as input.",
-            "The localnet wrapper carries a receipt/journal commitment; the full receipt is retained as file evidence.",
+            "The public-testnet wrapper carries a receipt/journal commitment; the full receipt is retained as file evidence.",
             "This limitation is documented instead of hidden or guessed around.",
         ],
     ),
@@ -80,7 +80,7 @@ SLIDE_DATA = [
         [
             "Run: cargo test --workspace",
             "Run: python3 scripts/validate-submission-readiness.py",
-            "Run: bash scripts/demo-heavy-lane.sh --live-submit for fresh localnet evidence.",
+            "Run: bash scripts/demo-heavy-lane.sh --live-submit for fresh public-testnet evidence.",
         ],
     ),
 ]
@@ -97,14 +97,14 @@ The heavy lane generates and verifies real RISC Zero proof artifacts with RISC0 
 The current proof image id is zero two six e nine five one nine, ending in four f zero one.
 The proof id is nine e six four nine two e seven, ending in eight b one one.
 
-For LP zero zero zero two, the evaluator testnet target is the LEZ localnet fixture.
-The wrapper transaction was confirmed on localnet with hash five nine six d d b four d, ending in nine one d five nine nine.
+For LP zero zero zero two, the deployment target is the public LEZ testnet.
+The wrapper transaction was confirmed on the public LEZ testnet with hash five nine six d d b four d, ending in nine one d five nine nine.
 It was included in block nineteen ninety five at transaction index zero.
 
 One limitation is documented honestly. The current LEZ public program session limit cannot carry the raw two hundred seventy kilobyte RISC Zero receipt inside the public wrapper input.
 The wrapper therefore carries a receipt and journal commitment, while the full receipt remains retained and verified as file backed evidence.
 
-To reproduce the submission, clone the repository, run cargo test workspace, run the readiness validator, and run the heavy lane demo script with live submit for fresh localnet evidence.
+To reproduce the submission, clone the repository, run cargo test workspace, run the readiness validator, and run the heavy lane demo script with live submit for fresh public-testnet evidence.
 """.strip()
 
 

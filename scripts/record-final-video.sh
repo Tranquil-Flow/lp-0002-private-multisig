@@ -28,7 +28,7 @@ soft(){ printf '%b$ %s%b
 
 clear || true
 scene "LP-0002 final resubmission demo — private M-of-N multisig"
-say "This recording demonstrates the final LP-0002 package. The repository now has proof, SDK, LEZ/localnet, and Basecamp runtime-host evidence."
+say "This recording demonstrates the final LP-0002 package. The repository now has proof, SDK, public LEZ testnet, and Basecamp runtime-host evidence."
 say "The remaining requirement is this fresh human video showing the visible Basecamp activation path."
 pause "$SCENE_PAUSE"
 scene "1. Repository and final gate"

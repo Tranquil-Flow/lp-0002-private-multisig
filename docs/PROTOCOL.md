@@ -143,7 +143,7 @@ The repository contains two deliberately separate execution lanes:
 - **Heavy lane (`methods/`, `host/`, `lez-program/`, `scripts/demo-heavy-lane.sh`)**:
   real `RISC0_DEV_MODE=0` proof artifacts generated on the M4 Pro, verified
   host-side against image id
-  `026e95199ae495d946f7632d721823def2756584332c771a64207114311d4f01`, and
+  `6fc85ce06da1762abec319b4626c12229dc605a5b0283d64c8eab2567b9ee721`, and
   bridged into the LEZ-shaped execution wrapper.
 
 The safe-lane receipt must not be treated as a production ZK receipt: a malicious
@@ -161,7 +161,7 @@ For the recorded heavy-lane artifacts:
   never appear in the public journal.
 - The receipt seal is verified against the known LP-0002 image ID, preventing
   SHA-256 mock-receipt forgery in the evidence path.
-- The included LEZ localnet transaction carries compact receipt/journal
+- The included LEZ public-testnet transaction carries compact receipt/journal
   commitments because raw receipt bytes exceed the current public-program
   session transport limit; the full receipt remains host-verified and
   file-backed for evaluator inspection.
@@ -174,11 +174,13 @@ For the recorded heavy-lane artifacts:
    `submission/TESTNET_EVIDENCE.json` and exercised by `scripts/demo-heavy-lane.sh`.
 
 2. **Compact LEZ transport boundary**: the executable `verify_and_execute_bytes`
-   wrapper compiles, has been deployed on the LP-0002 evaluator/public-testnet
-   localnet, and has confirmed NSSA transaction inclusion in block `1995`.
-   Because raw RISC0 receipts exceed the current public-program session limit,
-   the included wrapper transaction carries receipt/journal commitments while the
-   full receipt remains host-verified and file-backed evidence.
+   wrapper compiles, has been deployed on the public LEZ testnet
+   (https://testnet.lez.logos.co/) — deploy tx `82516880...` in block `39547` —
+   and has confirmed NSSA transaction inclusion (execute tx `cb8bfd5a...`) in
+   block `39548`. Because raw RISC0 receipts exceed the current public-program
+   session limit, the included wrapper transaction carries receipt/journal
+   commitments while the full receipt remains host-verified and file-backed
+   evidence.
 
 3. **In-memory accumulator**: The `ApprovalAccumulator` is an in-memory struct.
    A production client needs persistent storage (e.g., encrypted local file or

@@ -19,9 +19,10 @@ Be precise: `scripts/demo-video.sh` is the **combined recording walkthrough**:
 it runs the consumer demo, validates the native/Basecamp surfaces, and
 then replays the heavy-lane evidence via `scripts/demo-heavy-lane.sh`. The heavy
 lane verifies real `RISC0_DEV_MODE=0` artifacts, builds compact wrapper payload
-evidence, and prints confirmed localnet inclusion for the LP-0002 evaluator /
-public-testnet target. The current LEZ JSON-RPC surface does not expose stable
-per-transaction CU counters, so the submission records payload/account/receipt
+evidence, and prints confirmed inclusion on the public LEZ testnet
+(https://testnet.lez.logos.co/) — deploy tx `82516880...` block `39547`, execute
+tx `cb8bfd5a...` block `39548`. The current LEZ JSON-RPC surface does not expose
+stable per-transaction CU counters, so the submission records payload/account/receipt
 metrics plus an explicit CU-metering limitation.
 
 ## Suggested narration
@@ -46,7 +47,7 @@ consumer-demo application."
 
 "The compliance matrix is intentionally explicit about what is done and what is
 not. The safe-lane uses a deterministic mock receipt. The separate heavy-lane
-demo verifies real RISC0 artifacts and confirmed compact localnet inclusion.
+demo verifies real RISC0 artifacts and confirmed compact public-testnet inclusion.
 Because this LEZ toolchain does not expose stable per-transaction CU counters,
 the submission records the available metrics and the limitation rather than
 inventing a cost number."
@@ -83,7 +84,7 @@ and build evidence included for Basecamp review."
 "This submission is ready for review as a thorough implementation: the protocol
 is modeled, tested, documented, and easy to integrate. For the heavy lane, run
 `scripts/demo-heavy-lane.sh` to show real RISC0 artifact verification, compact
-wrapper payload evidence, and confirmed localnet inclusion. The narrated demo
+wrapper payload evidence, and confirmed public-testnet inclusion. The narrated demo
 asset and structured evidence are included in the submission package."
 
 ## Important phrases to avoid
@@ -91,12 +92,12 @@ asset and structured evidence are included in the submission package."
 Do **not** say:
 
 - "The safe-lane demo generates a real RISC0 proof" — it does not; use `scripts/demo-heavy-lane.sh` for RISC0 artifact evidence.
-- "This uses a remote public network beyond the evaluator localnet" — the recorded target is the LP-0002 evaluator/public-testnet localnet.
+- "This uses a remote public network beyond the evaluator localnet" — the recorded target is the public LEZ testnet (https://testnet.lez.logos.co/).
 - "These are measured LEZ gas/CU costs" — current evidence is payload/hash/inclusion plus sequencer execution time, not a formal CU meter.
 
 Safe phrasing:
 
 - "safe-lane reference implementation"
 - "deterministic mock receipt"
-- "RISC0/LEZ heavy-lane localnet evidence available"
+- "RISC0/LEZ heavy-lane public-testnet evidence available"
 - "clone-and-run consumer integration matching the current public LP-0002 spec"

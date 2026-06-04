@@ -83,7 +83,7 @@ elif not re.search(r"https://(?:www\.)?(youtube\.com|youtu\.be|vimeo\.com|loom\.
 if not re.search(r"https://github\.com/.+/.+", solution):
     errors.append("solutions/LP-0002.md must include the public implementation repository URL")
 
-# 2. LEZ testnet evidence. For LP-0002, the evaluator/public testnet target is lgs/NSSA localnet.
+# 2. LEZ testnet evidence. LP-0002 is deployed and executed on the public LEZ testnet (https://testnet.lez.logos.co/).
 text_surface = "\n".join([
     read("docs/PROTOCOL.md"),
     read("docs/SPEC_COMPLIANCE.md"),
@@ -109,16 +109,14 @@ else:
         for key in required:
             if not ev.get(key):
                 errors.append(f"TESTNET_EVIDENCE.json missing {key}")
-        if str(ev.get("network", "")).lower() in {"localnet", "localhost"}:
-            note = str(ev.get("network_interpretation", "")).lower()
-            if "public testnet" not in note and "evaluator" not in note:
-                errors.append("TESTNET_EVIDENCE.json uses localnet but does not record the LP-0002 evaluator/public-testnet interpretation")
+        if str(ev.get("network", "")).lower() not in {"testnet", "public-testnet", "lez-testnet"}:
+            errors.append("TESTNET_EVIDENCE.json network must be the public LEZ testnet (https://testnet.lez.logos.co/), not localnet")
         execute = ev.get("execute_tx", {})
         if isinstance(execute, dict):
             if not execute.get("confirmed") or not execute.get("tx_hash"):
-                errors.append("TESTNET_EVIDENCE.json execute_tx must record a confirmed localnet transaction hash")
+                errors.append("TESTNET_EVIDENCE.json execute_tx must record a confirmed public-testnet transaction hash")
         if ev.get("status") != "confirmed" or ev.get("confirmed") is not True:
-            errors.append("TESTNET_EVIDENCE.json must record confirmed localnet/evaluator inclusion evidence")
+            errors.append("TESTNET_EVIDENCE.json must record confirmed public-testnet inclusion evidence")
     except json.JSONDecodeError as exc:
         errors.append(f"TESTNET_EVIDENCE.json invalid JSON: {exc}")
 

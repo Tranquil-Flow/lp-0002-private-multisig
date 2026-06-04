@@ -4,7 +4,7 @@ The current LP-0002 repository contains both the fast safe-lane reference
 implementation and a completed first heavy-lane evidence path. The safe lane nails
 the relation, nullifier model, replay gate, SDK, consumer demo, and documentation.
 The heavy lane adds real RISC0 `DEV_MODE=0` artifacts, a LEZ-shaped execution
-wrapper, and confirmed localnet/evaluator transaction inclusion.
+wrapper, and confirmed public-testnet transaction inclusion.
 
 This document records the completed heavy-lane path, the precise trust boundary,
 and the optional target-runtime metrics that depend on future LEZ tooling.
@@ -38,18 +38,22 @@ Completed in this increment:
 ### Current heavy-lane evidence (2026-05-25)
 
 - Real `RISC0_DEV_MODE=0` fixture proof generated and verified on M4 Pro.
-- Image id: `026e95199ae495d946f7632d721823def2756584332c771a64207114311d4f01`.
+- Image id: `6fc85ce06da1762abec319b4626c12229dc605a5b0283d64c8eab2567b9ee721`.
 - Proof id: `9e6492e73d1e8382abfa0e94e91842100b9041516857f215fcad7276cbad8b11`.
 - Artifacts: `target/lp0002-risc0-fixture-new/{receipt.borsh,journal.borsh,manifest.txt}`.
 - LEZ wrapper evidence: `target/lp0002-risc0-fixture-new/lez-execution.json` with `status: executed`.
-- File-backed NSSA submitter evidence: `lp0002-submit-localnet` constructs a public transaction from receipt/journal/action files and can submit/query via `NSSA_WALLET_HOME_DIR=.scaffold/wallet`. The executable `verify_and_execute_bytes` wrapper image was deployed on localnet and tx `596ddb4d798c3e45b2c4da9a15a33638ccf85f54aec7efa52cf822a87591d599` was included in block `1995`. Raw receipt transport exceeded the current public-program session limit, so the included wrapper input carries the receipt/journal commitment while retaining the full receipt as host-side proof evidence.
-- SPEL/NSSA adapter payload evidence: `target/lp0002-risc0-fixture-new/spel-adapter-evidence.json` with `status: spel_adapter_payload_built`, instruction `verify_and_execute_bytes`, instruction payload length `5,492` bytes, instruction data SHA-256 `4a04669d3d183d659353f72a7fa0ca7adc61d41ca07b8d7de2642f861d96a677`, and receipt/journal commitment `68141a959293adaaebffb41be3969ecccf30e43947e0008ed10726b8e03444e7`.
+- File-backed NSSA submitter evidence: `lp0002-submit-localnet` constructs a public transaction from receipt/journal/action files and can submit/query via `NSSA_WALLET_HOME_DIR=.scaffold/wallet`. The executable `verify_and_execute_bytes` wrapper image was deployed on the public LEZ testnet and tx `cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697` was included in block `39548`. Raw receipt transport exceeded the current public-program session limit, so the included wrapper input carries the receipt/journal commitment while retaining the full receipt as host-side proof evidence.
+- SPEL/NSSA adapter payload evidence: `target/lp0002-risc0-fixture-new/spel-adapter-evidence.json` with `status: spel_adapter_payload_built`, instruction `verify_and_execute_bytes`, instruction payload length `5,492` bytes, instruction data SHA-256 `e1dc304173c1f27542b0017e167eb709f47e6bc907888968e9efaf0cd655f3c0`, and receipt/journal commitment `be58410de0e0f71642f82f287c39c7f70acb8820cb7468e50927bfd91ee4c850`.
 - `scaffold.toml` migrated to logos-scaffold schema `0.2.0` and `lgs doctor` reaches `22 PASS, 0 WARN, 0 FAIL` with localnet live on port 3040.
-- `lgs deploy verify_and_execute_bytes --program-path ... --json` submits the executable wrapper image to localnet: `status: submitted`, `program_id: ed00151765f6704d87f1a036b97207e2f3f83342d407657257ae466b996ca343`.
+- The reproducible wrapper ELF (`cargo risczero build --manifest-path methods/guest/Cargo.toml`, Docker builder `risczero/risc0-guest-builder:r0.1.88.0`; on LEZ ProgramId == ImageID) was deployed to the public LEZ testnet via the submit binary's `ProgramDeployment` path: deploy tx `82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56` confirmed in block `39547`, `program_id: 974939edb6fc9cffd97929dd830a0d75bfc7a09b08c2f3fc87da940aadc0c130`.
 - The earlier adapter gap is resolved for current tooling by compact transport:
   the native wallet/NSSA submitter sends receipt and journal commitments while
   the full receipt remains file-backed, host-verified evidence. For LP-0002, the
-  LEZ localnet target is the evaluator/public-testnet target.
+  wrapper is deployed and executed on the public LEZ testnet
+  (https://testnet.lez.logos.co/): execute tx
+  `cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697` in block
+  `39548`. On LEZ a transaction is included in a block only if its program
+  execution succeeds, so the confirmed execute tx is a successful on-chain run.
 
 Dependent on future target-network tooling:
 
@@ -147,7 +151,7 @@ bound to the proposal, action, replay state, and wrapper transport commitments.
 ### 4. LEZ program / scaffold integration
 
 `verifier-program/` is the pure Rust execution gate; `lez-program/` wraps it in
-LEZ-shaped account state and Borsh instruction payloads. The recorded localnet
+LEZ-shaped account state and Borsh instruction payloads. The recorded public-testnet
 path uses the executable `verify_and_execute_bytes` wrapper program plus a native
 file-backed NSSA submitter. For current LEZ public-program session limits, the
 submitted transaction carries compact receipt/journal commitments while the full
@@ -159,7 +163,7 @@ The wrapper/evidence flow:
 - verifies the real receipt host-side before preparing compact transport,
 - uses `lez-program::execute_proposal` for replay/journal/account checks,
 - writes executed proposal state in the wrapper evidence,
-- records the included localnet transaction hash and block.
+- records the included public-testnet transaction hash and block.
 
 Current workflow on the M4 Pro:
 
@@ -176,11 +180,11 @@ cargo run -p lp0002-private-multisig-host --bin lp0002-spel-adapter-evidence -- 
 # smoke-check scaffold and localnet
 scripts/lez-localnet-smoke.sh
 
-# submit/query the recorded localnet wrapper transaction when localnet is live
+# submit/query the recorded public-testnet wrapper transaction when localnet is live
 NSSA_WALLET_HOME_DIR=.scaffold/wallet cargo run -p lp0002-private-multisig-host --bin lp0002-submit-localnet -- \
   --evidence-dir target/lp0002-risc0-fixture \
-  --program-id ed00151765f6704d87f1a036b97207e2f3f83342d407657257ae466b996ca343 \
-  --query 596ddb4d798c3e45b2c4da9a15a33638ccf85f54aec7efa52cf822a87591d599
+  --program-id 974939edb6fc9cffd97929dd830a0d75bfc7a09b08c2f3fc87da940aadc0c130 \
+  --query cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697
 ```
 
 ### 5. Benchmarks and target-runtime metric boundary
@@ -191,7 +195,7 @@ Recorded in `submission/BENCHMARKS.md` and
 - safe-lane operation timings across multiple M-of-N sizes,
 - RISC0 image/proof identifiers and receipt/journal sizes,
 - wrapper instruction payload length and hash,
-- account count and confirmed localnet block inclusion,
+- account count and confirmed public-testnet block inclusion,
 - explicit `cu_metering.available=false` reason for the current LEZ toolchain.
 
 The only unavailable metric is formal per-transaction CU; the current target LEZ
@@ -199,7 +203,7 @@ runtime/RPC surface does not expose stable counters.
 
 ## Operational notes
 
-The heavy-lane proof and localnet evidence have already been generated on the M4
+The heavy-lane proof and public-testnet evidence have already been generated on the M4
 Pro for this submission. Re-running them from scratch still requires the M4 Pro
 or an equivalent machine because the full path needs:
 
@@ -207,7 +211,7 @@ or an equivalent machine because the full path needs:
 - Docker Desktop in PATH and running,
 - `lgs` / Logos scaffold setup,
 - `spel` tooling,
-- LEZ localnet/testnet wallet and credentials,
+- a funded LEZ testnet wallet and credentials,
 - enough memory/time for real proving.
 
 ## Reproducibility scope

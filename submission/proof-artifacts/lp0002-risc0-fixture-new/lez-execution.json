@@ -1,7 +1,7 @@
 {
   "approval_count": 2,
-  "image_id": "026e95199ae495d946f7632d721823def2756584332c771a64207114311d4f01",
-  "journal_path": "target/lp0002-risc0-fixture-new/journal.borsh",
+  "image_id": "6fc85ce06da1762abec319b4626c12229dc605a5b0283d64c8eab2567b9ee721",
+  "journal_path": "target/lp0002-risc0-fixture-repro/journal.borsh",
   "lane": "risc0-heavy-lane-lez-wrapper",
   "multisig_id": "ffb35c09b5af67ca926b385a7ccf7b0e565714f79756fca603ebeca386f1fa09",
   "note": "This is the concrete RISC0-to-LEZ wrapper execution path. It verifies the RISC0 receipt and then mutates the LEZ-shaped proposal account state; live sequencer transaction evidence is a separate final gate.",
@@ -9,7 +9,7 @@
   "proposal_id": "9f4e8e36d6535fd8283476938fab7951f7497532433890cd482740eec09ef351",
   "proposal_state_executed": true,
   "proposal_state_nullifier_count": 2,
-  "receipt_path": "target/lp0002-risc0-fixture-new/receipt.borsh",
+  "receipt_path": "target/lp0002-risc0-fixture-repro/receipt.borsh",
   "risc0_dev_mode": "0",
   "status": "executed"
 }

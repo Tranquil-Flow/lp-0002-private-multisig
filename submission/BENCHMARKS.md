@@ -64,7 +64,7 @@ Measured fixture run (`target/lp0002-risc0-fixture-new/manifest.txt`):
 
 | Metric | Value |
 |---|---:|
-| RISC0 image id | `026e95199ae495d946f7632d721823def2756584332c771a64207114311d4f01` |
+| RISC0 image id | `6fc85ce06da1762abec319b4626c12229dc605a5b0283d64c8eab2567b9ee721` |
 | Proof id | `9e6492e73d1e8382abfa0e94e91842100b9041516857f215fcad7276cbad8b11` |
 | Threshold fixture | 2-of-3 |
 | Approval count | 2 |
@@ -79,17 +79,17 @@ membership set remain private witness data; the public journal exposes only the
 threshold relation outputs needed by the verifier.
 
 
-## Localnet Deployment Evidence
+## Public-Testnet Deployment Evidence
 
-`lgs doctor` is green against the migrated lgs 0.2.0 scaffold (`22 PASS, 0 WARN, 0 FAIL`) with the local sequencer reachable on `127.0.0.1:3040`.
+The reproducible `verify_and_execute_bytes` wrapper ELF (`cargo risczero build --manifest-path methods/guest/Cargo.toml`, Docker builder `risczero/risc0-guest-builder:r0.1.88.0`; on LEZ ProgramId == ImageID) was deployed to the public LEZ testnet (https://testnet.lez.logos.co/) via the submit binary's `ProgramDeployment` path.
 
 Deployment surface captured on M4 Pro:
 
 ```json
-{"program":"verify_and_execute_bytes","program_id":"ed00151765f6704d87f1a036b97207e2f3f83342d407657257ae466b996ca343","status":"submitted"}
+{"program":"verify_and_execute_bytes","program_id":"974939edb6fc9cffd97929dd830a0d75bfc7a09b08c2f3fc87da940aadc0c130","deploy_tx":"82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56","included_block_id":39547,"status":"confirmed"}
 ```
 
-This proves the scaffold/localnet deployment lane is usable for the executable wrapper image. The wrapper section below records confirmed compact NSSA transaction inclusion. The only unavailable metric is a formal per-transaction CU/cycle counter, because the target network surface used here does not expose one.
+This records the confirmed `ProgramDeployment` of the executable wrapper image on the public LEZ testnet (deploy tx `82516880...` in block `39547`). The wrapper section below records the confirmed execute transaction. The only unavailable metric is a formal per-transaction CU/cycle counter, because the target network surface used here does not expose one.
 
 
 ## SPEL/NSSA Adapter Payload Evidence
@@ -111,10 +111,10 @@ Measured artifact: `target/lp0002-risc0-fixture-new/spel-adapter-evidence.json`.
 | Action Borsh bytes | 110 B |
 | Serialized instruction words | 1,373 u32 words |
 | Serialized instruction data length | 5,492 B |
-| Instruction data SHA-256 | `4a04669d3d183d659353f72a7fa0ca7adc61d41ca07b8d7de2642f861d96a677` |
-| Receipt SHA-256 | `8142fe9e92d144541d579521940ee873f09d15fb60aad4eb45f3c369fe3177ff` |
+| Instruction data SHA-256 | `e1dc304173c1f27542b0017e167eb709f47e6bc907888968e9efaf0cd655f3c0` |
+| Receipt SHA-256 | `6e4979983c996ca4154d7eeedb59444105b99d984a69a223ab58d429811b89a7` |
 | Journal SHA-256 | `a8fe85f8d63f948409941b585cbe9244c2d0ae45082bf635173f753037ad4d8e` |
-| Receipt/journal commitment | `68141a959293adaaebffb41be3969ecccf30e43947e0008ed10726b8e03444e7` |
+| Receipt/journal commitment | `be58410de0e0f71642f82f287c39c7f70acb8820cb7468e50927bfd91ee4c850` |
 
 ## NSSA Submitter Evidence
 
@@ -126,13 +126,13 @@ The native file-backed submitter constructs a public `NSSATransaction::Public` d
 |---|---:|
 | Instruction | `verify_and_execute_bytes` |
 | Instruction payload | 5,492 B / 1,373 u32 words |
-| Instruction data SHA-256 | `4a04669d3d183d659353f72a7fa0ca7adc61d41ca07b8d7de2642f861d96a677` |
-| Receipt SHA-256 | `8142fe9e92d144541d579521940ee873f09d15fb60aad4eb45f3c369fe3177ff` |
-| Receipt/journal commitment | `68141a959293adaaebffb41be3969ecccf30e43947e0008ed10726b8e03444e7` |
-| Confirmed localnet tx hash | `596ddb4d798c3e45b2c4da9a15a33638ccf85f54aec7efa52cf822a87591d599` |
-| Inclusion status | Confirmed in block `1995`, transaction index `0` |
+| Instruction data SHA-256 | `e1dc304173c1f27542b0017e167eb709f47e6bc907888968e9efaf0cd655f3c0` |
+| Receipt SHA-256 | `6e4979983c996ca4154d7eeedb59444105b99d984a69a223ab58d429811b89a7` |
+| Receipt/journal commitment | `be58410de0e0f71642f82f287c39c7f70acb8820cb7468e50927bfd91ee4c850` |
+| Confirmed public-testnet tx hash | `cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697` |
+| Inclusion status | Confirmed in block `39548`, transaction index `0` |
 
-LEZ v0.2.0-rc1 JSON-RPC exposes transaction/block inclusion but not per-transaction compute-unit counters. Successful localnet inclusion is captured for the compact wrapper path; the missing formal CU counter is recorded as an explicit target-runtime limitation rather than estimated.
+LEZ v0.2.0-rc1 JSON-RPC exposes transaction/block inclusion but not per-transaction compute-unit counters. Successful public-testnet inclusion is captured for the compact wrapper path; the missing formal CU counter is recorded as an explicit target-runtime limitation rather than estimated.
 
 ## LEZ Compute-Unit Costs
 
@@ -161,27 +161,27 @@ The benchmark source is at `consumer-demo/examples/bench.rs`.
 
 ## RISC0-to-LEZ wrapper evidence
 
-The heavy-lane host includes `lp0002-lez-execute-artifacts`, which verifies the real RISC0 receipt with `host::Risc0ReceiptVerifier`, executes the resulting journal through `lez-program::execute_proposal`, and writes `target/lp0002-risc0-fixture-new/lez-execution.json`. The recorded wrapper evidence has `status: executed`, `proposal_state_executed: true`, and `proposal_state_nullifier_count: 2`. `spel-adapter-evidence.json` records the serialized byte payload for the NSSA/SPEL lane. The executable `verify_and_execute_bytes` wrapper is deployed on localnet and the compact native submitter has confirmed inclusion in block `1995`; CU metering is recorded as unavailable in current LEZ tooling.
+The heavy-lane host includes `lp0002-lez-execute-artifacts`, which verifies the real RISC0 receipt with `host::Risc0ReceiptVerifier`, executes the resulting journal through `lez-program::execute_proposal`, and writes `target/lp0002-risc0-fixture-new/lez-execution.json`. The recorded wrapper evidence has `status: executed`, `proposal_state_executed: true`, and `proposal_state_nullifier_count: 2`. `spel-adapter-evidence.json` records the serialized byte payload for the NSSA/SPEL lane. The executable `verify_and_execute_bytes` wrapper is deployed on the public LEZ testnet and the compact native submitter has confirmed inclusion in block `39548`; CU metering is recorded as unavailable in current LEZ tooling.
 
-## Wrapper Localnet Inclusion Evidence
+## Wrapper Public-Testnet Inclusion Evidence
 
-The executable `verify_and_execute_bytes` wrapper image was deployed on LEZ localnet and exercised with the real `RISC0_DEV_MODE=0` proof artifact set. Raw receipt transport was first attempted and rejected by the current public-program session limit (`Session limit exceeded: 33554432 >= 33554432`), so the successful compact path sends a receipt/journal commitment in the wrapper input and retains the full receipt as file-backed evidence.
+The executable `verify_and_execute_bytes` wrapper image was deployed on the public LEZ testnet (https://testnet.lez.logos.co/) — deploy tx `82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56` in block `39547` — and executed with the real `RISC0_DEV_MODE=0` proof artifact set. Raw receipt transport was first attempted and rejected by the current public-program session limit (`Session limit exceeded: 33554432 >= 33554432`), so the successful compact path sends a receipt/journal commitment in the wrapper input and retains the full receipt as file-backed evidence.
 
 | Metric | Value |
 |---|---:|
-| Wrapper program id | `ed00151765f6704d87f1a036b97207e2f3f83342d407657257ae466b996ca343` |
-| Threshold proof image id | `026e95199ae495d946f7632d721823def2756584332c771a64207114311d4f01` |
-| Confirmed tx hash | `596ddb4d798c3e45b2c4da9a15a33638ccf85f54aec7efa52cf822a87591d599` |
-| Included block id | `1995` |
+| Wrapper program id | `974939edb6fc9cffd97929dd830a0d75bfc7a09b08c2f3fc87da940aadc0c130` |
+| Threshold proof image id | `6fc85ce06da1762abec319b4626c12229dc605a5b0283d64c8eab2567b9ee721` |
+| Confirmed tx hash | `cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697` |
+| Included block id | `39548` |
 | Included tx index | `0` |
 | Instruction payload | `5,492 bytes` / `1,373 u32 words` |
-| Instruction SHA-256 | `4a04669d3d183d659353f72a7fa0ca7adc61d41ca07b8d7de2642f861d96a677` |
-| Receipt bytes retained off-input | `270,334 bytes`, SHA-256 `8142fe9e92d144541d579521940ee873f09d15fb60aad4eb45f3c369fe3177ff` |
+| Instruction SHA-256 | `e1dc304173c1f27542b0017e167eb709f47e6bc907888968e9efaf0cd655f3c0` |
+| Receipt bytes retained off-input | `270,334 bytes`, SHA-256 `6e4979983c996ca4154d7eeedb59444105b99d984a69a223ab58d429811b89a7` |
 | Sequencer wrapper execution-time log | `11.122875ms` for the confirmed transaction block check |
 
-Evidence files: `target/lp0002-risc0-fixture-new/localnet-wrapper-deploy-final.json`, `target/lp0002-risc0-fixture-new/nssa-submit-evidence.json`, and `.scaffold/logs/sequencer.log`. LEZ v0.2.0-rc1 does not expose per-transaction CU counters over JSON-RPC, so this is inclusion + payload + sequencer execution-time evidence rather than a formal CU meter.
+The confirmed on-chain evidence is recorded in `submission/TESTNET_EVIDENCE.json`; an evaluator re-verifies it independently with `getTransaction` against the public sequencer (deploy tx `82516880...`, execute tx `cb8bfd5a...` on https://testnet.lez.logos.co/). LEZ v0.2.0-rc1 does not expose per-transaction CU counters over JSON-RPC, so this is inclusion + payload + sequencer execution-time evidence rather than a formal CU meter.
 
 
 ## Machine-readable LEZ Cost Evidence
 
-`submission/LEZ_COST_BENCHMARKS.json` is generated by `python3 scripts/benchmark-lez-costs.py` and records the reproducible wrapper cost surface: account count, instruction payload bytes, RISC0 receipt size, journal hash, receipt/journal commitment, localnet inclusion block/tx, and an explicit `cu_metering.available=false` marker because the current `lgs`/NSSA localnet query path does not expose a stable per-transaction compute-unit counter.
+`submission/LEZ_COST_BENCHMARKS.json` is generated by `python3 scripts/benchmark-lez-costs.py` and records the reproducible wrapper cost surface: account count, instruction payload bytes, RISC0 receipt size, journal hash, receipt/journal commitment, public-testnet inclusion block/tx, and an explicit `cu_metering.available=false` marker because the current `lgs`/NSSA testnet query path does not expose a stable per-transaction compute-unit counter.

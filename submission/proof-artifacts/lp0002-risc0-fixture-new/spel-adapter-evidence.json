@@ -8,12 +8,12 @@
   },
   "instruction": "verify_and_execute_bytes",
   "instruction_data_len": 5492,
-  "instruction_data_sha256": "4a04669d3d183d659353f72a7fa0ca7adc61d41ca07b8d7de2642f861d96a677",
+  "instruction_data_sha256": "e1dc304173c1f27542b0017e167eb709f47e6bc907888968e9efaf0cd655f3c0",
   "instruction_index": 5,
   "instruction_u32_words": 1373,
   "lane": "risc0-heavy-lane-spel-nssa-adapter",
   "multisig_state_account_seed_hex": "bf08f325f3458f1ed196d6c32554397d08f069a5d48248369e5e34a929ac4d75",
-  "program_id": "ed00151765f6704d87f1a036b97207e2f3f83342d407657257ae466b996ca343",
+  "program_id": "974939edb6fc9cffd97929dd830a0d75bfc7a09b08c2f3fc87da940aadc0c130",
   "proof_journal_bytes_len": 1100,
   "proof_journal_bytes_sha256": "a8fe85f8d63f948409941b585cbe9244c2d0ae45082bf635173f753037ad4d8e",
   "proposal_id": "9f4e8e36d6535fd8283476938fab7951f7497532433890cd482740eec09ef351",
@@ -30,12 +30,12 @@
     "threshold": 2
   },
   "receipt_bytes_len": 270334,
-  "receipt_bytes_sha256": "8142fe9e92d144541d579521940ee873f09d15fb60aad4eb45f3c369fe3177ff",
-  "receipt_journal_commitment": "68141a959293adaaebffb41be3969ecccf30e43947e0008ed10726b8e03444e7",
+  "receipt_bytes_sha256": "6e4979983c996ca4154d7eeedb59444105b99d984a69a223ab58d429811b89a7",
+  "receipt_journal_commitment": "be58410de0e0f71642f82f287c39c7f70acb8820cb7468e50927bfd91ee4c850",
   "receipt_transport": "receipt-journal-commitment-in-wrapper-input; full receipt retained in artifact evidence because raw receipt bytes exceed the current LEZ/RISC0 public-program session limit",
   "risc0_dev_mode": "0",
-  "risc0_image_id": "026e95199ae495d946f7632d721823def2756584332c771a64207114311d4f01",
+  "risc0_image_id": "6fc85ce06da1762abec319b4626c12229dc605a5b0283d64c8eab2567b9ee721",
   "spel_cli_limit_note": "The full receipt is too large for a reliable single shell argv on macOS; this artifact is the exact byte-oriented payload a native NSSA/wallet adapter should submit from files, not by pasting Vec<u8> CSV into spel-cli.",
   "status": "spel_adapter_payload_built",
-  "threshold_proof_image_id": "026e95199ae495d946f7632d721823def2756584332c771a64207114311d4f01"
+  "threshold_proof_image_id": "6fc85ce06da1762abec319b4626c12229dc605a5b0283d64c8eab2567b9ee721"
 }

@@ -1,0 +1,12 @@
+{
+  "computed_program_id": "974939edb6fc9cffd97929dd830a0d75bfc7a09b08c2f3fc87da940aadc0c130",
+  "confirmed": true,
+  "elf_len": 473760,
+  "elf_path": "/Users/evinova/Projects/logos-basecamp/lp-0002-private-multisig/target/riscv32im-risc0-zkvm-elf/docker/verify_and_execute_bytes.bin",
+  "elf_sha256": "f8b96693fa0247e1b4ffd7044bb95dc31d459b19377b0da54a578b20bb31ebdf",
+  "expected_program_id": "974939edb6fc9cffd97929dd830a0d75bfc7a09b08c2f3fc87da940aadc0c130",
+  "lane": "risc0-heavy-lane-program-deployment",
+  "program_id_matches_execute": true,
+  "status": "submitted",
+  "tx_hash": "82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56"
+}

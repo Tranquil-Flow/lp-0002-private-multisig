@@ -26,4 +26,4 @@ The raw ~270 KiB RISC0 receipt is larger than the current LEZ public-program ses
 
 ## Devnet target
 
-Per fryorcraken on Logos Discord (2026-05-11): "devnet == localnet. We don't have a public testnet for lez (yet)." LEZ localnet is the canonical evaluator/public-testnet target for all current λPrize submissions.
+Per fryorcraken on Logos Discord (2026-05-11): "devnet == localnet. We don't have a public testnet for lez (yet)." **This is now superseded:** a public LEZ testnet (https://testnet.lez.logos.co/, real consensus, `RISC0_DEV_MODE=0`) subsequently became available, and LP-0002 is now deployed and executed there — deploy tx `82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56` in block `39547`, execute tx `cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697` in block `39548`. The historical quote is retained for context only.

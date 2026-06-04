@@ -1,34 +1,66 @@
 {
-  "schema": "lp0002.testnet-evidence.v1",
-  "network": "localnet",
-  "network_interpretation": "Logos Lambda Prize evaluator testnet is the LEZ localnet fixture; this is the public evaluator deployment target for LP-0002.",
+  "schema": "lp0002.testnet-evidence.v2",
+  "network": "testnet",
+  "sequencer": "https://testnet.lez.logos.co/",
+  "network_interpretation": "Deployed and executed on the public Logos LEZ testnet (real consensus, RISC0_DEV_MODE=0). Both transactions below are independently verifiable via getTransaction on the public sequencer.",
+  "reproducible_build": {
+    "command": "cargo risczero build --manifest-path methods/guest/Cargo.toml",
+    "builder_image": "risczero/risc0-guest-builder:r0.1.88.0",
+    "note": "In LEZ a program is content-addressed, so ProgramId == ImageID. The wrapper and inner ids below are reproduced by this Docker-pinned build; `RISC0_USE_DOCKER=1 cargo run --bin lp0002-image-ids` prints the same ids from the host embed.",
+    "wrapper_program_id": "974939edb6fc9cffd97929dd830a0d75bfc7a09b08c2f3fc87da940aadc0c130",
+    "wrapper_program_id_base58": "BBZKo8fDVtmviBYjTwmzfbTBtAmcqhDxWh9oMQYz2j2w",
+    "threshold_proof_image_id": "6fc85ce06da1762abec319b4626c12229dc605a5b0283d64c8eab2567b9ee721"
+  },
   "status": "confirmed",
   "confirmed": true,
-  "program_id": "ed00151765f6704d87f1a036b97207e2f3f83342d407657257ae466b996ca343",
-  "program_deploy_status": "submitted",
-  "tx_hash": "596ddb4d798c3e45b2c4da9a15a33638ccf85f54aec7efa52cf822a87591d599",
-  "included_block_id": 1995,
-  "included_tx_index": 0,
-  "instruction": "verify_and_execute_bytes",
-  "accounts": 2,
-  "instruction_data_len_bytes": 5492,
-  "instruction_data_sha256": "4a04669d3d183d659353f72a7fa0ca7adc61d41ca07b8d7de2642f861d96a677",
+  "program_id": "974939edb6fc9cffd97929dd830a0d75bfc7a09b08c2f3fc87da940aadc0c130",
+  "program_id_base58": "BBZKo8fDVtmviBYjTwmzfbTBtAmcqhDxWh9oMQYz2j2w",
+  "deploy_tx": {
+    "kind": "ProgramDeployment",
+    "tx_hash": "82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56",
+    "status": "confirmed",
+    "confirmed": true,
+    "included_block_id": 39547,
+    "included_tx_index": 0,
+    "elf_sha256": "f8b96693fa0247e1b4ffd7044bb95dc31d459b19377b0da54a578b20bb31ebdf",
+    "elf_len_bytes": 473760
+  },
+  "execute_tx": {
+    "kind": "Public",
+    "instruction": "verify_and_execute_bytes",
+    "tx_hash": "cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697",
+    "status": "confirmed",
+    "confirmed": true,
+    "included_block_id": 39548,
+    "included_tx_index": 0,
+    "signed": true,
+    "signer_account": "6iArKUXxhUJqS7kCaPNhwMWt3ro71PDyBj7jwAyE2VQV",
+    "accounts": 2,
+    "instruction_data_len_bytes": 5492,
+    "instruction_data_sha256": "e1dc304173c1f27542b0017e167eb709f47e6bc907888968e9efaf0cd655f3c0"
+  },
+  "inclusion_semantics": "On LEZ a transaction is included in a block if and only if its program execution succeeds (sequencer/core: validate_on_state Ok => include, ProgramExecutionFailed => skip). The confirmed execute tx therefore records a successful on-chain run of the wrapper.",
   "receipt_bytes_len": 270334,
-  "receipt_bytes_sha256": "8142fe9e92d144541d579521940ee873f09d15fb60aad4eb45f3c369fe3177ff",
+  "receipt_bytes_sha256": "6e4979983c996ca4154d7eeedb59444105b99d984a69a223ab58d429811b89a7",
   "proof_journal_bytes_sha256": "a8fe85f8d63f948409941b585cbe9244c2d0ae45082bf635173f753037ad4d8e",
-  "receipt_journal_commitment": "68141a959293adaaebffb41be3969ecccf30e43947e0008ed10726b8e03444e7",
+  "receipt_journal_commitment": "be58410de0e0f71642f82f287c39c7f70acb8820cb7468e50927bfd91ee4c850",
   "receipt_transport": "receipt-journal-commitment-in-wrapper-input; full receipt retained in artifact evidence because raw receipt bytes exceed the current LEZ/RISC0 public-program session limit",
-  "threshold_proof_image_id": "026e95199ae495d946f7632d721823def2756584332c771a64207114311d4f01",
+  "threshold_proof_image_id": "6fc85ce06da1762abec319b4626c12229dc605a5b0283d64c8eab2567b9ee721",
   "approval_count": 2,
   "nullifier_count": 2,
   "evidence_commands": [
-    "lgs localnet status",
-    "lgs deploy verify_and_execute_bytes --program-path target/riscv-guest/lp0002-private-multisig-methods/lp0002-private-multisig-guest/riscv32im-risc0-zkvm-elf/release/verify_and_execute_bytes.bin --json",
-    "target/debug/lp0002-submit-localnet --submit --no-poll target/lp0002-risc0-fixture-new",
-    "target/debug/lp0002-submit-localnet --tx-hash 596ddb4d798c3e45b2c4da9a15a33638ccf85f54aec7efa52cf822a87591d599 target/lp0002-risc0-fixture-new"
+    "cargo risczero build --manifest-path methods/guest/Cargo.toml   # -> ImageID 974939ed... (wrapper) + 6fc85ce0... (threshold proof)",
+    "RISC0_USE_DOCKER=1 RISC0_DEV_MODE=0 cargo run --release --bin lp0002-prove-fixture target/lp0002-risc0-fixture-repro",
+    "RISC0_USE_DOCKER=1 cargo run --release --bin lp0002-verify-artifacts target/lp0002-risc0-fixture-repro",
+    "NSSA_WALLET_HOME_DIR=<funded-testnet-wallet> lp0002-submit-localnet --submit --deploy-program target/riscv32im-risc0-zkvm-elf/docker/verify_and_execute_bytes.bin target/lp0002-risc0-fixture-repro",
+    "NSSA_WALLET_HOME_DIR=<funded-testnet-wallet> lp0002-submit-localnet --submit --signer 6iArKUXxhUJqS7kCaPNhwMWt3ro71PDyBj7jwAyE2VQV target/lp0002-risc0-fixture-repro"
+  ],
+  "evaluator_reverify": [
+    "curl -s -X POST https://testnet.lez.logos.co/ -H 'content-type: application/json' -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"getTransaction\",\"params\":[\"82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56\"]}'",
+    "curl -s -X POST https://testnet.lez.logos.co/ -H 'content-type: application/json' -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"getTransaction\",\"params\":[\"cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697\"]}'"
   ],
   "verified_by": "scripts/demo-heavy-lane.sh --live-submit",
-  "verifier_program_id": "ed00151765f6704d87f1a036b97207e2f3f83342d407657257ae466b996ca343",
+  "verifier_program_id": "974939edb6fc9cffd97929dd830a0d75bfc7a09b08c2f3fc87da940aadc0c130",
   "multisig_instance": {
     "multisig_id": "ffb35c09b5af67ca926b385a7ccf7b0e565714f79756fca603ebeca386f1fa09",
     "proposal_id": "9f4e8e36d6535fd8283476938fab7951f7497532433890cd482740eec09ef351",
@@ -39,7 +71,7 @@
   "proposal_tx": {
     "kind": "risc0_public_journal_context",
     "proposal_id": "9f4e8e36d6535fd8283476938fab7951f7497532433890cd482740eec09ef351",
-    "note": "LP-0002 proposals are represented in the RISC0 public journal and LEZ-shaped wrapper input; the confirmed localnet transaction below executes that bound proposal context."
+    "note": "LP-0002 proposals are represented in the RISC0 public journal and LEZ-shaped wrapper input; the confirmed public-testnet execute transaction above executes that bound proposal context."
   },
   "approval_txs": [
     {
@@ -47,12 +79,5 @@
       "count": 2,
       "privacy_note": "Approver identities and membership witnesses remain private; public evidence exposes nullifier count and threshold only."
     }
-  ],
-  "execute_tx": {
-    "tx_hash": "596ddb4d798c3e45b2c4da9a15a33638ccf85f54aec7efa52cf822a87591d599",
-    "status": "confirmed",
-    "confirmed": true,
-    "included_block_id": 1995,
-    "included_tx_index": 0
-  }
+  ]
 }

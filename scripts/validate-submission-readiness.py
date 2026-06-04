@@ -162,7 +162,7 @@ if module:
     if module.get("safe_lane") is not True:
         errors.append("module.json must explicitly mark safe_lane=true")
     if module.get("heavy_lane") is not True:
-        errors.append("module.json must explicitly mark heavy_lane=true once RISC0/localnet evidence is claimed")
+        errors.append("module.json must explicitly mark heavy_lane=true once RISC0/public-testnet evidence is claimed")
     if module.get("repository") == "TBD":
         errors.append("module.json repository must not be bare TBD")
     completed = module.get("heavy_lane_completed", [])
@@ -176,8 +176,8 @@ if module:
     else:
         try:
             ev = json.loads(testnet_evidence.read_text())
-            if ev.get("network") == "localnet" and "evaluator" not in str(ev.get("network_interpretation", "")).lower():
-                errors.append("TESTNET_EVIDENCE.json uses localnet but lacks evaluator/public-testnet interpretation")
+            if str(ev.get("network", "")).lower() not in {"testnet", "public-testnet", "lez-testnet"}:
+                errors.append("TESTNET_EVIDENCE.json network must be the public LEZ testnet (https://testnet.lez.logos.co/), not localnet")
         except json.JSONDecodeError as exc:
             errors.append(f"submission/TESTNET_EVIDENCE.json: {exc}")
 
@@ -202,7 +202,7 @@ for section in required_protocol:
     if section not in protocol:
         errors.append(f"PROTOCOL.md missing section: {section}")
 
-for phrase in ["deterministic mock", "evaluator/public testnet", "safe-lane"]:
+for phrase in ["deterministic mock", "public LEZ testnet", "safe-lane"]:
     if phrase not in compliance and phrase not in protocol:
         errors.append(f"Missing honesty gate: {phrase!r}")
 

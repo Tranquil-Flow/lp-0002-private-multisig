@@ -79,7 +79,7 @@ The heavy lane consists of:
 - `lp0002-lez-execute-artifacts` running the real receipt through the
   LEZ-shaped execution wrapper
 - compact NSSA transaction transport carrying receipt/journal commitments
-- confirmed LEZ localnet/evaluator inclusion
+- confirmed public LEZ testnet inclusion
 
 Structured evidence:
 

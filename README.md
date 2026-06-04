@@ -12,11 +12,14 @@ the first heavy-lane RISC0 implementation. The safe-lane SDK, consumer demo, and
 replay-protected verifier gate remain fast and clone-and-run. The heavy lane adds
 a RISC0 guest method plus host prover that produces real `RISC0_DEV_MODE=0`
 proof artifacts sealing the private membership relation, plus a LEZ-shaped
-`execute_proposal` transaction wrapper crate. The heavy lane now includes
-localnet wrapper deployment and confirmed compact NSSA transaction inclusion;
-for LP-0002, this LEZ localnet is the evaluator/public-testnet target. Formal
-per-transaction CU counters are recorded as unavailable in current LEZ tooling
-rather than invented; see `submission/LEZ_COST_BENCHMARKS.json`.
+`execute_proposal` transaction wrapper crate. The heavy lane is deployed and
+executed on the public LEZ testnet (https://testnet.lez.logos.co/): deploy tx
+`82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56` in block
+`39547` and execute tx
+`cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697` in block
+`39548`, with compact NSSA transaction transport. Formal per-transaction CU
+counters are recorded as unavailable in current LEZ tooling rather than invented;
+see `submission/LEZ_COST_BENCHMARKS.json`.
 
 ## Quick Start
 
@@ -183,7 +186,7 @@ program — incompatible with shielded accounts. Our design avoids this:
 RISC0 heavy-lane proof generation is wired through `host/` and measured in
 `submission/BENCHMARKS.md`. The LEZ `execute_proposal` account/instruction
 wrapper is implemented in `lez-program/`; the executable `verify_and_execute_bytes`
-wrapper has confirmed localnet inclusion evidence via compact receipt/journal-
+wrapper has confirmed public-testnet inclusion evidence via compact receipt/journal-
 commitment transport. Cost evidence is recorded in
 `submission/LEZ_COST_BENCHMARKS.json`; the current LEZ JSON-RPC surface exposes
 inclusion and payload/account metrics but not per-transaction CU counters, so

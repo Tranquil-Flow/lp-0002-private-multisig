@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Generate reproducible LP-0002 LEZ payload/proof cost evidence.
 
-The current public/local LEZ tooling used by this repo does not expose a stable
-per-transaction compute-unit counter through lgs/NSSA query output. This script
+The current public LEZ testnet JSON-RPC surface used by this repo does not expose
+a stable per-transaction compute-unit counter. This script
 therefore records the measurable submission-cost fields that are available now
 (payload bytes, account metas, receipt size, journal size, hashes, inclusion
 status) and marks CU as unavailable rather than inventing a number.
@@ -29,7 +29,7 @@ lez = load("lez-execution.json")
 
 bench = {
     "schema": "lp0002.lez-cost-benchmarks.v1",
-    "network": submit.get("network", "localnet"),
+    "network": submit.get("network", "testnet"),
     "status": submit.get("status"),
     "confirmed": submit.get("confirmed"),
     "program_id": submit.get("program_id"),
@@ -49,7 +49,7 @@ bench = {
     "nullifier_count": spel.get("public_journal", {}).get("nullifier_count") or lez.get("proposal_state_nullifier_count"),
     "cu_metering": {
         "available": False,
-        "reason": "The lgs/NSSA localnet query output available in this environment did not expose a stable per-transaction compute-unit counter. Payload/account/receipt sizes are recorded as reproducible cost evidence; replace this field with runtime CU once public LEZ devnet/testnet exposes it."
+        "reason": "The LEZ JSON-RPC query output for the public testnet (https://testnet.lez.logos.co/) did not expose a stable per-transaction compute-unit counter. Payload/account/receipt sizes are recorded as reproducible cost evidence; replace this field with runtime CU once the public LEZ testnet exposes it."
     }
 }
 OUT.write_text(json.dumps(bench, indent=2) + "\n")
