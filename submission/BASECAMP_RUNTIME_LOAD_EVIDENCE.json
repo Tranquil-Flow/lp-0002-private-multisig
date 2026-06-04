@@ -1,20 +1,21 @@
 {
-  "schema": "lp0002.basecamp-runtime-load-evidence.v1",
-  "final_basecamp_runtime_load_evidence": true,
-  "status": "basecamp-runtime-loaded",
-  "loaded_component_id": "lp0002_private_multisig",
+  "schema": "lp0002.basecamp-runtime-boundary-evidence.v1",
+  "final_basecamp_runtime_load_evidence": false,
+  "status": "basecamp-host-auth-boundary-not-loaded",
+  "loaded_component_id": null,
   "component_version": "0.1.0",
   "build_host": "m4-pro-arm64",
   "loaded_artifact": "basecamp-app/build/modules/liblp0002_private_multisig.dylib",
-  "load_method": "cmake-build-then-basecamp-plugin-load",
-  "evidence_note": "The native Qt/QML plugin was built on M4 Pro (see submission/BASECAMP_NATIVE_BUILD.md for full build log) and the plugin structure was validated by scripts/validate-basecamp-native.sh. Full Logos Basecamp desktop runtime loading requires the logos-basecamp application which is distributed as a Nix flake; the plugin package structure, metadata, and built artifact conform to the expected load surface.",
+  "load_method": "logos_host --name lp0002_private_multisig --path <built dylib>",
+  "evidence_note": "Bounded M4 Pro probe reached LogosBasecamp logos_host with the built native plugin path, but returned \"Timeout waiting for auth token\". This is useful runtime-boundary evidence only; it does not prove final LogosBasecamp component load/activation and must not satisfy the final Basecamp gate.",
   "raw_log_sha256": {
     "basecamp-app/metadata.json": "c789bc581212c2e48fcf1b1613e7ace4b68ad2497b39cc782bc558f31fb34b37",
     "basecamp-app/CMakeLists.txt": "7c251132816ffc8dfea468f8206c00890c6ebdb149a1658e734f7c41edff0d3a",
     "basecamp-app/qml/Lp0002PrivateMultisig.qml": "26fb635a14594dffed3d36e7ae0f28a338529e45da9bde3ab2039b5eb44d4a39",
     "basecamp-app/src/lp0002_plugin.cpp": "24e075dc65af6ed63b56e747e5b2d87f959b869811f2a621211cb6aab08e0299",
     "basecamp-app/src/lp0002_widget.cpp": "aa3ca9b65ac9329039d2e120194d9e040aa00a13582311cab0a64c981438dd9c",
-    "submission/BASECAMP_NATIVE_BUILD.md": "792964a7c84a82fcffc23a4dbc400498b151e214e5b74ee2a7947d75f2019493"
+    "submission/BASECAMP_NATIVE_BUILD.md": "792964a7c84a82fcffc23a4dbc400498b151e214e5b74ee2a7947d75f2019493",
+    "submission/raw-logs/basecamp-logos-host-runtime-probe.log": "13ec5fe3d7deba915c4c94766811769fd79fa8de63e4c528c4f9e6c450b6850a"
   },
   "log_sha256": {
     "basecamp-app/metadata.json": "c789bc581212c2e48fcf1b1613e7ace4b68ad2497b39cc782bc558f31fb34b37",
@@ -22,6 +23,7 @@
     "basecamp-app/qml/Lp0002PrivateMultisig.qml": "26fb635a14594dffed3d36e7ae0f28a338529e45da9bde3ab2039b5eb44d4a39",
     "basecamp-app/src/lp0002_plugin.cpp": "24e075dc65af6ed63b56e747e5b2d87f959b869811f2a621211cb6aab08e0299",
     "basecamp-app/src/lp0002_widget.cpp": "aa3ca9b65ac9329039d2e120194d9e040aa00a13582311cab0a64c981438dd9c",
-    "submission/BASECAMP_NATIVE_BUILD.md": "792964a7c84a82fcffc23a4dbc400498b151e214e5b74ee2a7947d75f2019493"
+    "submission/BASECAMP_NATIVE_BUILD.md": "792964a7c84a82fcffc23a4dbc400498b151e214e5b74ee2a7947d75f2019493",
+    "submission/raw-logs/basecamp-logos-host-runtime-probe.log": "13ec5fe3d7deba915c4c94766811769fd79fa8de63e4c528c4f9e6c450b6850a"
   }
 }

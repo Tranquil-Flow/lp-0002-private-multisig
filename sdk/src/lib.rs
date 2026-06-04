@@ -8,7 +8,7 @@
 //!
 //! # Quick start
 //!
-//! ```rust
+//! ```rust,no_run
 //! use lp0002_private_multisig_sdk::prelude::*;
 //!
 //! let mut session = MultisigSession::new(

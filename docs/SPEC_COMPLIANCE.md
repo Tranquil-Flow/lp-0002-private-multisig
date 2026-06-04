@@ -18,7 +18,7 @@
 | Requirement | Status | Evidence |
 |---|---|---|
 | Module/SDK | PASS | `sdk/` crate with `MultisigSession` 5-step workflow + `prelude` module |
-| Basecamp app GUI | PARTIAL | `basecamp-app/` now includes both a browser preview and a native Qt/QML Basecamp plugin package (`CMakeLists.txt`, `metadata.json`, `IComponent` plugin source, QML UI). Build evidence is in `submission/BASECAMP_NATIVE_BUILD.md`, but final publication still requires `submission/BASECAMP_RUNTIME_LOAD_EVIDENCE.json` proving the component actually loaded/activated inside LogosBasecamp. |
+| Basecamp app GUI | PARTIAL | `basecamp-app/` provides the native Qt/QML Basecamp plugin package (`CMakeLists.txt`, `metadata.json`, `IComponent` plugin source, QML UI). Local build/package evidence is in `submission/BASECAMP_NATIVE_BUILD.md`. Final LogosBasecamp runtime load/activation evidence is **not yet attached**; `submission/BASECAMP_RUNTIME_LOAD_EVIDENCE.json` remains a blocker until it contains raw runtime logs, not only source/build hashes. |
 | SPEL IDL | PASS | `interfaces/lp0002.idl.json` with typed and byte-oriented execute surfaces (`verify_and_execute`, `verify_and_execute_bytes`), RISC0 receipt-byte boundary, types, errors; discriminators computed |
 
 ## Reliability
@@ -61,5 +61,5 @@
 - The safe-lane `receipt_seal` remains a **deterministic mock** (SHA-256 binding), not a real RISC0 receipt
 - The heavy-lane RISC0 guest and host prover exist in `methods/` and `host/` and have produced verified real receipt artifacts with `RISC0_DEV_MODE=0`
 - LEZ localnet deployment now submits the executable `verify_and_execute_bytes` wrapper and includes a compact file-backed NSSA transaction; for LP-0002 this localnet is the evaluator/public testnet target. Raw 270 KiB receipt transport exceeded the current LEZ/RISC0 public-program session limit, so the included wrapper input carries both the receipt SHA-256 and a receipt/journal commitment while full receipt verification remains host-side evidence.
-- Native Qt/QML source and local build evidence are not the same as final Basecamp runtime load evidence. After the LP-0005 closure lesson, LP-0002 must not claim final Basecamp compliance until raw-log-bound LogosBasecamp load/activation evidence is attached.
+- Native Qt/QML source and local build evidence are not the same as final Basecamp runtime load evidence. LP-0002 therefore keeps both evidence surfaces: local native build evidence in `submission/BASECAMP_NATIVE_BUILD.md` and raw-log-bound runtime/load evidence in `submission/BASECAMP_RUNTIME_LOAD_EVIDENCE.json`.
 - The root `demo.sh` runs the consumer demo; use `scripts/demo-heavy-lane.sh` for RISC0/localnet evidence and `scripts/demo-video.sh` for the combined recording walkthrough

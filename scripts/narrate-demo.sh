@@ -58,12 +58,12 @@ p_scene
 
 # ── Section 5: Validators ──────────────────────────────────
 
-say_line "Section five: validating submission readiness. The final publication validator checks all evidence gates, file presence, IDL discriminators, documentation completeness, and honesty markers. The implementation validator confirms workspace structure, crate layout, and JavaScript syntax."
+say_line "Section five: validating submission readiness. The final publication validator checks all evidence gates, file presence, IDL discriminators, documentation completeness, and honesty markers. The implementation validator confirms workspace structure, crate layout, and the native Basecamp package structure."
 p_scene
 
 # ── Section 6: Basecamp package ────────────────────────────
 
-say_line "Section six: inspecting the Basecamp package assets. The browser preview JavaScript is syntax-checked. The native Qt QML Basecamp module is built with CMake — you can see it compiling the library target. This gives Logos Basecamp two integration surfaces: a lightweight browser preview and a native desktop plugin."
+say_line "Section six: inspecting the Basecamp package assets. The native Qt QML Basecamp module is built with CMake — you can see it compiling the library target. This gives Logos Basecamp a native desktop plugin package with metadata, C++ sources, and QML UI assets."
 p_scene
 
 # ── Section 7: Heavy lane — proof artifacts ────────────────

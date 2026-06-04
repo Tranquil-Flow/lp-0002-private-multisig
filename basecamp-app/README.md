@@ -2,7 +2,7 @@
 
 This directory contains a Logos Basecamp-loadable Qt plugin shell for the LP-0002 private multisig workflow.
 
-It complements the browser preview (`index.html`) with native plugin metadata, CMake, C++ sources, and QML assets so reviewers can inspect/build the package shape expected by Logos Basecamp.
+It provides native plugin metadata, CMake, C++ sources, and QML assets so reviewers can inspect/build the package shape expected by Logos Basecamp.
 
 ## Build
 

@@ -3,7 +3,7 @@
 
 This is intentionally stricter than a file-presence checklist: it parses JSON,
 validates SPEL discriminators, checks public-claim honesty gates, verifies the
-Basecamp app JavaScript syntax, and by default runs the Rust test suite plus the
+native Basecamp package structure, and by default runs the Rust test suite plus the
 clone-and-run consumer demo.
 
 Important: this is NOT the final publication gate. A real LP-0002 submission

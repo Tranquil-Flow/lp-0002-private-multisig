@@ -68,7 +68,7 @@ and insufficient approvals, and replay protection."
 ### Section 5 — Validator
 
 "The readiness validator checks more than file presence: it validates JSON,
-verifies SPEL discriminators, checks the browser GUI JavaScript syntax, enforces
+verifies SPEL discriminators, checks the native Basecamp package structure, enforces
 honesty gates in the docs, and runs tests plus the demo."
 
 ### Section 6 — Basecamp app

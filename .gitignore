@@ -8,3 +8,8 @@ __pycache__/
 
 # Basecamp native module build output
 basecamp-app/build/
+
+# Raw recording sources are kept local; the public submission links the
+# compressed narrated demo and YouTube upload instead.
+*.mov
+*.m4a

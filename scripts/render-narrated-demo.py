@@ -40,7 +40,7 @@ SLIDE_DATA = [
         [
             "Rust workspace: core, SDK, consumer demo, verifier, RISC0 methods, host bridge, LEZ wrapper.",
             "Consumer demo imports the SDK as a library and runs five realistic integration scenarios.",
-            "Native Qt/QML Basecamp module is included alongside the browser preview.",
+            "Native Qt/QML Basecamp module is included as the Basecamp integration surface.",
         ],
     ),
     (

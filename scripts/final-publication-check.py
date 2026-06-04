@@ -141,11 +141,20 @@ else:
     try:
         ev = json.loads(runtime_evidence.read_text())
         if ev.get("final_basecamp_runtime_load_evidence") is not True:
-            errors.append("BASECAMP_RUNTIME_LOAD_EVIDENCE.json must set final_basecamp_runtime_load_evidence=true")
+            errors.append("BASECAMP_RUNTIME_LOAD_EVIDENCE.json must set final_basecamp_runtime_load_evidence=true after a real LogosBasecamp runtime load")
         if ev.get("status") not in {"basecamp-runtime-loaded", "basecamp-load-evidence-attached"}:
             errors.append("BASECAMP_RUNTIME_LOAD_EVIDENCE.json must record a runtime-loaded status")
         if not ev.get("loaded_component_id"):
             errors.append("BASECAMP_RUNTIME_LOAD_EVIDENCE.json must record the loaded component id")
+        note_text = " ".join(str(ev.get(k, "")) for k in ("evidence_note", "load_method", "status")).lower()
+        if any(phrase in note_text for phrase in [
+            "does not prove final logosbasecamp runtime load",
+            "runtime loading requires",
+            "build-only",
+            "package structure",
+            "structure was validated",
+        ]):
+            errors.append("BASECAMP_RUNTIME_LOAD_EVIDENCE.json is build/package evidence, not real runtime load evidence")
         raw_hashes = ev.get("raw_log_sha256") or ev.get("log_sha256")
         if not isinstance(raw_hashes, dict) or not raw_hashes:
             errors.append("BASECAMP_RUNTIME_LOAD_EVIDENCE.json must include raw_log_sha256/log_sha256 entries")
