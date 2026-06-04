@@ -211,4 +211,9 @@ The consumer demo runs 5 scenarios demonstrating real-world integration:
 
 ## License
 
-MIT
+Dual licensed under either:
+
+- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE))
+- MIT license ([LICENSE-MIT](LICENSE-MIT))
+
+at your option.

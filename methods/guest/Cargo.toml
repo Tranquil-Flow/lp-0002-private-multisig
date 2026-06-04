@@ -16,6 +16,7 @@ path = "src/bin/verify_and_execute_bytes.rs"
 [dependencies]
 borsh.workspace = true
 lp0002-private-multisig-core = { path = "../../core" }
-nssa_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", tag = "v0.2.0-rc1" }
+# Pinned to v0.2.0-rc3 (commit cf3639d8) = what the public LEZ testnet runs.
+nssa_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", tag = "v0.2.0-rc3" }
 serde.workspace = true
 risc0-zkvm = { version = "=3.0.5", default-features = false, features = ["std"] }

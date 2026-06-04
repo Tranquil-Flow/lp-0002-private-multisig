@@ -79,7 +79,8 @@ fn proposal_pda(program_id: &ProgramId, create_key: [u8; 32], proposal_id: [u8; 
         &create_key,
         &proposal_id,
     ]));
-    AccountId::from((program_id, &seed))
+    // rc3 replaced the `(&ProgramId, &PdaSeed)` From impl with `for_public_pda`.
+    AccountId::for_public_pda(program_id, &seed)
 }
 
 fn usage() -> ! {

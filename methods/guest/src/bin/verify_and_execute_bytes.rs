@@ -154,10 +154,12 @@ fn main() {
         panic!("LP-0002 wrapper: expected [multisig_state, proposal_state] accounts");
     };
 
-    let expected_proposal = nssa_core::account::AccountId::from((
+    // rc3 (v0.2.0-rc3) replaced `From<(&ProgramId, &PdaSeed)> for AccountId`
+    // with the explicit `AccountId::for_public_pda` constructor.
+    let expected_proposal = nssa_core::account::AccountId::for_public_pda(
         &self_program_id,
         &proposal_seed(create_key, proposal_id),
-    ));
+    );
     assert_eq!(
         proposal_pre.account_id, expected_proposal,
         "LP-0002 wrapper: proposal PDA mismatch"
