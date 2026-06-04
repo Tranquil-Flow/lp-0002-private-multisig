@@ -41,7 +41,12 @@ note() { echo -e "  ${YELLOW}Note:${RESET} $1"; }
 fail() { echo -e "  ${RED}✗ $1${RESET}"; }
 run_cmd() {
   echo -e "${DIM}$ $*${RESET}"
-  "$@"
+  if ! "$@"; then
+    rc=$?
+    echo
+    fail "Command failed: $*"
+    exit "$rc"
+  fi
   echo
   pause "$COMMAND_PAUSE"
 }
@@ -85,10 +90,10 @@ This recording demonstrates the final LP-0002 submission package.
 What is live in this video:
   • The consumer demo imports the SDK exactly like a third-party app
   • Five integration scenarios pass end-to-end
-  • The submission validator checks docs, IDL, JavaScript, and evidence gates
+  • The submission validator checks docs, IDL, native Basecamp, and evidence gates
   • Bundled RISC0_DEV_MODE=0 proof artifacts are hash-checked
   • Confirmed compact LEZ/NSSA localnet inclusion evidence is shown
-  • Native Qt/QML Basecamp module builds and validates
+  • Native Qt/QML Basecamp module structure is validated
 
 Honesty note:
   • The current LEZ/RISC0 public-program transport cannot carry the raw 270 KiB
@@ -119,7 +124,7 @@ pause "$SCENE_PAUSE"
 
 section "2. Safety and evidence gates"
 step "Show the compliance matrix lines that distinguish full proof artifacts, compact transport, and CU limits"
-python3 - <<'PY'
+run_cmd python3 - <<'PY'
 from pathlib import Path
 text = Path('docs/SPEC_COMPLIANCE.md').read_text().splitlines()
 keys = [
@@ -167,7 +172,7 @@ step "Run the strict final publication validator"
 run_cmd_soft python3 scripts/final-publication-check.py
 step "Run the local implementation validator in evaluator-safe mode"
 run_cmd_soft env RISC0_SKIP_BUILD=1 python3 scripts/validate-submission-readiness.py --skip-exec
-result "Validators confirm files, IDL discriminators, docs, JS syntax, evidence"
+result "Validators confirm files, IDL discriminators, docs, native Basecamp structure, and evidence"
 pause "$SCENE_PAUSE"
 
 # ──────────────────────────────────────────────────────────
@@ -175,15 +180,26 @@ pause "$SCENE_PAUSE"
 # ──────────────────────────────────────────────────────────
 
 section "6. Inspect Basecamp package assets"
-step "Check browser-preview JavaScript and native Basecamp package sources"
-run_cmd_soft node --check basecamp-app/app.js
-run_cmd_soft bash scripts/validate-basecamp-native.sh
-python3 - <<'PY'
+step "Validate native Qt/QML Basecamp package sources"
+run_cmd bash scripts/validate-basecamp-native.sh
+run_cmd python3 - <<'PY'
 from pathlib import Path
-for p in ['basecamp-app/index.html', 'basecamp-app/app.js', 'basecamp-app/CMakeLists.txt', 'basecamp-app/metadata.json', 'basecamp-app/qml/Lp0002PrivateMultisig.qml']:
-    print(f'{p}: {Path(p).stat().st_size} bytes')
+required = [
+    'basecamp-app/CMakeLists.txt',
+    'basecamp-app/metadata.json',
+    'basecamp-app/include/IComponent.h',
+    'basecamp-app/src/lp0002_plugin.cpp',
+    'basecamp-app/src/lp0002_widget.cpp',
+    'basecamp-app/qml/Lp0002PrivateMultisig.qml',
+]
+for rel in required:
+    p = Path(rel)
+    if not p.is_file() or p.stat().st_size == 0:
+        raise SystemExit(f'missing Basecamp source: {rel}')
+    print(f'{rel}: {p.stat().st_size} bytes')
+print('Static HTML preview files are intentionally absent; Basecamp surface is native Qt/QML.')
 PY
-result "Basecamp preview and native Qt/QML package surfaces are validated"
+result "Native Qt/QML Basecamp package sources are validated"
 pause "$SCENE_PAUSE"
 
 # ──────────────────────────────────────────────────────────
@@ -196,7 +212,7 @@ materialize_bundled_artifacts
 require_file "$ARTIFACT_DIR/receipt.borsh"
 require_file "$ARTIFACT_DIR/journal.borsh"
 require_file "$ARTIFACT_DIR/manifest.txt"
-python3 - <<'PY'
+run_cmd python3 - <<'PY'
 import hashlib, json, os
 from pathlib import Path
 artifact_dir = Path(os.environ['ARTIFACT_DIR'])
@@ -237,7 +253,7 @@ pause "$SCENE_PAUSE"
 
 section "8. Heavy lane — LEZ-shaped host bridge evidence"
 step "Inspect the bundled LEZ execution evidence"
-python3 - <<'PY'
+run_cmd python3 - <<'PY'
 import json, os
 from pathlib import Path
 p = Path(os.environ['ARTIFACT_DIR']) / 'lez-execution.json'
@@ -256,7 +272,7 @@ pause "$SCENE_PAUSE"
 
 section "9. Heavy lane — Compact NSSA/SPEL payload evidence"
 step "Show deterministic payload hashes and receipt/journal commitment"
-python3 - <<'PY'
+run_cmd python3 - <<'PY'
 import json, os
 from pathlib import Path
 for rel in ['spel-adapter-evidence.json', 'nssa-submit-dry-run.json']:
@@ -275,7 +291,7 @@ pause "$SCENE_PAUSE"
 
 section "10. Heavy lane — Confirmed localnet inclusion evidence"
 step "Print the recorded confirmed localnet evidence"
-python3 - <<'PY'
+run_cmd python3 - <<'PY'
 import json, os
 from pathlib import Path
 p = Path(os.environ['ARTIFACT_DIR']) / 'nssa-submit-evidence.json'
