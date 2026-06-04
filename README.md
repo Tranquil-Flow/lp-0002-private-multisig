@@ -74,10 +74,12 @@ lp-0002-private-multisig/
 │   └── src/main.rs          # 5 scenarios: transfer, governance,
 │                            #   resume, errors, replay
 │   └── examples/bench.rs    # Benchmark harness
-├── basecamp-app/            # Browser preview plus native Qt/QML Basecamp plugin package
-│   ├── index.html           # 5-step interactive walkthrough
-│   ├── app.js               # Full SHA-256 crypto in JavaScript
-│   └── styles.css           # Dark theme
+├── basecamp-app/            # Native Qt/QML Basecamp plugin package
+│   ├── CMakeLists.txt       # Qt 6 plugin build target
+│   ├── metadata.json        # Basecamp module metadata
+│   ├── include/IComponent.h # Basecamp component interface shim
+│   ├── src/                 # Native plugin/widget sources
+│   └── qml/                 # Lp0002PrivateMultisig.qml UI
 ├── interfaces/              # SPEL IDL and interface definitions
 │   ├── lp0002.idl.json      # SPEL program IDL (6 instructions)
 │   └── lp0002.spel          # Human-readable interface

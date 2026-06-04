@@ -14,7 +14,7 @@
     "basecamp-app/qml/Lp0002PrivateMultisig.qml": "26fb635a14594dffed3d36e7ae0f28a338529e45da9bde3ab2039b5eb44d4a39",
     "basecamp-app/src/lp0002_plugin.cpp": "24e075dc65af6ed63b56e747e5b2d87f959b869811f2a621211cb6aab08e0299",
     "basecamp-app/src/lp0002_widget.cpp": "aa3ca9b65ac9329039d2e120194d9e040aa00a13582311cab0a64c981438dd9c",
-    "submission/BASECAMP_NATIVE_BUILD.md": "8be8386f39239e880d13ac6d49eda2f4778f35a9bbe60aca8befede442c14b46"
+    "submission/BASECAMP_NATIVE_BUILD.md": "792964a7c84a82fcffc23a4dbc400498b151e214e5b74ee2a7947d75f2019493"
   },
   "log_sha256": {
     "basecamp-app/metadata.json": "c789bc581212c2e48fcf1b1613e7ace4b68ad2497b39cc782bc558f31fb34b37",
@@ -22,6 +22,6 @@
     "basecamp-app/qml/Lp0002PrivateMultisig.qml": "26fb635a14594dffed3d36e7ae0f28a338529e45da9bde3ab2039b5eb44d4a39",
     "basecamp-app/src/lp0002_plugin.cpp": "24e075dc65af6ed63b56e747e5b2d87f959b869811f2a621211cb6aab08e0299",
     "basecamp-app/src/lp0002_widget.cpp": "aa3ca9b65ac9329039d2e120194d9e040aa00a13582311cab0a64c981438dd9c",
-    "submission/BASECAMP_NATIVE_BUILD.md": "8be8386f39239e880d13ac6d49eda2f4778f35a9bbe60aca8befede442c14b46"
+    "submission/BASECAMP_NATIVE_BUILD.md": "792964a7c84a82fcffc23a4dbc400498b151e214e5b74ee2a7947d75f2019493"
   }
 }

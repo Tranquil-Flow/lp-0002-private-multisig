@@ -1,6 +1,6 @@
 # LP-0002 Basecamp native module build evidence
 
-The static browser preview in `basecamp-app/index.html` is now complemented by a Logos Basecamp-style Qt plugin package.
+The former static browser preview has been replaced by a native Logos Basecamp-style Qt/QML plugin package. The final submission surface is the native package below, not HTML/JavaScript preview files.
 
 Files added:
 
