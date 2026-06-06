@@ -31,5 +31,5 @@
       ]
     }
   },
-  "honesty_note": "Proves .lgx build and lgpm install into scaffold Basecamp alice/bob profiles. Does not prove GUI launch/component activation; final publication remains blocked until launch evidence and fresh video are captured."
+  "honesty_note": "Proves .lgx build and lgpm install into scaffold Basecamp alice/bob profiles. Runtime launch evidence is now attached in submission/BASECAMP_RUNTIME_LOAD_EVIDENCE.json; visual component activation remains part of the fresh video step."
 }

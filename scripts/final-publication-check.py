@@ -91,7 +91,8 @@ text_surface = "\n".join([
     read("docs/HEAVY_LANE_ROADMAP.md"),
     solution,
 ])
-if "localnet" in text_surface.lower() and "public testnet" not in text_surface.lower():
+lower_text_surface = text_surface.lower()
+if "localnet" in lower_text_surface and "public testnet" not in lower_text_surface and "public lez testnet" not in lower_text_surface:
     warnings.append("docs mention localnet but not public testnet; check claim surface")
 if re.search(r"LEZ public testnet/evaluator deployment|LEZ testnet deployment", json.dumps(module)):
     errors.append("module.json still lists LEZ testnet deployment as pending")
