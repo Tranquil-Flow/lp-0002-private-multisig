@@ -18,7 +18,7 @@
 | Requirement | Status | Evidence |
 |---|---|---|
 | Module/SDK | PASS | `sdk/` crate with `MultisigSession` 5-step workflow + `prelude` module |
-| Basecamp app GUI | PARTIAL | `basecamp-app/` provides the native Qt/QML Basecamp plugin package (`CMakeLists.txt`, `metadata.json`, `IComponent` plugin source, QML UI). Local build/package evidence is in `submission/BASECAMP_NATIVE_BUILD.md`. Final LogosBasecamp runtime load/activation evidence is **not yet attached**; `submission/BASECAMP_RUNTIME_LOAD_EVIDENCE.json` remains a blocker until it contains raw runtime logs, not only source/build hashes. |
+| Basecamp app GUI | PASS | `basecamp-app/` provides the native Qt/QML Basecamp plugin package (`CMakeLists.txt`, `metadata.json`, `IComponent` plugin source, QML UI). Local build/package evidence is in `submission/BASECAMP_NATIVE_BUILD.md`; real LogosBasecamp runtime launch/load evidence with raw-log SHA-256 binding is attached in `submission/BASECAMP_RUNTIME_LOAD_EVIDENCE.json`; the fresh narrated video shows the final visual walkthrough. |
 | SPEL IDL | PASS | `interfaces/lp0002.idl.json` with typed and byte-oriented execute surfaces (`verify_and_execute`, `verify_and_execute_bytes`), RISC0 receipt-byte boundary, types, errors; discriminators computed |
 
 ## Reliability
