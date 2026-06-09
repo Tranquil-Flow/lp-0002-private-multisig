@@ -15,6 +15,8 @@ else()
 endif()
 
 add_library(lp0002_private_multisig SHARED
+    src/lp0002_backend.cpp
+    src/lp0002_backend.h
     src/lp0002_plugin.cpp
     src/lp0002_plugin.h
     src/lp0002_widget.cpp

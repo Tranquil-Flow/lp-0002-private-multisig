@@ -1,0 +1,16 @@
+{
+  "name": "lp0002_private_multisig",
+  "version": "0.1.0",
+  "description": "LP-0002 Private M-of-N Multisig Basecamp module",
+  "author": "Tranquil-Flow",
+  "type": "ui",
+  "main": "lp0002_private_multisig",
+  "category": "privacy",
+  "dependencies": [],
+  "prize": "LP-0002",
+  "capabilities": [
+    "ui_components",
+    "local_demo",
+    "proof_evidence_view"
+  ]
+}

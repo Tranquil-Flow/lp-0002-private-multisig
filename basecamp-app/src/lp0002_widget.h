@@ -3,6 +3,7 @@
 #include <QWidget>
 
 class QQuickWidget;
+class Lp0002Backend;
 
 class Lp0002Widget : public QWidget
 {
@@ -14,4 +15,5 @@ public:
 
 private:
     QQuickWidget* quickWidget_;
+    Lp0002Backend* backend_;
 };
