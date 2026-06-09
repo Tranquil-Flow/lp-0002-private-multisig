@@ -20,6 +20,6 @@ Latest verified local results before publication:
 - `bash scripts/demo-heavy-lane.sh --live-submit` passed and produced confirmed
   public LEZ testnet evidence in block 39548.
 - `python3 scripts/final-publication-check.py` must pass after the human-recorded
-  narrated demo video and TESTNET_EVIDENCE.json are attached. The previous
+  narrated demo video (https://youtu.be/Wssfp_rkC54) and TESTNET_EVIDENCE.json are attached. The previous
   generated/TTS draft video is not sufficient final evidence.
 - `RISC0_SKIP_BUILD=1 python3 scripts/validate-submission-readiness.py --skip-exec` passed.

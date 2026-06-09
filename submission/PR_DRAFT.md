@@ -1,7 +1,7 @@
 # Draft λPrize PR: Solution LP-0002 — Private M-of-N Multisig
 
 Do not open this PR until Evi explicitly approves opening the upstream Logos PR.
-`scripts/final-publication-check.py` currently returns NO-GO: a fresh human-recorded narrated demo video is pending and must be recorded before this PR is opened.
+`scripts/final-publication-check.py` should return GO after the fresh human-recorded narrated demo URL has been inserted.
 
 ## Repository
 
@@ -9,7 +9,7 @@ https://github.com/Tranquil-Flow/lp-0002-private-multisig
 
 ## Demo video
 
-Pending: a fresh human-recorded narrated demo will be recorded before resubmission. The prior video is historical only and must not be used as final evidence.
+https://youtu.be/Wssfp_rkC54
 
 ## Public LEZ testnet evidence
 
