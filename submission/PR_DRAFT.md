@@ -13,7 +13,7 @@ https://youtu.be/Wssfp_rkC54
 
 ## Public LEZ testnet evidence
 
-LP-0002 is deployed and executed on the public LEZ testnet
+LP-0002 has historical pre-reset public LEZ testnet deploy/execute evidence
 (https://testnet.lez.logos.co/): deploy tx
 `82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56` in block
 `39547`, execute tx

@@ -1,8 +1,8 @@
 {
-  "schema": "lp0002.testnet-evidence.v2",
+  "schema": "lp0002.testnet-evidence.v3",
   "network": "testnet",
   "sequencer": "https://testnet.lez.logos.co/",
-  "network_interpretation": "Deployed and executed on the public Logos LEZ testnet (real consensus, RISC0_DEV_MODE=0). Both transactions below are independently verifiable via getTransaction on the public sequencer.",
+  "network_interpretation": "Historical public Logos LEZ testnet capture (real consensus, RISC0_DEV_MODE=0). Current public-testnet re-query now fails closed after reset, so this file is not current-live evidence.",
   "reproducible_build": {
     "command": "cargo risczero build --manifest-path methods/guest/Cargo.toml",
     "builder_image": "risczero/risc0-guest-builder:r0.1.88.0",
@@ -11,8 +11,8 @@
     "wrapper_program_id_base58": "BBZKo8fDVtmviBYjTwmzfbTBtAmcqhDxWh9oMQYz2j2w",
     "threshold_proof_image_id": "6fc85ce06da1762abec319b4626c12229dc605a5b0283d64c8eab2567b9ee721"
   },
-  "status": "confirmed",
-  "confirmed": true,
+  "status": "historical-pre-reset",
+  "confirmed": false,
   "program_id": "974939edb6fc9cffd97929dd830a0d75bfc7a09b08c2f3fc87da940aadc0c130",
   "program_id_base58": "BBZKo8fDVtmviBYjTwmzfbTBtAmcqhDxWh9oMQYz2j2w",
   "deploy_tx": {
@@ -79,5 +79,6 @@
       "count": 2,
       "privacy_note": "Approver identities and membership witnesses remain private; public evidence exposes nullifier count and threshold only."
     }
-  ]
+  ],
+  "current_testnet_status_2026_06_27": "recorded deploy/execute tx hashes return null on current public testnet; retained as historical proof only until redeploy/re-execute refreshes evidence"
 }

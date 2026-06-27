@@ -12,6 +12,6 @@ This repository therefore provides two complementary evaluator surfaces:
   protection.
 - `submission/TESTNET_EVIDENCE.json`: structured evidence for the multisig
   instance, proposal, approvals/nullifiers, and wrapper execution transaction
-  deployed and executed on the public LEZ testnet (https://testnet.lez.logos.co/) —
+  deployed and executed on the public LEZ testnet before the June 2026 reset (https://testnet.lez.logos.co/) —
   deploy tx `82516880...` in block `39547`, execute tx `cb8bfd5a...` in block
   `39548`, re-verifiable via `getTransaction` against the public sequencer.

@@ -42,14 +42,14 @@ Completed in this increment:
 - Proof id: `9e6492e73d1e8382abfa0e94e91842100b9041516857f215fcad7276cbad8b11`.
 - Artifacts: `target/lp0002-risc0-fixture-new/{receipt.borsh,journal.borsh,manifest.txt}`.
 - LEZ wrapper evidence: `target/lp0002-risc0-fixture-new/lez-execution.json` with `status: executed`.
-- File-backed NSSA submitter evidence: `lp0002-submit-localnet` constructs a public transaction from receipt/journal/action files and can submit/query via `NSSA_WALLET_HOME_DIR=.scaffold/wallet`. The executable `verify_and_execute_bytes` wrapper image was deployed on the public LEZ testnet and tx `cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697` was included in block `39548`. Raw receipt transport exceeded the current public-program session limit, so the included wrapper input carries the receipt/journal commitment while retaining the full receipt as host-side proof evidence.
+- File-backed NSSA submitter evidence: `lp0002-submit-localnet` constructs a public transaction from receipt/journal/action files and can submit/query via `NSSA_WALLET_HOME_DIR=.scaffold/wallet`. The executable `verify_and_execute_bytes` wrapper image was deployed on the public LEZ testnet before reset and tx `cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697` was included historically; current re-query now returns null in block `39548`. Raw receipt transport exceeded the current public-program session limit, so the included wrapper input carries the receipt/journal commitment while retaining the full receipt as host-side proof evidence.
 - SPEL/NSSA adapter payload evidence: `target/lp0002-risc0-fixture-new/spel-adapter-evidence.json` with `status: spel_adapter_payload_built`, instruction `verify_and_execute_bytes`, instruction payload length `5,492` bytes, instruction data SHA-256 `e1dc304173c1f27542b0017e167eb709f47e6bc907888968e9efaf0cd655f3c0`, and receipt/journal commitment `be58410de0e0f71642f82f287c39c7f70acb8820cb7468e50927bfd91ee4c850`.
 - `scaffold.toml` migrated to logos-scaffold schema `0.2.0` and `lgs doctor` reaches `22 PASS, 0 WARN, 0 FAIL` with localnet live on port 3040.
 - The reproducible wrapper ELF (`cargo risczero build --manifest-path methods/guest/Cargo.toml`, Docker builder `risczero/risc0-guest-builder:r0.1.88.0`; on LEZ ProgramId == ImageID) was deployed to the public LEZ testnet via the submit binary's `ProgramDeployment` path: deploy tx `82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56` confirmed in block `39547`, `program_id: 974939edb6fc9cffd97929dd830a0d75bfc7a09b08c2f3fc87da940aadc0c130`.
 - The earlier adapter gap is resolved for current tooling by compact transport:
   the native wallet/NSSA submitter sends receipt and journal commitments while
   the full receipt remains file-backed, host-verified evidence. For LP-0002, the
-  wrapper is deployed and executed on the public LEZ testnet
+  wrapper has historical pre-reset public LEZ testnet deploy/execute evidence
   (https://testnet.lez.logos.co/): execute tx
   `cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697` in block
   `39548`. On LEZ a transaction is included in a block only if its program

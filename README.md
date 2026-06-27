@@ -12,14 +12,15 @@ the first heavy-lane RISC0 implementation. The safe-lane SDK, consumer demo, and
 replay-protected verifier gate remain fast and clone-and-run. The heavy lane adds
 a RISC0 guest method plus host prover that produces real `RISC0_DEV_MODE=0`
 proof artifacts sealing the private membership relation, plus a LEZ-shaped
-`execute_proposal` transaction wrapper crate. The heavy lane is deployed and
-executed on the public LEZ testnet (https://testnet.lez.logos.co/): deploy tx
+`execute_proposal` transaction wrapper crate. Historical public LEZ testnet
+capture exists for the heavy lane (https://testnet.lez.logos.co/): deploy tx
 `82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56` in block
 `39547` and execute tx
 `cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697` in block
-`39548`, with compact NSSA transaction transport. Formal per-transaction CU
-counters are recorded as unavailable in current LEZ tooling rather than invented;
-see `submission/LEZ_COST_BENCHMARKS.json`.
+`39548`, with compact NSSA transaction transport. Current reset-era re-query now
+fails closed, so redeploy/re-execute is required before claiming current-live
+on-chain evidence. Formal per-transaction CU counters are recorded as unavailable
+in current LEZ tooling rather than invented; see `submission/LEZ_COST_BENCHMARKS.json`.
 
 ## Quick Start
 

@@ -161,11 +161,11 @@ The benchmark source is at `consumer-demo/examples/bench.rs`.
 
 ## RISC0-to-LEZ wrapper evidence
 
-The heavy-lane host includes `lp0002-lez-execute-artifacts`, which verifies the real RISC0 receipt with `host::Risc0ReceiptVerifier`, executes the resulting journal through `lez-program::execute_proposal`, and writes `target/lp0002-risc0-fixture-new/lez-execution.json`. The recorded wrapper evidence has `status: executed`, `proposal_state_executed: true`, and `proposal_state_nullifier_count: 2`. `spel-adapter-evidence.json` records the serialized byte payload for the NSSA/SPEL lane. The executable `verify_and_execute_bytes` wrapper is deployed on the public LEZ testnet and the compact native submitter has confirmed inclusion in block `39548`; CU metering is recorded as unavailable in current LEZ tooling.
+The heavy-lane host includes `lp0002-lez-execute-artifacts`, which verifies the real RISC0 receipt with `host::Risc0ReceiptVerifier`, executes the resulting journal through `lez-program::execute_proposal`, and writes `target/lp0002-risc0-fixture-new/lez-execution.json`. The recorded wrapper evidence has `status: executed`, `proposal_state_executed: true`, and `proposal_state_nullifier_count: 2`. `spel-adapter-evidence.json` records the serialized byte payload for the NSSA/SPEL lane. The executable `verify_and_execute_bytes` wrapper has historical pre-reset public LEZ testnet deployment and compact native submitter inclusion in block `39548`; current re-query returns null, so this is not current-live evidence. CU metering is recorded as unavailable in LEZ tooling.
 
 ## Wrapper Public-Testnet Inclusion Evidence
 
-The executable `verify_and_execute_bytes` wrapper image was deployed on the public LEZ testnet (https://testnet.lez.logos.co/) — deploy tx `82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56` in block `39547` — and executed with the real `RISC0_DEV_MODE=0` proof artifact set. Raw receipt transport was first attempted and rejected by the current public-program session limit (`Session limit exceeded: 33554432 >= 33554432`), so the successful compact path sends a receipt/journal commitment in the wrapper input and retains the full receipt as file-backed evidence.
+The executable `verify_and_execute_bytes` wrapper image was deployed on the public LEZ testnet before the June 2026 reset (https://testnet.lez.logos.co/) — deploy tx `82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56` in block `39547` — and executed with the real `RISC0_DEV_MODE=0` proof artifact set. Raw receipt transport was first attempted and rejected by the current public-program session limit (`Session limit exceeded: 33554432 >= 33554432`), so the successful compact path sends a receipt/journal commitment in the wrapper input and retains the full receipt as file-backed evidence.
 
 | Metric | Value |
 |---|---:|
@@ -179,7 +179,7 @@ The executable `verify_and_execute_bytes` wrapper image was deployed on the publ
 | Receipt bytes retained off-input | `270,334 bytes`, SHA-256 `6e4979983c996ca4154d7eeedb59444105b99d984a69a223ab58d429811b89a7` |
 | Sequencer wrapper execution-time log | `11.122875ms` for the confirmed transaction block check |
 
-The confirmed on-chain evidence is recorded in `submission/TESTNET_EVIDENCE.json`; an evaluator re-verifies it independently with `getTransaction` against the public sequencer (deploy tx `82516880...`, execute tx `cb8bfd5a...` on https://testnet.lez.logos.co/). LEZ v0.2.0-rc1 does not expose per-transaction CU counters over JSON-RPC, so this is inclusion + payload + sequencer execution-time evidence rather than a formal CU meter.
+The historical on-chain evidence is recorded in `submission/TESTNET_EVIDENCE.json`; `scripts/ci-verify-testnet.py` now fails closed on the current endpoint when these pre-reset hashes re-query as null against the public sequencer (deploy tx `82516880...`, execute tx `cb8bfd5a...` on https://testnet.lez.logos.co/). LEZ v0.2.0-rc1 does not expose per-transaction CU counters over JSON-RPC, so this is inclusion + payload + sequencer execution-time evidence rather than a formal CU meter.
 
 
 ## Machine-readable LEZ Cost Evidence
