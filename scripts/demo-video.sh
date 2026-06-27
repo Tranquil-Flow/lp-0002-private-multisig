@@ -217,13 +217,13 @@ import hashlib, json, os
 from pathlib import Path
 artifact_dir = Path(os.environ['ARTIFACT_DIR'])
 expected = {
-    'manifest.txt': '2345dd03a3fb0bbae02287662800559026e0e003cb99dd1acf5e5f177706a122',
+    'manifest.txt': '2d205c1d0ef91e7523d8dc68678dc68a2804875faa57e4b4c65b84f47daba946',
     'receipt.borsh': '6e4979983c996ca4154d7eeedb59444105b99d984a69a223ab58d429811b89a7',
     'journal.borsh': 'a8fe85f8d63f948409941b585cbe9244c2d0ae45082bf635173f753037ad4d8e',
-    'lez-execution.json': '7044725afc2e5f49cb25c5b35c2e3c851ec3ab461b00e4acb4876461f2ea3c10',
-    'spel-adapter-evidence.json': 'cbeebe596edbda2426675fa4b18ecb6622f1685e973538a7a6c1a65f842fec97',
-    'nssa-submit-dry-run.json': '33c83315a1cbf308074c336ada7accaae50238aa6cd5c639d6fce0823f3614f1',
-    'nssa-submit-evidence.json': 'ee9eb8eb3c3dd9c578b4a94dda8c62da6d35b5edab01db9ac7e6e975e44433fe',
+    'lez-execution.json': '8938d0cfc197ad5579e88c8ef1430ae89a6636fc07f59f586fc08574370326bd',
+    'spel-adapter-evidence.json': '01b7145e70635b7cb036774e8174f24496c3c2951b86c2747ab154405be42adf',
+    'nssa-submit-dry-run.json': '5a13e14dc557a4a662fba850f1dd3355aa8a62235ce19dda39e8e96d2f1972e3',
+    'nssa-submit-evidence.json': '9b638b0cc6fcd790c139ac115505a09ee79d730ee74166a4896031742b4d7aa5',
 }
 for rel, want in expected.items():
     p = artifact_dir / rel

@@ -74,10 +74,11 @@ honesty gates in the docs, and runs tests plus the demo."
 
 ### Section 6 — Basecamp app
 
-"The Basecamp surface includes a native Qt/QML plugin package plus a browser
-preview. The GUI is not the on-chain verifier; it is an integration and
-visualization surface for the private multisig flow, with native package source
-and build evidence included for Basecamp review."
+"The Basecamp surface is a native Qt/QML plugin package (`basecamp-app/`) with
+local build evidence and runtime load evidence. The GUI is not the on-chain
+verifier; it is an integration and visualization surface for the private
+multisig flow, with native package source, build evidence, and raw-log-bound
+runtime load evidence included for Basecamp review."
 
 ### Closing
 

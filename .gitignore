@@ -13,3 +13,6 @@ basecamp-app/build/
 # compressed narrated demo and YouTube upload instead.
 *.mov
 *.m4a
+
+# Nix build output symlink
+/result

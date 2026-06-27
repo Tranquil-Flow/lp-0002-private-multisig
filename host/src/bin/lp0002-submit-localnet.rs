@@ -65,10 +65,12 @@ fn sha256_bytes(bytes: &[u8]) -> [u8; 32] {
 fn parse_hex32(s: &str) -> anyhow::Result<[u8; 32]> {
     let s = s.strip_prefix("0x").unwrap_or(s);
     let bytes = hex::decode(s)?;
-    bytes
-        .as_slice()
-        .try_into()
-        .map_err(|_| anyhow::anyhow!("expected a 32-byte (64 hex char) value, got {} bytes", bytes.len()))
+    bytes.as_slice().try_into().map_err(|_| {
+        anyhow::anyhow!(
+            "expected a 32-byte (64 hex char) value, got {} bytes",
+            bytes.len()
+        )
+    })
 }
 
 fn sha256_hex(bytes: &[u8]) -> String {
@@ -181,7 +183,11 @@ async fn main() -> anyhow::Result<()> {
         let computed_hex = id_bytes(&computed_id);
         let expected_hex = id_bytes(&expected_id);
         let ids_match = computed_id == expected_id;
-        println!("deploy: elf={} bytes sha256={}", elf.len(), sha256_hex(&elf));
+        println!(
+            "deploy: elf={} bytes sha256={}",
+            elf.len(),
+            sha256_hex(&elf)
+        );
         println!("deploy: computed_program_id={computed_hex}");
         println!("deploy: expected_program_id={expected_hex}");
         println!("deploy: program_id_matches_execute={ids_match}");
@@ -254,7 +260,8 @@ async fn main() -> anyhow::Result<()> {
         payload_hash: input.proposal.action_hash,
     };
     let action_borsh = borsh::to_vec(&action)?;
-    let wrapper_image_bytes = program_id_override.unwrap_or_else(verify_and_execute_program_id_bytes);
+    let wrapper_image_bytes =
+        program_id_override.unwrap_or_else(verify_and_execute_program_id_bytes);
     let image_id = image_id_override.unwrap_or_else(threshold_proof_image_id_bytes);
     let program_id = program_id_from_image_id(wrapper_image_bytes);
     let multisig_state = AccountId::new(create_key);
