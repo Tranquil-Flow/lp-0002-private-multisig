@@ -48,14 +48,14 @@
     "First localnet submit attempt captured; rejected at deployed-program boundary",
     "Executable verify_and_execute_bytes wrapper guest/program image",
     "Compact receipt/journal-commitment NSSA transaction transport for current LEZ public-program session limits",
-    "Successful included wrapper NSSA transaction on the public LEZ testnet",
-    "Confirmed public-testnet evidence: tx cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697 in block 39548",
     "Recording-safe scripts/demo-heavy-lane.sh for RISC0 and wrapper inclusion evidence",
     "Public repository published under Tranquil-Flow",
-    "Deployed and executed on the public LEZ testnet (https://testnet.lez.logos.co/): deploy tx 82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56 in block 39547, execute tx cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697 in block 39548",
     "Structured TESTNET_EVIDENCE.json generated from confirmed public-testnet wrapper transaction",
-    "Evaluator-run validation bundle documented in submission/CI_EVIDENCE.md"
+    "Evaluator-run validation bundle documented in submission/CI_EVIDENCE.md",
+    "Historical pre-reset public-testnet deploy/execute evidence retained for audit (old deploy 82516880..., old execute cb8bfd5...)",
+    "Current reset-era public-testnet deploy included: tx c7157a473cb512bf7e1803d4377d9f65e9406a7ff98efeda48b65c0d4915a13b, program id 1557176a639868b0363e9106c75fe0748ceb42e65f5f1a6778dd05b6baebb57d",
+    "Current reset-era execute inclusion blocked: attempts 352eb699507aea4d4ca6963a50bef1473a2b944dfd7713116cbf82eabfeec3bf and fc4165ac2437bd6533444c5e010b2d248aed678daadfad277af1dd0f1fef6ca8 are not included despite local v0.2.0 validation passing"
   ],
-  "demo_video_url": "",
+  "demo_video_url": "https://youtu.be/Wssfp_rkC54",
   "heavy_lane": true
 }

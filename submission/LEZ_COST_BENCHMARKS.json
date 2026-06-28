@@ -21,5 +21,15 @@
   "cu_metering": {
     "available": false,
     "reason": "The LEZ JSON-RPC query output for the public testnet (https://testnet.lez.logos.co/) did not expose a stable per-transaction compute-unit counter. Payload/account/receipt sizes are recorded as reproducible cost evidence; replace this field with runtime CU once the public LEZ testnet exposes it."
+  },
+  "current_testnet_refresh_2026_06_28": {
+    "deploy_tx": "c7157a473cb512bf7e1803d4377d9f65e9406a7ff98efeda48b65c0d4915a13b",
+    "deploy_confirmed": true,
+    "execute_attempts": [
+      "352eb699507aea4d4ca6963a50bef1473a2b944dfd7713116cbf82eabfeec3bf",
+      "fc4165ac2437bd6533444c5e010b2d248aed678daadfad277af1dd0f1fef6ca8"
+    ],
+    "execute_confirmed": false,
+    "note": "Current deploy included; execute attempts not included. Historical tx_hash fields retained for pre-reset audit only."
   }
 }

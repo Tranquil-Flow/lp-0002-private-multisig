@@ -1,8 +1,8 @@
 {
-  "schema": "lp0002.testnet-evidence.v3",
+  "schema": "lp0002.testnet-evidence.v4",
   "network": "testnet",
   "sequencer": "https://testnet.lez.logos.co/",
-  "network_interpretation": "Historical public Logos LEZ testnet capture (real consensus, RISC0_DEV_MODE=0). Current public-testnet re-query now fails closed after reset, so this file is not current-live evidence.",
+  "network_interpretation": "Current reset-era public LEZ testnet refresh plus historical pre-reset execute evidence. Fresh v0.2.0 deploy is included on current testnet; current execute attempts locally validate but are not included by the public endpoint, so current live execute remains blocked and must not be overclaimed.",
   "reproducible_build": {
     "command": "cargo risczero build --manifest-path methods/guest/Cargo.toml",
     "builder_image": "risczero/risc0-guest-builder:r0.1.88.0",
@@ -11,33 +11,33 @@
     "wrapper_program_id_base58": "BBZKo8fDVtmviBYjTwmzfbTBtAmcqhDxWh9oMQYz2j2w",
     "threshold_proof_image_id": "6fc85ce06da1762abec319b4626c12229dc605a5b0283d64c8eab2567b9ee721"
   },
-  "status": "historical-pre-reset",
+  "status": "current-partial-deploy-only",
   "confirmed": false,
   "program_id": "974939edb6fc9cffd97929dd830a0d75bfc7a09b08c2f3fc87da940aadc0c130",
   "program_id_base58": "BBZKo8fDVtmviBYjTwmzfbTBtAmcqhDxWh9oMQYz2j2w",
   "deploy_tx": {
     "kind": "ProgramDeployment",
-    "tx_hash": "82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56",
-    "status": "confirmed",
+    "tx_hash": "c7157a473cb512bf7e1803d4377d9f65e9406a7ff98efeda48b65c0d4915a13b",
+    "status": "confirmed-current",
     "confirmed": true,
-    "included_block_id": 39547,
-    "included_tx_index": 0,
-    "elf_sha256": "f8b96693fa0247e1b4ffd7044bb95dc31d459b19377b0da54a578b20bb31ebdf",
-    "elf_len_bytes": 473760
+    "included": true,
+    "program_binary_sha256": "8f74ccc446990f5437b5f6c6e731deac6653992e0a64abcecdff7bff0c5575e1",
+    "program_binary_len_bytes": 401128
   },
   "execute_tx": {
     "kind": "Public",
     "instruction": "verify_and_execute_bytes",
-    "tx_hash": "cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697",
-    "status": "confirmed",
-    "confirmed": true,
-    "included_block_id": 39548,
-    "included_tx_index": 0,
-    "signed": true,
-    "signer_account": "6iArKUXxhUJqS7kCaPNhwMWt3ro71PDyBj7jwAyE2VQV",
+    "status": "blocked-current-not-included",
+    "confirmed": false,
+    "current_attempt_hashes": [
+      "352eb699507aea4d4ca6963a50bef1473a2b944dfd7713116cbf82eabfeec3bf",
+      "fc4165ac2437bd6533444c5e010b2d248aed678daadfad277af1dd0f1fef6ca8"
+    ],
+    "instruction_data_sha256": "1c3cca0a7fa7108693c97c013384eac195fc03f77ececd953db30e80bed61343",
     "accounts": 2,
-    "instruction_data_len_bytes": 5492,
-    "instruction_data_sha256": "e1dc304173c1f27542b0017e167eb709f47e6bc907888968e9efaf0cd655f3c0"
+    "instruction_data_u32_words": 1373,
+    "local_v020_validation": "passed",
+    "note": "Current reset-era public testnet execute attempts return hashes but are not included; historical pre-reset execute evidence is retained separately."
   },
   "inclusion_semantics": "On LEZ a transaction is included in a block if and only if its program execution succeeds (sequencer/core: validate_on_state Ok => include, ProgramExecutionFailed => skip). The confirmed execute tx therefore records a successful on-chain run of the wrapper.",
   "receipt_bytes_len": 270334,
@@ -56,8 +56,8 @@
     "NSSA_WALLET_HOME_DIR=<funded-testnet-wallet> lp0002-submit-localnet --submit --signer 6iArKUXxhUJqS7kCaPNhwMWt3ro71PDyBj7jwAyE2VQV target/lp0002-risc0-fixture-repro"
   ],
   "evaluator_reverify": [
-    "curl -s -X POST https://testnet.lez.logos.co/ -H 'content-type: application/json' -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"getTransaction\",\"params\":[\"82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56\"]}'",
-    "curl -s -X POST https://testnet.lez.logos.co/ -H 'content-type: application/json' -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"getTransaction\",\"params\":[\"cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697\"]}'"
+    "curl -s -X POST https://testnet.lez.logos.co/ -H 'content-type: application/json' -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"getTransaction\",\"params\":[\"c7157a473cb512bf7e1803d4377d9f65e9406a7ff98efeda48b65c0d4915a13b\"]}'",
+    "curl -s -X POST https://testnet.lez.logos.co/ -H 'content-type: application/json' -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"getTransaction\",\"params\":[\"352eb699507aea4d4ca6963a50bef1473a2b944dfd7713116cbf82eabfeec3bf\"]}'  # expected null until blocker resolved"
   ],
   "verified_by": "scripts/demo-heavy-lane.sh --live-submit",
   "verifier_program_id": "974939edb6fc9cffd97929dd830a0d75bfc7a09b08c2f3fc87da940aadc0c130",
@@ -80,5 +80,81 @@
       "privacy_note": "Approver identities and membership witnesses remain private; public evidence exposes nullifier count and threshold only."
     }
   ],
-  "current_testnet_status_2026_06_27": "recorded deploy/execute tx hashes return null on current public testnet; retained as historical proof only until redeploy/re-execute refreshes evidence"
+  "current_testnet_status_2026_06_27": "recorded deploy/execute tx hashes return null on current public testnet; retained as historical proof only until redeploy/re-execute refreshes evidence",
+  "current_testnet_refresh_2026_06_28": {
+    "schema": "lp0002.v020-current-testnet-refresh.v1",
+    "generated_at_utc": "2026-06-28T12:05:49Z",
+    "repo_head": "a9e5f8b07d0fa22bd39cb7339b8c2cfb78083393",
+    "client": "LEZ v0.2.0 wallet/build-worktree helper on m4pro",
+    "program_binary": {
+      "path": "submission/proof-artifacts/lp0002-v020-current/lp0002-v020-lee-program.bin",
+      "sha256": "8f74ccc446990f5437b5f6c6e731deac6653992e0a64abcecdff7bff0c5575e1",
+      "bytes": 401128,
+      "program_id": "1557176a639868b0363e9106c75fe0748ceb42e65f5f1a6778dd05b6baebb57d"
+    },
+    "deploy_tx": {
+      "kind": "ProgramDeployment",
+      "tx_hash": "c7157a473cb512bf7e1803d4377d9f65e9406a7ff98efeda48b65c0d4915a13b",
+      "confirmed": true,
+      "included": true
+    },
+    "execute_attempts": [
+      {
+        "mode": "signed_public_tx",
+        "tx_hash": "352eb699507aea4d4ca6963a50bef1473a2b944dfd7713116cbf82eabfeec3bf",
+        "included": false,
+        "instruction_u32_words": 1373,
+        "instruction_data_sha256": "1c3cca0a7fa7108693c97c013384eac195fc03f77ececd953db30e80bed61343",
+        "log": "submission/proof-artifacts/lp0002-v020-current/lp0002_live_v020_run3.log"
+      },
+      {
+        "mode": "unsigned_public_tx_after_local_validation_probe",
+        "tx_hash": "fc4165ac2437bd6533444c5e010b2d248aed678daadfad277af1dd0f1fef6ca8",
+        "included": false,
+        "instruction_u32_words": 1373,
+        "instruction_data_sha256": "1c3cca0a7fa7108693c97c013384eac195fc03f77ececd953db30e80bed61343",
+        "log": "submission/proof-artifacts/lp0002-v020-current/lp0002_live_v020_run4_unsigned.log"
+      }
+    ],
+    "local_v020_validation": {
+      "status": "passed",
+      "evidence": "submission/proof-artifacts/lp0002-v020-current/lp0002_local_debug_test4.log",
+      "summary": "v0.2.0 Program::execute and ValidatedStateDiff::from_public_transaction both passed locally for the same program/input shape."
+    },
+    "status": "partial_current_evidence_execute_not_included",
+    "honesty_boundary": "Fresh deploy is current-live. Execute attempts returned hashes but re-query as Transaction is None; do not claim current live execute inclusion until public testnet includes an execute tx.",
+    "raw_logs": [
+      "submission/proof-artifacts/lp0002-v020-current/lp0002_live_v020_run3.log",
+      "submission/proof-artifacts/lp0002-v020-current/lp0002_live_v020_run4_unsigned.log",
+      "submission/proof-artifacts/lp0002-v020-current/lp0002_local_debug_test4.log"
+    ]
+  },
+  "current_testnet_status_2026_06_28": "fresh deploy tx c7157a473cb512bf7e1803d4377d9f65e9406a7ff98efeda48b65c0d4915a13b is present on current public testnet; execute attempts 352eb699507aea4d4ca6963a50bef1473a2b944dfd7713116cbf82eabfeec3bf and fc4165ac2437bd6533444c5e010b2d248aed678daadfad277af1dd0f1fef6ca8 return null/not included. Local v0.2.0 Program::execute and ValidatedStateDiff validation passed, indicating remaining blocker is public-testnet custom public execution inclusion, not local program validation.",
+  "historical_pre_reset_evidence": {
+    "deploy_tx": {
+      "kind": "ProgramDeployment",
+      "tx_hash": "82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56",
+      "status": "confirmed",
+      "confirmed": true,
+      "included_block_id": 39547,
+      "included_tx_index": 0,
+      "elf_sha256": "f8b96693fa0247e1b4ffd7044bb95dc31d459b19377b0da54a578b20bb31ebdf",
+      "elf_len_bytes": 473760
+    },
+    "execute_tx": {
+      "kind": "Public",
+      "instruction": "verify_and_execute_bytes",
+      "tx_hash": "cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697",
+      "status": "confirmed",
+      "confirmed": true,
+      "included_block_id": 39548,
+      "included_tx_index": 0,
+      "signed": true,
+      "signer_account": "6iArKUXxhUJqS7kCaPNhwMWt3ro71PDyBj7jwAyE2VQV",
+      "accounts": 2,
+      "instruction_data_len_bytes": 5492,
+      "instruction_data_sha256": "e1dc304173c1f27542b0017e167eb709f47e6bc907888968e9efaf0cd655f3c0"
+    },
+    "status": "historical-pre-reset-retained-for-audit"
+  }
 }

@@ -1,0 +1,48 @@
+{
+  "schema": "lp0002.v020-current-testnet-refresh.v1",
+  "generated_at_utc": "2026-06-28T12:05:49Z",
+  "repo_head": "a9e5f8b07d0fa22bd39cb7339b8c2cfb78083393",
+  "network": "current public LEZ testnet",
+  "sequencer": "https://testnet.lez.logos.co/",
+  "client": "LEZ v0.2.0 wallet/build-worktree helper on m4pro",
+  "program_binary": {
+    "path": "submission/proof-artifacts/lp0002-v020-current/lp0002-v020-lee-program.bin",
+    "sha256": "8f74ccc446990f5437b5f6c6e731deac6653992e0a64abcecdff7bff0c5575e1",
+    "bytes": 401128,
+    "program_id": "1557176a639868b0363e9106c75fe0748ceb42e65f5f1a6778dd05b6baebb57d"
+  },
+  "fresh_deploy": {
+    "tx_hash": "c7157a473cb512bf7e1803d4377d9f65e9406a7ff98efeda48b65c0d4915a13b",
+    "included": true
+  },
+  "execute_attempts": [
+    {
+      "mode": "signed_public_tx",
+      "tx_hash": "352eb699507aea4d4ca6963a50bef1473a2b944dfd7713116cbf82eabfeec3bf",
+      "included": false,
+      "instruction_u32_words": 1373,
+      "instruction_data_sha256": "1c3cca0a7fa7108693c97c013384eac195fc03f77ececd953db30e80bed61343",
+      "log": "submission/proof-artifacts/lp0002-v020-current/lp0002_live_v020_run3.log"
+    },
+    {
+      "mode": "unsigned_public_tx_after_local_validation_probe",
+      "tx_hash": "fc4165ac2437bd6533444c5e010b2d248aed678daadfad277af1dd0f1fef6ca8",
+      "included": false,
+      "instruction_u32_words": 1373,
+      "instruction_data_sha256": "1c3cca0a7fa7108693c97c013384eac195fc03f77ececd953db30e80bed61343",
+      "log": "submission/proof-artifacts/lp0002-v020-current/lp0002_live_v020_run4_unsigned.log"
+    }
+  ],
+  "local_v020_validation": {
+    "status": "passed",
+    "evidence": "submission/proof-artifacts/lp0002-v020-current/lp0002_local_debug_test4.log",
+    "summary": "v0.2.0 Program::execute and ValidatedStateDiff::from_public_transaction both passed locally for the same program/input shape."
+  },
+  "status": "partial_current_evidence_execute_not_included",
+  "honesty_boundary": "Fresh deploy is current-live. Execute attempts returned hashes but re-query as Transaction is None; do not claim current live execute inclusion until public testnet includes an execute tx.",
+  "raw_logs": [
+    "submission/proof-artifacts/lp0002-v020-current/lp0002_live_v020_run3.log",
+    "submission/proof-artifacts/lp0002-v020-current/lp0002_live_v020_run4_unsigned.log",
+    "submission/proof-artifacts/lp0002-v020-current/lp0002_local_debug_test4.log"
+  ]
+}

@@ -1,0 +1,13 @@
+   Compiling test_program_methods v0.1.0 (/Users/evinova-self/Projects/logos-basecamp/build-worktrees/lez-core-v020/test_program_methods)
+warning: lee@0.1.0: Generated module at /Users/evinova-self/Projects/logos-basecamp/build-worktrees/lez-core-v020/target/debug/build/lee-9023f97f7cf6ad1c/out/program_methods/mod.rs
+   Compiling lee v0.1.0 (/Users/evinova-self/Projects/logos-basecamp/build-worktrees/lez-core-v020/lee/state_machine)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.91s
+     Running unittests src/lib.rs (target/debug/deps/lee-33030fd40608cd53)
+
+running 1 test
+out pre=2 post=2 self=[1779914517, 2959644771, 110181942, 1960861639, 3863145356, 1729781599, 3053837688, 2109074362]
+validated diff public accounts=2
+test program::lp0002_local_debug::lp0002_execute_local_debug ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 223 filtered out; finished in 0.41s
+
