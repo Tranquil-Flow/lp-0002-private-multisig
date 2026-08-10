@@ -1,35 +1,42 @@
 {
-  "schema": "lp0002.lez-cost-benchmarks.v1",
+  "schema": "lp0002.lez-cost-benchmarks.v2",
   "network": "testnet",
+  "lez_release": "v0.2.4",
+  "lez_commit": "47eba256479f6f785acbd138834340703cd03401",
   "status": "confirmed",
   "confirmed": true,
-  "program_id": "974939edb6fc9cffd97929dd830a0d75bfc7a09b08c2f3fc87da940aadc0c130",
-  "tx_hash": "cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697",
-  "included_block_id": 39548,
+  "risc0_dev_mode": "0",
+  "program_id": "75efdee2321a1e15055bd5d03c1ea1a5665bf3e633683c9fb044a9e1f5941f79",
+  "program_binary_len_bytes": 439080,
+  "program_binary_sha256": "9bcd81fedbca5731c70369e28de9b0ede87ec007368bd18bab299f363fef632b",
+  "tx_hash": "4a985d6f1e0d8384e2774e4c62f4e1c714f7542d4647e0b0e4cfd4f08ae0e242",
+  "included_block_id": 2374,
+  "included_block_hash": "4909fb39950beaf41687662e20c530f4b5a85b05d25d86dd6cb0f01820ba6bca",
   "included_tx_index": 0,
   "instruction": "verify_and_execute_bytes",
   "accounts": 2,
   "instruction_data_len_bytes": 5492,
-  "instruction_data_sha256": "e1dc304173c1f27542b0017e167eb709f47e6bc907888968e9efaf0cd655f3c0",
+  "instruction_data_sha256": "19944c558baa9cfc327fb5d4c078d6097b85cbf929943ec4eec9a82a28bc5170",
   "receipt_bytes_len": 270334,
-  "receipt_bytes_sha256": "6e4979983c996ca4154d7eeedb59444105b99d984a69a223ab58d429811b89a7",
+  "receipt_bytes_sha256": "212970331ca67e2557899b13f77fcf43855db2362b123c0c2dc3b88797bfd22d",
   "proof_journal_bytes_sha256": "a8fe85f8d63f948409941b585cbe9244c2d0ae45082bf635173f753037ad4d8e",
-  "receipt_journal_commitment": "be58410de0e0f71642f82f287c39c7f70acb8820cb7468e50927bfd91ee4c850",
-  "threshold_proof_image_id": "6fc85ce06da1762abec319b4626c12229dc605a5b0283d64c8eab2567b9ee721",
+  "receipt_journal_commitment": "52948db7bc8b75cd54d7825afe0d3e64f8426cb94879c00852903b581a1c623f",
+  "threshold_proof_image_id": "e57b90a0fd306a8a6258f4fe7c045d056cf70142408e31a020817aaaba23bac4",
   "approval_count": 2,
   "nullifier_count": 2,
   "cu_metering": {
     "available": false,
-    "reason": "The LEZ JSON-RPC query output for the public testnet (https://testnet.lez.logos.co/) did not expose a stable per-transaction compute-unit counter. Payload/account/receipt sizes are recorded as reproducible cost evidence; replace this field with runtime CU once the public LEZ testnet exposes it."
+    "reason": "LEZ v0.2.4 JSON-RPC exposes canonical transaction/block inclusion but no stable per-transaction compute-unit counter. Payload, account, ProgramBinary, receipt, and journal sizes/hashes are recorded instead."
   },
-  "current_testnet_refresh_2026_06_28": {
-    "deploy_tx": "c7157a473cb512bf7e1803d4377d9f65e9406a7ff98efeda48b65c0d4915a13b",
-    "deploy_confirmed": true,
-    "execute_attempts": [
-      "352eb699507aea4d4ca6963a50bef1473a2b944dfd7713116cbf82eabfeec3bf",
-      "fc4165ac2437bd6533444c5e010b2d248aed678daadfad277af1dd0f1fef6ca8"
-    ],
-    "execute_confirmed": false,
-    "note": "Current deploy included; execute attempts not included. Historical tx_hash fields retained for pre-reset audit only."
+  "current_testnet_refresh_2026_08_10": {
+    "deploy_tx": "b15dc325d3ec4332a3f925b27383d932ed7d7605df50f962640149a583a059c8",
+    "deploy_block_id": 2373,
+    "deploy_confirmed_by_sequencer_rpc": true,
+    "execute_tx": "4a985d6f1e0d8384e2774e4c62f4e1c714f7542d4647e0b0e4cfd4f08ae0e242",
+    "execute_block_id": 2374,
+    "execute_confirmed_by_sequencer_rpc": true,
+    "explorer_status": "visible",
+    "explorer_latest_observed_block_id": 2376,
+    "evidence": "submission/LEZ_V024_PUBLIC_E2E_EVIDENCE.json"
   }
 }

@@ -58,15 +58,16 @@ echo "== IDL and deployment surface checks =="
 python3 interfaces/compute_discriminators.py >/tmp/lp0002-discriminators.txt
 python3 scripts/validate-submission-readiness.py --skip-exec
 
-# This smoke harness validates the concrete RISC0-to-LEZ wrapper path and
-# builds the serialized SPEL/NSSA adapter payload plus file-backed NSSA transaction dry-run before checking localnet
-# reachability. Use scripts/demo-heavy-lane.sh for recording-safe confirmed wrapper inclusion evidence, or
-# scripts/demo-heavy-lane.sh --live-submit to deploy/submit a fresh localnet transaction.
+# This legacy smoke harness validates host artifacts and the local scaffold
+# surface. It does not replace the current LEZ v0.2.4 standalone-sequencer E2E.
+# Use scripts/demo-heavy-lane.sh for a recording-safe archived/current evidence
+# split, or scripts/demo-heavy-lane.sh --current-e2e for a fresh current proof,
+# deployment, execution, and canonical inclusion check.
 
 echo
 echo "== Artifact manifest =="
 cat "$MANIFEST"
 
 echo
-echo "PASS: RISC0 proof artifacts verified, LEZ wrapper execution accepted them, SPEL/NSSA payload plus file-backed transaction evidence were built, and LEZ localnet is reachable."
-echo "NEXT: for fresh inclusion evidence, run scripts/demo-heavy-lane.sh --live-submit; CU metering is recorded as unavailable until the target LEZ RPC/runtime exposes stable counters."
+echo "PASS: current RISC0 proof artifacts verified, host wrapper execution accepted them, adapter/file-backed transaction evidence was built, and the legacy scaffold localnet is reachable."
+echo "NEXT: for current standalone-sequencer inclusion evidence, run scripts/demo-heavy-lane.sh --current-e2e; CU metering remains unavailable until LEZ exposes stable counters."

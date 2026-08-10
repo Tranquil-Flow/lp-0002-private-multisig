@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-08-10T09:37:28Z",
+  "network_scope": "public_testnet",
+  "status": "confirmed_rpc_and_explorer_visible",
+  "lez": {
+    "release": "v0.2.4",
+    "commit": "47eba256479f6f785acbd138834340703cd03401",
+    "sequencer_rpc": "https://testnet.lez.logos.co",
+    "explorer": "https://explorer.testnet.lez.logos.co",
+    "risc0_dev_mode": "0"
+  },
+  "proof": {
+    "threshold_proof_image_id": "e57b90a0fd306a8a6258f4fe7c045d056cf70142408e31a020817aaaba23bac4",
+    "receipt_bytes": 270334,
+    "receipt_sha256": "212970331ca67e2557899b13f77fcf43855db2362b123c0c2dc3b88797bfd22d",
+    "journal_bytes": 1100,
+    "journal_sha256": "a8fe85f8d63f948409941b585cbe9244c2d0ae45082bf635173f753037ad4d8e"
+  },
+  "public_journal": {
+    "approval_count": 2,
+    "nullifier_count": 2
+  },
+  "program": {
+    "program_id": "75efdee2321a1e15055bd5d03c1ea1a5665bf3e633683c9fb044a9e1f5941f79",
+    "program_binary_bytes": 439080,
+    "program_binary_sha256": "9bcd81fedbca5731c70369e28de9b0ede87ec007368bd18bab299f363fef632b"
+  },
+  "deployment": {
+    "tx_hash": "b15dc325d3ec4332a3f925b27383d932ed7d7605df50f962640149a583a059c8",
+    "confirmed_by_sequencer_rpc": true,
+    "included_block_id": 2373,
+    "program_id_matches_execute": true,
+    "explorer_url": "https://explorer.testnet.lez.logos.co/transaction/b15dc325d3ec4332a3f925b27383d932ed7d7605df50f962640149a583a059c8",
+    "explorer_status": "visible"
+  },
+  "execution": {
+    "tx_hash": "4a985d6f1e0d8384e2774e4c62f4e1c714f7542d4647e0b0e4cfd4f08ae0e242",
+    "instruction": "verify_and_execute_bytes",
+    "account_count": 2,
+    "confirmed_by_sequencer_rpc": true,
+    "included_block_id": 2374,
+    "included_block_hash": "4909fb39950beaf41687662e20c530f4b5a85b05d25d86dd6cb0f01820ba6bca",
+    "included_tx_index": 0,
+    "instruction_data_bytes": 5492,
+    "instruction_data_sha256": "19944c558baa9cfc327fb5d4c078d6097b85cbf929943ec4eec9a82a28bc5170",
+    "receipt_journal_commitment": "52948db7bc8b75cd54d7825afe0d3e64f8426cb94879c00852903b581a1c623f",
+    "explorer_url": "https://explorer.testnet.lez.logos.co/transaction/4a985d6f1e0d8384e2774e4c62f4e1c714f7542d4647e0b0e4cfd4f08ae0e242",
+    "explorer_status": "visible"
+  },
+  "explorer_index_observation": {
+    "observed_at_utc": "2026-08-10T10:32:39Z",
+    "sequencer_latest_block_id": 2432,
+    "explorer_latest_block_id": 2376,
+    "index_lag_blocks": 56,
+    "explorer_latest_block_timestamp_utc": "2026-08-10T09:35:54Z",
+    "fresh_transaction_page_error": null,
+    "deploy_page_visible": true,
+    "execute_page_visible": true,
+    "observed_deploy_index_delay_seconds": 3585,
+    "observed_execute_index_delay_seconds": 3525,
+    "note": "Both direct transaction pages now render. The explorer's separate indexer remains behind sequencer head, but it has indexed the required blocks 2373 and 2374."
+  },
+  "review_context": {
+    "submission_review": "https://github.com/logos-co/lambda-prize/pull/92#issuecomment-5234251256",
+    "requested_action": "re-submit transactions and add links to them"
+  }
+}

@@ -21,6 +21,11 @@ jobs:
         with:
           components: clippy, rustfmt
 
+      - name: Install fast-lane native prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libpcsclite-dev pkg-config
+
       - name: Cache cargo registry + git deps
         uses: actions/cache@v4
         with:
@@ -36,9 +41,13 @@ jobs:
         run: |
           set -euo pipefail
           cd /tmp
-          curl -fLO https://github.com/logos-blockchain/logos-blockchain-circuits/releases/download/v0.4.2/logos-blockchain-circuits-v0.4.2-linux-x86_64.tar.gz
-          tar -xzf logos-blockchain-circuits-v0.4.2-linux-x86_64.tar.gz
-          mv logos-blockchain-circuits-v0.4.2-linux-x86_64 ~/.logos-blockchain-circuits
+          curl -fLO https://github.com/logos-blockchain/logos-blockchain-circuits/releases/download/v0.5.3/logos-blockchain-circuits-v0.5.3-linux-x86_64.tar.gz
+          echo "db9d76f50f3536ac112067f2083d8aef3fab8024d1ef2f7a259b37490bc35eac  logos-blockchain-circuits-v0.5.3-linux-x86_64.tar.gz" | sha256sum -c -
+          tar -xzf logos-blockchain-circuits-v0.5.3-linux-x86_64.tar.gz
+          mv logos-blockchain-circuits-v0.5.3-linux-x86_64 ~/.logos-blockchain-circuits
+
+      - name: Current LEZ CI contract
+        run: python3 -m unittest -v scripts/test_ci_sequencer_contract.py
 
       - name: cargo fmt --check
         run: cargo fmt --all --check
@@ -51,3 +60,65 @@ jobs:
             --exclude lp0002-private-multisig-guest \
             --exclude lp0002-private-multisig-methods \
             --release
+
+  test-sequencer-e2e:
+    name: LEZ v0.2.4 standalone deploy/execute/inclusion
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      RISC0_DEV_MODE: "0"
+      LEZ_SOURCE_DIR: ${{ github.workspace }}/.ci/logos-execution-zone
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check out exact LEZ v0.2.4 source
+        uses: actions/checkout@v4
+        with:
+          repository: logos-blockchain/logos-execution-zone
+          ref: 47eba256479f6f785acbd138834340703cd03401
+          path: .ci/logos-execution-zone
+
+      - name: Install Rust 1.94 toolchain
+        uses: dtolnay/rust-toolchain@1.94.0
+
+      - name: Install native build prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            clang \
+            cmake \
+            curl \
+            libclang-dev \
+            libpcsclite-dev \
+            libssl-dev \
+            ninja-build \
+            pkg-config \
+            unzip
+
+      - name: Install RISC0 native toolchain
+        run: |
+          set -euo pipefail
+          cargo install rzup --version 0.5.1 --locked
+          echo "$HOME/.risc0/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.risc0/bin:$PATH"
+          rzup install cargo-risczero 3.0.5
+          rzup install r0vm 3.0.5
+          rzup install rust 1.94.1
+          cargo risczero --version
+          rustc +risc0 --version
+
+      - name: Install logos-blockchain-circuits v0.5.3
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP"
+          curl -fLO https://github.com/logos-blockchain/logos-blockchain-circuits/releases/download/v0.5.3/logos-blockchain-circuits-v0.5.3-linux-x86_64.tar.gz
+          echo "db9d76f50f3536ac112067f2083d8aef3fab8024d1ef2f7a259b37490bc35eac  logos-blockchain-circuits-v0.5.3-linux-x86_64.tar.gz" | sha256sum -c -
+          tar -xzf logos-blockchain-circuits-v0.5.3-linux-x86_64.tar.gz
+          mv logos-blockchain-circuits-v0.5.3-linux-x86_64 "$HOME/.logos-blockchain-circuits"
+
+      - name: Current LEZ CI contract
+        run: python3 -m unittest -v scripts/test_ci_sequencer_contract.py
+
+      - name: Real standalone sequencer E2E
+        run: scripts/lez-sequencer-e2e.sh

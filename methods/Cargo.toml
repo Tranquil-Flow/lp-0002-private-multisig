@@ -7,6 +7,8 @@ publish.workspace = true
 
 [build-dependencies]
 risc0-build = "=3.0.5"
+risc0-binfmt = "=3.0.4"
+sha2.workspace = true
 
 [dependencies]
 risc0-zkvm = { version = "=3.0.5", features = ["std"] }

@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-08-10T09:29:10Z",
+  "network_scope": "local_ephemeral",
+  "status": "confirmed",
+  "lez": {
+    "release": "v0.2.4",
+    "commit": "47eba256479f6f785acbd138834340703cd03401",
+    "mode": "standalone",
+    "risc0_dev_mode": "0",
+    "rpc_url": "http://127.0.0.1:<isolated-ephemeral-port>"
+  },
+  "proof": {
+    "threshold_proof_image_id": "e57b90a0fd306a8a6258f4fe7c045d056cf70142408e31a020817aaaba23bac4",
+    "receipt": {
+      "bytes": 270334,
+      "sha256": "212970331ca67e2557899b13f77fcf43855db2362b123c0c2dc3b88797bfd22d"
+    },
+    "journal": {
+      "bytes": 1100,
+      "sha256": "a8fe85f8d63f948409941b585cbe9244c2d0ae45082bf635173f753037ad4d8e"
+    }
+  },
+  "program": {
+    "program_id": "75efdee2321a1e15055bd5d03c1ea1a5665bf3e633683c9fb044a9e1f5941f79",
+    "program_binary_bytes": 439080,
+    "program_binary_sha256": "9bcd81fedbca5731c70369e28de9b0ede87ec007368bd18bab299f363fef632b"
+  },
+  "deployment": {
+    "tx_hash": "b15dc325d3ec4332a3f925b27383d932ed7d7605df50f962640149a583a059c8",
+    "confirmed": true,
+    "included_block_id": 2,
+    "program_id_matches_execute": true,
+    "explorer_url": null
+  },
+  "execution": {
+    "tx_hash": "4a985d6f1e0d8384e2774e4c62f4e1c714f7542d4647e0b0e4cfd4f08ae0e242",
+    "confirmed": true,
+    "included_block_id": 3,
+    "included_block_hash": "d0a13009cb54cbb3113f6619c58d43fda996e73519aa938e9ed5f4efc4f40637",
+    "included_tx_index": 0,
+    "instruction_data_bytes": 5492,
+    "instruction_data_sha256": "19944c558baa9cfc327fb5d4c078d6097b85cbf929943ec4eec9a82a28bc5170",
+    "explorer_url": null
+  },
+  "reproduction": {
+    "command": "LEZ_SOURCE_DIR=/path/to/logos-execution-zone-v0.2.4 scripts/lez-sequencer-e2e.sh",
+    "ci_workflow": ".github/workflows/ci.yml#test-sequencer-e2e"
+  },
+  "public_testnet_follow_up": {
+    "status": "confirmed_rpc_and_explorer_visible",
+    "endpoint": "https://testnet.lez.logos.co",
+    "observed_at_utc": "2026-08-10T10:32:39Z",
+    "explorer_links_available": true,
+    "evidence": "submission/LEZ_V024_PUBLIC_E2E_EVIDENCE.json",
+    "note": "The endpoint recovered after this isolated local run. Fresh public deploy and execute transactions were subsequently confirmed and both direct explorer pages render."
+  }
+}

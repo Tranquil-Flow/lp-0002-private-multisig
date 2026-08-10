@@ -25,6 +25,10 @@ AUDIO = WORK / "narration.aiff"
 SWIFT = ROOT / "scripts" / "render_slideshow_with_audio.swift"
 
 VIDEO_URL = "https://github.com/Tranquil-Flow/lp-0002-private-multisig/raw/refs/heads/master/submission/lp0002-narrated-demo.mp4"
+CURRENT_EVIDENCE_PATH = ROOT / "submission" / "LEZ_V024_PUBLIC_E2E_EVIDENCE.json"
+CURRENT_EVIDENCE = json.loads(CURRENT_EVIDENCE_PATH.read_text())
+CURRENT_IMAGE_ID = CURRENT_EVIDENCE["proof"]["threshold_proof_image_id"]
+CURRENT_EXECUTION = CURRENT_EVIDENCE["execution"]
 
 SLIDE_DATA = [
     (
@@ -54,17 +58,17 @@ SLIDE_DATA = [
     (
         "Heavy lane proof",
         [
-            "RISC0_DEV_MODE=0 proof artifacts are generated and verified host-side.",
-            "Image id: 6fc85ce06da1762abec319b4626c12229dc605a5b0283d64c8eab2567b9ee721",
-            "Proof id: 9e6492e73d1e8382abfa0e94e91842100b9041516857f215fcad7276cbad8b11",
+            "Current standalone E2E generates and verifies a fresh RISC0_DEV_MODE=0 proof.",
+            f"Current image id: {CURRENT_IMAGE_ID}",
+            "Archived old-image proof artifacts remain explicitly labeled as historical evidence.",
         ],
     ),
     (
         "Public LEZ testnet evidence",
         [
             "The deployment target for this prize is the public LEZ testnet (https://testnet.lez.logos.co/).",
-            "Confirmed wrapper tx: cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697",
-            "Included in block 39548 at transaction index 0.",
+            f"Current proof-backed execute tx: {CURRENT_EXECUTION['tx_hash']}",
+            f"Explorer-visible in block {CURRENT_EXECUTION['included_block_id']} at transaction index {CURRENT_EXECUTION['included_tx_index']}.",
         ],
     ),
     (
@@ -80,7 +84,7 @@ SLIDE_DATA = [
         [
             "Run: cargo test --workspace",
             "Run: python3 scripts/validate-submission-readiness.py",
-            "Run: bash scripts/demo-heavy-lane.sh --live-submit for fresh public-testnet evidence.",
+            "Run: bash scripts/demo-heavy-lane.sh --current-e2e for a fresh standalone proof and inclusion check.",
         ],
     ),
 ]
@@ -93,18 +97,16 @@ The public journal exposes proposal binding, threshold count, nullifiers, and a 
 The repository is a Rust workspace with core threshold logic, a high level SDK, a consumer demo, a verifier program, RISC Zero methods, a host bridge, and a LEZ shaped wrapper.
 The consumer demo imports the SDK as a library and exercises five realistic integration scenarios, matching the maintainer accepted external use requirement.
 
-The heavy lane generates and verifies real RISC Zero proof artifacts with RISC0 DEV MODE set to zero.
-The current proof image id is zero two six e nine five one nine, ending in four f zero one.
-The proof id is nine e six four nine two e seven, ending in eight b one one.
+The current heavy lane generates and verifies a fresh RISC Zero proof with RISC0 DEV MODE set to zero.
+The current wrapper and receipt image identifier are checked in lockstep. Archived old-image proof artifacts are labeled as historical rather than presented as current.
 
 For LP zero zero zero two, the deployment target is the public LEZ testnet.
-The wrapper transaction was confirmed on the public LEZ testnet with hash five nine six d d b four d, ending in nine one d five nine nine.
-It was included in block nineteen ninety five at transaction index zero.
+The current proof-backed wrapper transaction begins four a nine eight five d six f and is explorer-visible in block two thousand three hundred seventy-four at transaction index zero.
 
 One limitation is documented honestly. The current LEZ public program session limit cannot carry the raw two hundred seventy kilobyte RISC Zero receipt inside the public wrapper input.
 The wrapper therefore carries a receipt and journal commitment, while the full receipt remains retained and verified as file backed evidence.
 
-To reproduce the submission, clone the repository, run cargo test workspace, run the readiness validator, and run the heavy lane demo script with live submit for fresh public-testnet evidence.
+To reproduce the submission, clone the repository, run cargo test workspace, run the readiness validator, and run the heavy lane demo script with current e two e for a fresh standalone proof and canonical inclusion check.
 """.strip()
 
 

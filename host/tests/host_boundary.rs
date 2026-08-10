@@ -5,6 +5,35 @@ use lp0002_private_multisig_host::{
 };
 use lp0002_private_multisig_lez_program::{LezProgramError, ReceiptVerifier};
 
+fn wrapper_pinned_threshold_image_id() -> [u8; 32] {
+    let source = include_str!("../../methods/guest/src/bin/verify_and_execute_bytes.rs");
+    let declaration = source
+        .split("const THRESHOLD_PROOF_IMAGE_ID: [u8; 32] = [")
+        .nth(1)
+        .expect("wrapper threshold image-id declaration exists")
+        .split("];")
+        .next()
+        .expect("wrapper threshold image-id declaration closes");
+    let bytes = declaration
+        .split(|character: char| character == ',' || character.is_whitespace())
+        .filter(|token| token.starts_with("0x"))
+        .map(|token| u8::from_str_radix(&token[2..], 16).expect("image-id byte is hexadecimal"))
+        .collect::<Vec<_>>();
+    bytes
+        .try_into()
+        .expect("wrapper threshold image id contains exactly 32 bytes")
+}
+
+#[test]
+fn wrapper_threshold_image_id_matches_canonical_threshold_guest() {
+    let canonical = threshold_proof_image_id_bytes();
+    assert_eq!(
+        wrapper_pinned_threshold_image_id(),
+        canonical,
+        "re-attest the canonical threshold ProgramBinary whenever the wrapper pin changes"
+    );
+}
+
 #[test]
 fn fixture_guest_input_matches_shared_relation() {
     let input = fixture_guest_input();

@@ -85,9 +85,21 @@ if not re.search(r"https://github\.com/.+/.+", solution):
 
 # 2. LEZ testnet evidence. LP-0002 is deployed and executed on the public LEZ testnet (https://testnet.lez.logos.co/).
 text_surface = "\n".join([
+    read("README.md"),
     read("docs/PROTOCOL.md"),
     read("docs/SPEC_COMPLIANCE.md"),
+    read("docs/DEMO_VIDEO_SCRIPT.md"),
     read("submission/BENCHMARKS.md"),
+    read("submission/CI_EVIDENCE.md"),
+    read("submission/EVALUATOR_GUIDE.md"),
+    read("submission/FINAL_PUBLICATION_AUDIT.md"),
+    read("submission/MAINTAINER_CLARIFICATION.md"),
+    read("submission/PR_DRAFT.md"),
+    read("scripts/demo-heavy-lane.sh"),
+    read("scripts/demo-video.sh"),
+    read("scripts/lez-localnet-smoke.sh"),
+    read("scripts/narrate-demo.sh"),
+    read("scripts/render-narrated-demo.py"),
     read("docs/HEAVY_LANE_ROADMAP.md"),
     solution,
 ])
@@ -98,12 +110,60 @@ if re.search(r"LEZ public testnet/evaluator deployment|LEZ testnet deployment", 
     errors.append("module.json still lists LEZ testnet deployment as pending")
 if "Public testnet deployment remains" in text_surface or "public testnet/evaluator deployment remains" in text_surface or "No public LEZ testnet deployment yet" in text_surface:
     errors.append("docs still state public LEZ testnet deployment remains pending")
+for stale_claim in (
+    r"current live execute inclusion remains",
+    r"current public testnet multisig instance\s*\|\s*BLOCKED",
+    r"if a workflow-scope token is later available, add GitHub Actions",
+    r"not included by the public endpoint",
+    r"Wrapper transaction confirmed in block 39548",
+    r"with live submit for fresh public-testnet evidence",
+):
+    if re.search(stale_claim, text_surface, re.I):
+        errors.append(f"reviewer-facing docs retain stale blocker claim: {stale_claim}")
 
-# Require a structured evidence file so reviewers can audit all public tx ids.
+# Prefer fresh current-version public evidence. Retain the historical schema as a
+# fallback so old submissions still receive actionable validation errors.
+current_testnet_evidence = root / "submission/LEZ_V024_PUBLIC_E2E_EVIDENCE.json"
 testnet_evidence = root / "submission/TESTNET_EVIDENCE.json"
-if not testnet_evidence.exists():
-    errors.append("missing submission/TESTNET_EVIDENCE.json with public LEZ testnet program/multisig/proposal/execute tx evidence")
-else:
+if current_testnet_evidence.exists():
+    try:
+        ev = json.loads(current_testnet_evidence.read_text())
+        if ev.get("network_scope") != "public_testnet":
+            errors.append("LEZ_V024_PUBLIC_E2E_EVIDENCE.json must identify public_testnet network scope")
+        if ev.get("status") != "confirmed_rpc_and_explorer_visible":
+            errors.append("LEZ_V024_PUBLIC_E2E_EVIDENCE.json must record RPC-confirmed, explorer-visible status")
+        lez = ev.get("lez", {})
+        if lez.get("release") != "v0.2.4" or lez.get("commit") != "47eba256479f6f785acbd138834340703cd03401":
+            errors.append("LEZ_V024_PUBLIC_E2E_EVIDENCE.json must pin exact LEZ v0.2.4 source")
+        if str(lez.get("risc0_dev_mode")) != "0":
+            errors.append("LEZ_V024_PUBLIC_E2E_EVIDENCE.json must record RISC0_DEV_MODE=0")
+        for label in ("deployment", "execution"):
+            tx = ev.get(label, {})
+            if not isinstance(tx, dict) or not tx.get("confirmed_by_sequencer_rpc"):
+                errors.append(f"LEZ_V024_PUBLIC_E2E_EVIDENCE.json {label} must be confirmed by sequencer RPC")
+                continue
+            if not tx.get("tx_hash") or not tx.get("included_block_id"):
+                errors.append(f"LEZ_V024_PUBLIC_E2E_EVIDENCE.json {label} must record tx hash and block id")
+            explorer_url = str(tx.get("explorer_url", ""))
+            if not re.fullmatch(r"https://explorer\.testnet\.lez\.logos\.co/transaction/[0-9a-f]{64}", explorer_url):
+                errors.append(f"LEZ_V024_PUBLIC_E2E_EVIDENCE.json {label} must record a direct explorer transaction URL")
+            elif explorer_url.rsplit("/", 1)[-1] != tx.get("tx_hash"):
+                errors.append(f"LEZ_V024_PUBLIC_E2E_EVIDENCE.json {label} explorer URL must match tx hash")
+            if tx.get("explorer_status") != "visible":
+                errors.append(
+                    f"fresh public {label} is confirmed by sequencer RPC but its direct explorer link is not indexed yet"
+                )
+        deployment = ev.get("deployment", {})
+        if deployment.get("program_id_matches_execute") is not True:
+            errors.append("LEZ_V024_PUBLIC_E2E_EVIDENCE.json deployment program id must match execution")
+        execution = ev.get("execution", {})
+        if not re.fullmatch(r"[0-9a-f]{64}", str(execution.get("included_block_hash", ""))):
+            errors.append("LEZ_V024_PUBLIC_E2E_EVIDENCE.json execution must record canonical block hash")
+        if not isinstance(execution.get("included_tx_index"), int):
+            errors.append("LEZ_V024_PUBLIC_E2E_EVIDENCE.json execution must record canonical transaction index")
+    except json.JSONDecodeError as exc:
+        errors.append(f"LEZ_V024_PUBLIC_E2E_EVIDENCE.json invalid JSON: {exc}")
+elif testnet_evidence.exists():
     try:
         ev = json.loads(testnet_evidence.read_text())
         required = ["network", "verifier_program_id", "multisig_instance", "proposal_tx", "approval_txs", "execute_tx"]
@@ -120,6 +180,8 @@ else:
             errors.append("TESTNET_EVIDENCE.json must record confirmed public-testnet inclusion evidence")
     except json.JSONDecodeError as exc:
         errors.append(f"TESTNET_EVIDENCE.json invalid JSON: {exc}")
+else:
+    errors.append("missing current or historical structured public LEZ testnet evidence")
 
 # 3. Basecamp: static HTML is not enough after LP-0005 rejection.
 basecamp = root / "basecamp-app"
@@ -191,7 +253,7 @@ else:
 for token in ["cargo test --workspace", "validate-submission-readiness.py"]:
     if token not in validation_surface:
         errors.append(f"validation evidence missing local validation token: {token}")
-if "lez-localnet-smoke.sh" not in validation_surface and "demo-heavy-lane.sh" not in validation_surface:
+if not any(token in validation_surface for token in ("lez-sequencer-e2e.sh", "lez-localnet-smoke.sh", "demo-heavy-lane.sh")):
     errors.append("validation evidence lacks LEZ/RISC0 evidence smoke command")
 
 evaluator_guide = read("submission/EVALUATOR_GUIDE.md")

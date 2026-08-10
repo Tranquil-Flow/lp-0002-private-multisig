@@ -1,24 +1,23 @@
 use borsh::{BorshDeserialize, BorshSerialize};
-use lp0002_private_multisig_core::{hash_chunks, ProposalAction, ThresholdJournal};
-use nssa_core::{
+use lee_core::{
     account::Data,
-    program::{read_nssa_inputs, AccountPostState, Claim, PdaSeed, ProgramInput, ProgramOutput},
+    program::{read_lee_inputs, AccountPostState, Claim, PdaSeed, ProgramInput, ProgramOutput},
 };
+use lp0002_private_multisig_core::{hash_chunks, ProposalAction, ThresholdJournal};
 use risc0_zkvm::sha::{Impl, Sha256 as _};
 use serde::Deserialize;
 
 // Image ID for the LP-0002 threshold proof guest whose real receipt is supplied
-// by the caller. The NSSA public-execution host currently does not pass RISC0
+// by the caller. The LEE public-execution host currently does not pass RISC0
 // assumptions into public programs, so this wrapper validates the public journal
 // relation and records a receipt/journal commitment on-chain while the host-side evidence
 // cryptographically verifies the receipt against this image before submission.
-// Reproducible inner threshold-proof ImageID from the Docker-pinned guest build
-// (`cargo risczero build` / `RISC0_USE_DOCKER=1`, risc0-guest-builder r0.1.88.0).
-// Supersedes the earlier native-build id 026e95…, which was not reproducible from
-// source. Keep this in lockstep with the host's `threshold_proof_image_id_bytes()`.
+// Reproducible inner threshold-proof image ID from the pinned Cargo.lock +
+// RISC0 3.0.5 guest build. Keep this in lockstep with the host's generated
+// `threshold_proof_image_id_bytes()`; host_boundary.rs enforces the invariant.
 const THRESHOLD_PROOF_IMAGE_ID: [u8; 32] = [
-    0x6f, 0xc8, 0x5c, 0xe0, 0x6d, 0xa1, 0x76, 0x2a, 0xbe, 0xc3, 0x19, 0xb4, 0x62, 0x6c, 0x12, 0x22,
-    0x9d, 0xc6, 0x05, 0xa5, 0xb0, 0x28, 0x3d, 0x64, 0xc8, 0xea, 0xb2, 0x56, 0x7b, 0x9e, 0xe7, 0x21,
+    0xe5, 0x7b, 0x90, 0xa0, 0xfd, 0x30, 0x6a, 0x8a, 0x62, 0x58, 0xf4, 0xfe, 0x7c, 0x04, 0x5d, 0x05,
+    0x6c, 0xf7, 0x01, 0x42, 0x40, 0x8e, 0x31, 0xa0, 0x20, 0x81, 0x7a, 0xaa, 0xba, 0x23, 0xba, 0xc4,
 ];
 
 #[derive(Debug, Deserialize)]
@@ -86,7 +85,7 @@ fn main() {
             instruction,
         },
         instruction_words,
-    ) = read_nssa_inputs::<Instruction>();
+    ) = read_lee_inputs::<Instruction>();
 
     let Instruction::VerifyAndExecuteBytes(
         create_key,
@@ -158,9 +157,7 @@ fn main() {
         panic!("LP-0002 wrapper: expected [multisig_state, proposal_state] accounts");
     };
 
-    // rc3 (v0.2.0-rc3) replaced `From<(&ProgramId, &PdaSeed)> for AccountId`
-    // with the explicit `AccountId::for_public_pda` constructor.
-    let expected_proposal = nssa_core::account::AccountId::for_public_pda(
+    let expected_proposal = lee_core::account::AccountId::for_public_pda(
         &self_program_id,
         &proposal_seed(create_key, proposal_id),
     );

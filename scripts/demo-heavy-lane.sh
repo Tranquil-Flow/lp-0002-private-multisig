@@ -5,7 +5,7 @@ set -euo pipefail
 # Usage:
 #   bash scripts/demo-heavy-lane.sh
 #   SECTION_PAUSE=0 COMMAND_PAUSE=0 SCENE_PAUSE=0 bash scripts/demo-heavy-lane.sh  # dry run
-#   bash scripts/demo-heavy-lane.sh --live-submit  # deploy wrapper and submit a fresh localnet tx
+#   bash scripts/demo-heavy-lane.sh --current-e2e  # run the current standalone LEZ v0.2.4 E2E
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
@@ -17,20 +17,21 @@ HEAVY_CARGO_VERIFY="${HEAVY_CARGO_VERIFY:-0}"
 
 ARTIFACT_DIR="${ARTIFACT_DIR:-target/lp0002-risc0-fixture-new}"
 BUNDLED_ARTIFACT_DIR="submission/proof-artifacts/lp0002-risc0-fixture-new"
-LIVE_SUBMIT=0
-if [[ "${1:-}" == "--live-submit" ]]; then
-  LIVE_SUBMIT=1
+CURRENT_E2E=0
+if [[ "${1:-}" == "--current-e2e" || "${1:-}" == "--live-submit" ]]; then
+  CURRENT_E2E=1
 elif [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
   cat <<'USAGE'
-Usage: bash scripts/demo-heavy-lane.sh [--live-submit]
+Usage: bash scripts/demo-heavy-lane.sh [--current-e2e]
 
-Default mode is recording-safe: it validates bundled RISC0_DEV_MODE=0 evidence,
-prints the compact wrapper payload, and prints confirmed public-testnet evidence.
-Set HEAVY_CARGO_VERIFY=1 to also run the Rust host receipt verifier locally.
+Default mode is recording-safe: it hash-validates the explicitly archived
+pre-reset RISC0_DEV_MODE=0 evidence, then prints current LEZ v0.2.4 public
+deployment/execution evidence from submission/LEZ_V024_PUBLIC_E2E_EVIDENCE.json.
 
---live-submit additionally deploys verify_and_execute_bytes to localnet and sends
-a fresh NSSA transaction. This requires lgs localnet, Docker/RISC0 tooling, and
-NSSA_WALLET_HOME_DIR=.scaffold/wallet.
+--current-e2e runs scripts/lez-sequencer-e2e.sh, which generates a fresh proof,
+deploys the current ProgramBinary, executes it, and checks canonical inclusion.
+It requires LEZ_SOURCE_DIR to name the exact v0.2.4 source checkout.
+--live-submit remains a compatibility alias for --current-e2e.
 USAGE
   exit 0
 elif [[ -n "${1:-}" ]]; then
@@ -85,14 +86,13 @@ materialize_bundled_artifacts() {
   export ARTIFACT_DIR
 }
 
-section "LP-0002 heavy lane: RISC0 proof + LEZ wrapper evidence"
+section "LP-0002 heavy lane: archived proof + current LEZ v0.2.4 evidence"
 cat <<EOF
 This demo shows the heavy-lane evidence for LP-0002:
-  • bundled RISC0_DEV_MODE=0 proof artifacts are checked for freshness metadata
-  • optional Rust host verification is available with HEAVY_CARGO_VERIFY=1
-  • the executable verify_and_execute_bytes wrapper evidence is printed
-  • the NSSA/LEZ compact wrapper payload is reproducible
-  • confirmed public-testnet inclusion evidence is printed
+  • bundled pre-reset RISC0_DEV_MODE=0 artifacts are hash-checked as history
+  • their old image id is never presented as the current wrapper image id
+  • current LEZ v0.2.4 standalone evidence is reproducible with --current-e2e
+  • current deploy/execute block coordinates and explorer links are printed
 
 Honesty note: current LEZ/RISC0 public-program sessions cannot carry the raw
 270 KiB receipt inside the public wrapper input. The wrapper therefore carries
@@ -101,7 +101,7 @@ verified as file artifact evidence.
 EOF
 pause "$SCENE_PAUSE"
 
-section "1. Verify required proof artifacts"
+section "1. Verify archived pre-reset proof artifacts"
 materialize_bundled_artifacts
 require_file "$ARTIFACT_DIR/receipt.borsh"
 require_file "$ARTIFACT_DIR/journal.borsh"
@@ -135,23 +135,20 @@ for token in [
 ]:
     if token not in manifest:
         raise SystemExit(f'manifest missing {token}')
-print('manifest confirms RISC0_DEV_MODE=0 image/proof ids and 2-of-3 threshold')
+print('archived manifest confirms its historical RISC0_DEV_MODE=0 image/proof ids and 2-of-3 threshold')
 PY
 if [[ "$HEAVY_CARGO_VERIFY" == "1" ]]; then
-  run_cmd cargo run -p lp0002-private-multisig-host --bin lp0002-verify-artifacts -- "$ARTIFACT_DIR"
-  result "RISC0 receipt artifacts verify against the expected threshold proof image"
+  echo "ERROR: HEAVY_CARGO_VERIFY cannot apply the current wrapper verifier to the archived old-image receipt." >&2
+  echo "Run with --current-e2e to generate and verify a fresh current-image proof." >&2
+  exit 2
 else
-  note "Skipping Rust host receipt verifier by default to keep fresh-clone demo lightweight; set HEAVY_CARGO_VERIFY=1 to run it."
-  result "Bundled RISC0_DEV_MODE=0 artifact hashes and manifest metadata match the audited evidence set"
+  note "Archived receipt pins image 6fc85ce0...; current wrapper pins e57b90a0...."
+  result "Archived RISC0_DEV_MODE=0 artifact hashes and manifest metadata match their audited historical evidence set"
 fi
 pause "$SCENE_PAUSE"
 
-section "2. Inspect the LEZ-shaped host bridge evidence"
-if [[ "$HEAVY_CARGO_VERIFY" == "1" ]]; then
-  run_cmd cargo run -p lp0002-private-multisig-host --bin lp0002-lez-execute-artifacts -- "$ARTIFACT_DIR"
-else
-  note "Using bundled lez-execution.json; set HEAVY_CARGO_VERIFY=1 to regenerate it with the Rust host."
-fi
+section "2. Inspect archived LEZ-shaped host bridge evidence"
+note "Using bundled pre-reset lez-execution.json as historical evidence only."
 python3 - <<'PY'
 import json, os
 from pathlib import Path
@@ -162,16 +159,11 @@ if p.exists():
         if k in data:
             print(f'{k}: {data[k]}')
 PY
-result "The verified journal drives the replay-protected LEZ-shaped execution gate"
+result "The archived journal records the historical replay-protected LEZ-shaped execution gate"
 pause "$SCENE_PAUSE"
 
-section "3. Inspect compact NSSA/SPEL payload evidence"
-if [[ "$HEAVY_CARGO_VERIFY" == "1" ]]; then
-  run_cmd cargo run -p lp0002-private-multisig-host --bin lp0002-spel-adapter-evidence -- "$ARTIFACT_DIR"
-  run_cmd cargo run -p lp0002-private-multisig-host --bin lp0002-submit-localnet -- "$ARTIFACT_DIR"
-else
-  note "Using bundled compact payload evidence; set HEAVY_CARGO_VERIFY=1 to regenerate it."
-fi
+section "3. Inspect archived NSSA/SPEL payload evidence"
+note "These filenames and payloads are retained for pre-v0.2.4 audit history only."
 python3 - <<'PY'
 import json, os
 from pathlib import Path
@@ -182,46 +174,38 @@ for rel in ['spel-adapter-evidence.json', 'nssa-submit-dry-run.json']:
     for k in ['program_id', 'threshold_proof_image_id', 'instruction_data_len', 'instruction_data_sha256', 'receipt_bytes_len', 'receipt_bytes_sha256', 'proof_journal_bytes_sha256', 'receipt_journal_commitment', 'receipt_transport']:
         print(f'  {k}: {data.get(k)}')
 PY
-result "Payload hash and receipt/journal commitment is deterministic and reproducible"
+result "Archived payload hash and receipt/journal commitment are deterministic and reproducible"
 pause "$SCENE_PAUSE"
 
-if [[ "$LIVE_SUBMIT" == "1" ]]; then
-  section "4. Live localnet submit"
-  if ! command -v lgs >/dev/null 2>&1; then
-    echo "ERROR: lgs not found; cannot live-submit" >&2
-    exit 1
-  fi
-  run_cmd lgs localnet status
-  WRAPPER_BIN="target/riscv-guest/lp0002-private-multisig-methods/lp0002-private-multisig-guest/riscv32im-risc0-zkvm-elf/release/verify_and_execute_bytes.bin"
-  require_file "$WRAPPER_BIN"
-  run_cmd lgs deploy verify_and_execute_bytes --program-path "$WRAPPER_BIN" --json
-  NSSA_WALLET_HOME_DIR=.scaffold/wallet run_cmd target/debug/lp0002-submit-localnet --submit --no-poll "$ARTIFACT_DIR"
-  TX_HASH="$(python3 - <<'PY'
-import json, os
-from pathlib import Path
-print(json.loads((Path(os.environ['ARTIFACT_DIR']) / 'nssa-submit-evidence.json').read_text())['tx_hash'])
-PY
-)"
-  sleep 20
-  NSSA_WALLET_HOME_DIR=.scaffold/wallet run_cmd target/debug/lp0002-submit-localnet --tx-hash "$TX_HASH" "$ARTIFACT_DIR"
+if [[ "$CURRENT_E2E" == "1" ]]; then
+  section "4. Run current LEZ v0.2.4 standalone E2E"
+  run_cmd bash scripts/lez-sequencer-e2e.sh
 else
-  section "4. Confirmed public-testnet inclusion evidence"
-  note "Default mode prints the recorded confirmed public-testnet evidence, avoiding duplicate txs during recording."
+  section "4. Current LEZ v0.2.4 public-testnet evidence"
+  note "Default mode prints current committed evidence without creating duplicate transactions."
 fi
 
 python3 - <<'PY'
-import json, os
+import json
 from pathlib import Path
-p = Path(os.environ['ARTIFACT_DIR']) / 'nssa-submit-evidence.json'
+p = Path('submission/LEZ_V024_PUBLIC_E2E_EVIDENCE.json')
 if not p.exists():
     raise SystemExit(f'missing {p}')
 data = json.loads(p.read_text())
-for k in ['status', 'confirmed', 'program_id', 'threshold_proof_image_id', 'tx_hash', 'included_block_id', 'included_tx_index', 'instruction_data_len', 'instruction_data_sha256', 'receipt_transport']:
-    print(f'{k}: {data.get(k)}')
-if data.get('status') != 'confirmed':
-    raise SystemExit('public-testnet evidence is not confirmed')
+if data.get('status') != 'confirmed_rpc_and_explorer_visible':
+    raise SystemExit('current public-testnet evidence is not RPC-confirmed and explorer-visible')
+if data.get('lez', {}).get('release') != 'v0.2.4' or data.get('lez', {}).get('risc0_dev_mode') != '0':
+    raise SystemExit('current evidence must pin LEZ v0.2.4 with RISC0_DEV_MODE=0')
+print(f"release: {data['lez']['release']}")
+print(f"commit: {data['lez']['commit']}")
+print(f"threshold_proof_image_id: {data['proof']['threshold_proof_image_id']}")
+for label in ('deployment', 'execution'):
+    tx = data[label]
+    print(f"{label}_tx_hash: {tx['tx_hash']}")
+    print(f"{label}_included_block_id: {tx['included_block_id']}")
+    print(f"{label}_explorer_url: {tx['explorer_url']}")
 PY
-result "Wrapper transaction inclusion evidence is confirmed"
+result "Current v0.2.4 deployment and proof-backed execution are RPC-confirmed and explorer-visible"
 pause "$SCENE_PAUSE"
 
 section "5. Final readiness gate"

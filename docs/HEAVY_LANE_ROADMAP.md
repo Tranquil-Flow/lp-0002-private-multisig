@@ -1,5 +1,5 @@
 # LP-0002 Heavy-Lane Roadmap: RISC0 + LEZ
-> Current reset-era refresh (2026-06-28): deploy tx `c7157a473cb512bf7e1803d4377d9f65e9406a7ff98efeda48b65c0d4915a13b` is included on the public LEZ testnet for program id `1557176a639868b0363e9106c75fe0748ceb42e65f5f1a6778dd05b6baebb57d` (ProgramBinary SHA-256 `8f74ccc446990f5437b5f6c6e731deac6653992e0a64abcecdff7bff0c5575e1`). Execute attempts `352eb699507aea4d4ca6963a50bef1473a2b944dfd7713116cbf82eabfeec3bf` and `fc4165ac2437bd6533444c5e010b2d248aed678daadfad277af1dd0f1fef6ca8` locally validate under v0.2.0 but are not included by the public endpoint, so current live execute inclusion remains a transparent blocker and is not claimed. Historical pre-reset txs `82516880...` / `cb8bfd5...` are retained only as audit history.
+> Repository evidence refresh (2026-08-10): exact LEZ v0.2.4 commit `47eba256...` is current. Deploy tx `b15dc325...` is confirmed in block `2373`; proof-backed execute tx `4a985d6f...` is confirmed in block `2374`, index `0`; both direct explorer pages render. `scripts/lez-sequencer-e2e.sh` independently proves the non-dev-mode standalone path. Earlier reset/pre-reset records remain audit history only.
 
 The current LP-0002 repository contains both the fast safe-lane reference
 implementation and a completed first heavy-lane evidence path. The safe lane nails
@@ -30,13 +30,12 @@ Completed in this increment:
   and rejects any supplied journal that does not exactly match the receipt journal.
 - `lp0002-lez-execute-artifacts` runs verified RISC0 artifacts through
   `lez-program::execute_proposal` and writes `lez-execution.json` evidence.
-- `verify_and_execute_bytes` is now exposed in the SPEL IDL as a byte-oriented
-  transaction surface for the current CLI/tooling, and
-  `lp0002-spel-adapter-evidence` builds the exact serialized NSSA instruction
-  payload from the real receipt, journal, and action bytes.
+- `verify_and_execute_bytes` is exposed in the SPEL IDL as a byte-oriented
+  transaction surface. The legacy `lp0002-spel-adapter-evidence` artifacts retain
+  NSSA-era filenames for audit history; the current v0.2.4 submitter uses LEE.
 
 
-### Current heavy-lane evidence (2026-05-25)
+### Historical heavy-lane evidence (2026-05-25; superseded)
 
 - Real `RISC0_DEV_MODE=0` fixture proof generated and verified on M4 Pro.
 - Image id: `6fc85ce06da1762abec319b4626c12229dc605a5b0283d64c8eab2567b9ee721`.
@@ -55,6 +54,18 @@ Completed in this increment:
   `cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697` in block
   `39548`. On LEZ a transaction is included in a block only if its program
   execution succeeds, so the confirmed execute tx is a successful on-chain run.
+
+### Current LEZ v0.2.4 evidence (2026-08-10)
+
+- `scripts/lez-sequencer-e2e.sh` builds exact LEZ commit `47eba256...` in
+  standalone mode, generates a fresh `RISC0_DEV_MODE=0` proof, deploys its
+  ProgramBinary, executes it, and verifies canonical block/hash/index inclusion.
+- Threshold proof image id: `e57b90a0fd306a8a6258f4fe7c045d056cf70142408e31a020817aaaba23bac4`.
+- Wrapper program id: `75efdee2321a1e15055bd5d03c1ea1a5665bf3e633683c9fb044a9e1f5941f79`.
+- Public deploy tx `b15dc325...` is visible in block `2373`; public execute tx
+  `4a985d6f...` is visible in block `2374`, index `0`.
+- Structured evidence: `submission/LEZ_V024_LOCAL_E2E_EVIDENCE.json` and
+  `submission/LEZ_V024_PUBLIC_E2E_EVIDENCE.json`.
 
 Dependent on future target-network tooling:
 
@@ -154,7 +165,7 @@ bound to the proposal, action, replay state, and wrapper transport commitments.
 `verifier-program/` is the pure Rust execution gate; `lez-program/` wraps it in
 LEZ-shaped account state and Borsh instruction payloads. The recorded public-testnet
 path uses the executable `verify_and_execute_bytes` wrapper program plus a native
-file-backed NSSA submitter. For current LEZ public-program session limits, the
+file-backed LEE submitter. For current LEZ public-program session limits, the
 submitted transaction carries compact receipt/journal commitments while the full
 receipt remains host-verified and file-backed evidence.
 
@@ -178,14 +189,15 @@ cargo run -p lp0002-private-multisig-host --bin lp0002-verify-artifacts -- targe
 cargo run -p lp0002-private-multisig-host --bin lp0002-lez-execute-artifacts -- target/lp0002-risc0-fixture
 cargo run -p lp0002-private-multisig-host --bin lp0002-spel-adapter-evidence -- target/lp0002-risc0-fixture
 
-# smoke-check scaffold and localnet
-scripts/lez-localnet-smoke.sh
+# exact current standalone deploy/execute/inclusion gate
+LEZ_SOURCE_DIR=/path/to/logos-execution-zone-v0.2.4 \
+  scripts/lez-sequencer-e2e.sh
 
-# submit/query the recorded public-testnet wrapper transaction when localnet is live
-NSSA_WALLET_HOME_DIR=.scaffold/wallet cargo run -p lp0002-private-multisig-host --bin lp0002-submit-localnet -- \
-  --evidence-dir target/lp0002-risc0-fixture \
-  --program-id 974939edb6fc9cffd97929dd830a0d75bfc7a09b08c2f3fc87da940aadc0c130 \
-  --query cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697
+# query current public execution inclusion directly
+cargo run -p lp0002-private-multisig-host --bin lp0002-submit-localnet -- \
+  --sequencer-url https://testnet.lez.logos.co \
+  --tx-hash 4a985d6f1e0d8384e2774e4c62f4e1c714f7542d4647e0b0e4cfd4f08ae0e242 \
+  --from-block 2374 target/lp0002-risc0-fixture
 ```
 
 ### 5. Benchmarks and target-runtime metric boundary

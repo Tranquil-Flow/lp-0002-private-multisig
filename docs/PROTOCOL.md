@@ -1,5 +1,5 @@
 # LP-0002 Protocol: Private M-of-N Multisig
-> Current reset-era refresh (2026-06-28): deploy tx `c7157a473cb512bf7e1803d4377d9f65e9406a7ff98efeda48b65c0d4915a13b` is included on the public LEZ testnet for program id `1557176a639868b0363e9106c75fe0748ceb42e65f5f1a6778dd05b6baebb57d` (ProgramBinary SHA-256 `8f74ccc446990f5437b5f6c6e731deac6653992e0a64abcecdff7bff0c5575e1`). Execute attempts `352eb699507aea4d4ca6963a50bef1473a2b944dfd7713116cbf82eabfeec3bf` and `fc4165ac2437bd6533444c5e010b2d248aed678daadfad277af1dd0f1fef6ca8` locally validate under v0.2.0 but are not included by the public endpoint, so current live execute inclusion remains a transparent blocker and is not claimed. Historical pre-reset txs `82516880...` / `cb8bfd5...` are retained only as audit history.
+> Repository evidence refresh (2026-08-10): exact LEZ v0.2.4 commit `47eba256...` is current. Deploy tx `b15dc325...` is confirmed in block `2373`; proof-backed execute tx `4a985d6f...` is confirmed in block `2374`, index `0`; both direct explorer pages render. `scripts/lez-sequencer-e2e.sh` independently proves the non-dev-mode standalone path. Earlier reset/pre-reset records remain audit history only.
 
 ## 1. Overview
 
@@ -144,7 +144,7 @@ The repository contains two deliberately separate execution lanes:
 - **Heavy lane (`methods/`, `host/`, `lez-program/`, `scripts/demo-heavy-lane.sh`)**:
   real `RISC0_DEV_MODE=0` proof artifacts generated on the M4 Pro, verified
   host-side against image id
-  `6fc85ce06da1762abec319b4626c12229dc605a5b0283d64c8eab2567b9ee721`, and
+  `e57b90a0fd306a8a6258f4fe7c045d056cf70142408e31a020817aaaba23bac4`, and
   bridged into the LEZ-shaped execution wrapper.
 
 The safe-lane receipt must not be treated as a production ZK receipt: a malicious
@@ -172,13 +172,14 @@ For the recorded heavy-lane artifacts:
 1. **Safe-lane receipt is not a zkVM receipt**: The fast root demo uses a
    deterministic SHA-256 seal for clone-and-run usability. The real ZK integrity
    evidence is the separate heavy-lane RISC0 receipt path documented in
-   `submission/TESTNET_EVIDENCE.json` and exercised by `scripts/demo-heavy-lane.sh`.
+   `submission/LEZ_V024_PUBLIC_E2E_EVIDENCE.json` and exercised end-to-end by
+   `scripts/lez-sequencer-e2e.sh`.
 
-2. **Compact LEZ transport boundary**: the executable `verify_and_execute_bytes`
-   wrapper compiles, has been deployed on the public LEZ testnet
-   (https://testnet.lez.logos.co/) — deploy tx `82516880...` in block `39547` —
-   and has confirmed NSSA transaction inclusion (execute tx `cb8bfd5a...`) in
-   block `39548`. Because raw RISC0 receipts exceed the current public-program
+2. **Compact LEZ transport boundary**: the current v0.2.4
+   `verify_and_execute_bytes` ProgramBinary is deployed on public LEZ testnet via
+   tx `b15dc325...` in block `2373`, with confirmed LEE execution tx
+   `4a985d6f...` in block `2374`. Because raw RISC0 receipts exceed the
+   public-program
    session limit, the included wrapper transaction carries receipt/journal
    commitments while the full receipt remains host-verified and file-backed
    evidence.

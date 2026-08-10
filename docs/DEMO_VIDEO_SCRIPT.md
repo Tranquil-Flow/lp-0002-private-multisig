@@ -1,5 +1,5 @@
 # LP-0002 Demo Video Narration Guide
-> Current reset-era refresh (2026-06-28): deploy tx `c7157a473cb512bf7e1803d4377d9f65e9406a7ff98efeda48b65c0d4915a13b` is included on the public LEZ testnet for program id `1557176a639868b0363e9106c75fe0748ceb42e65f5f1a6778dd05b6baebb57d` (ProgramBinary SHA-256 `8f74ccc446990f5437b5f6c6e731deac6653992e0a64abcecdff7bff0c5575e1`). Execute attempts `352eb699507aea4d4ca6963a50bef1473a2b944dfd7713116cbf82eabfeec3bf` and `fc4165ac2437bd6533444c5e010b2d248aed678daadfad277af1dd0f1fef6ca8` locally validate under v0.2.0 but are not included by the public endpoint, so current live execute inclusion remains a transparent blocker and is not claimed. Historical pre-reset txs `82516880...` / `cb8bfd5...` are retained only as audit history.
+> Repository evidence refresh (2026-08-10): exact LEZ v0.2.4 commit `47eba256...` is current. Deploy tx `b15dc325...` is confirmed in block `2373`; proof-backed execute tx `4a985d6f...` is confirmed in block `2374`, index `0`; both direct explorer pages render. `scripts/lez-sequencer-e2e.sh` independently proves the non-dev-mode standalone path. Earlier reset/pre-reset records remain audit history only.
 
 Use QuickTime Player -> File -> New Screen Recording. Open Terminal in this repo,
 increase font size to ~18pt, then run:
@@ -20,9 +20,10 @@ Be precise: `scripts/demo-video.sh` is the **combined recording walkthrough**:
 it runs the consumer demo, validates the native/Basecamp surfaces, and
 then replays the heavy-lane evidence via `scripts/demo-heavy-lane.sh`. The heavy
 lane verifies real `RISC0_DEV_MODE=0` artifacts, builds compact wrapper payload
-evidence, and prints confirmed inclusion on the public LEZ testnet
-(https://testnet.lez.logos.co/) — deploy tx `82516880...` block `39547`, execute
-tx `cb8bfd5a...` block `39548`. The current LEZ JSON-RPC surface does not expose
+evidence, and replays historical pre-reset inclusion. The current v0.2.4
+standalone and public-testnet evidence postdates that recorded walkthrough and is
+provided by `scripts/lez-sequencer-e2e.sh` plus
+`submission/LEZ_V024_PUBLIC_E2E_EVIDENCE.json`. The current LEZ JSON-RPC surface does not expose
 stable per-transaction CU counters, so the submission records payload/account/receipt
 metrics plus an explicit CU-metering limitation.
 
@@ -85,8 +86,8 @@ runtime load evidence included for Basecamp review."
 
 "This submission is ready for review as a thorough implementation: the protocol
 is modeled, tested, documented, and easy to integrate. For the heavy lane, run
-`scripts/demo-heavy-lane.sh` to show real RISC0 artifact verification, compact
-wrapper payload evidence, and confirmed public-testnet inclusion. The narrated demo
+`scripts/lez-sequencer-e2e.sh` to show a fresh non-dev proof, compact wrapper
+payload, deployment, execution, and canonical inclusion. The narrated demo
 asset and structured evidence are included in the submission package."
 
 ## Important phrases to avoid

@@ -1,5 +1,5 @@
 # LP-0002: Private M-of-N Multisig
-> Current reset-era refresh (2026-06-28): deploy tx `c7157a473cb512bf7e1803d4377d9f65e9406a7ff98efeda48b65c0d4915a13b` is included on the public LEZ testnet for program id `1557176a639868b0363e9106c75fe0748ceb42e65f5f1a6778dd05b6baebb57d` (ProgramBinary SHA-256 `8f74ccc446990f5437b5f6c6e731deac6653992e0a64abcecdff7bff0c5575e1`). Execute attempts `352eb699507aea4d4ca6963a50bef1473a2b944dfd7713116cbf82eabfeec3bf` and `fc4165ac2437bd6533444c5e010b2d248aed678daadfad277af1dd0f1fef6ca8` locally validate under v0.2.0 but are not included by the public endpoint, so current live execute inclusion remains a transparent blocker and is not claimed. Historical pre-reset txs `82516880...` / `cb8bfd5...` are retained only as audit history.
+> Current LEZ refresh (2026-08-10): the repository pins LEZ v0.2.4 (`47eba256…`) and `scripts/lez-sequencer-e2e.sh` builds a real standalone sequencer, generates a fresh `RISC0_DEV_MODE=0` proof, deploys the generated wrapper, executes it, and verifies canonical block inclusion. The same final artifacts were re-submitted to public testnet: [deploy tx `b15dc325…`](https://explorer.testnet.lez.logos.co/transaction/b15dc325d3ec4332a3f925b27383d932ed7d7605df50f962640149a583a059c8) in block `2373`, then [execute tx `4a985d6f…`](https://explorer.testnet.lez.logos.co/transaction/4a985d6f1e0d8384e2774e4c62f4e1c714f7542d4647e0b0e4cfd4f08ae0e242) in block `2374`. Sequencer RPC confirms both and both direct explorer pages now render; observed indexing delay was about 59 minutes. See `submission/LEZ_V024_PUBLIC_E2E_EVIDENCE.json`.
 
 A privacy-preserving M-of-N multisig primitive for the Logos Execution Zone
 (LEZ), where members hold shielded accounts, proposals and approvals leave no
@@ -13,15 +13,14 @@ the first heavy-lane RISC0 implementation. The safe-lane SDK, consumer demo, and
 replay-protected verifier gate remain fast and clone-and-run. The heavy lane adds
 a RISC0 guest method plus host prover that produces real `RISC0_DEV_MODE=0`
 proof artifacts sealing the private membership relation, plus a LEZ-shaped
-`execute_proposal` transaction wrapper crate. Historical public LEZ testnet
-capture exists for the heavy lane (https://testnet.lez.logos.co/): deploy tx
-`82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56` in block
-`39547` and execute tx
-`cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697` in block
-`39548`, with compact NSSA transaction transport. Current reset-era re-query now
-fails closed, so redeploy/re-execute is required before claiming current-live
-on-chain evidence. Formal per-transaction CU counters are recorded as unavailable
-in current LEZ tooling rather than invented; see `submission/LEZ_COST_BENCHMARKS.json`.
+`execute_proposal` transaction wrapper crate. The v0.2.4 standalone-sequencer
+CI lane proves deploy, execute, and canonical inclusion from source. Fresh public
+testnet RPC evidence confirms the same final wrapper/proof in blocks `2373` and
+`2374`; `submission/LEZ_V024_PUBLIC_E2E_EVIDENCE.json` records direct explorer
+routes and the observed indexer lag at verification time. Historical pre-reset evidence
+remains in `submission/TESTNET_EVIDENCE.json` only as audit history. Formal
+per-transaction CU counters are recorded as unavailable rather than invented;
+see `submission/LEZ_COST_BENCHMARKS.json`.
 
 ## Quick Start
 
@@ -50,6 +49,9 @@ cargo run -p lp0002-private-multisig-host --bin lp0002-verify-artifacts -- targe
 
 # Smoke-check LEZ localnet plus RISC0 artifacts
 scripts/lez-localnet-smoke.sh
+
+# Exact LEZ v0.2.4 standalone deploy/execute/inclusion gate
+LEZ_SOURCE_DIR=/path/to/logos-execution-zone-v0.2.4 scripts/lez-sequencer-e2e.sh
 
 # Recording-safe heavy-lane evidence demo
 bash scripts/demo-heavy-lane.sh

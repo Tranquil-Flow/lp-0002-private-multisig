@@ -1,19 +1,20 @@
-use common::{transaction::NSSATransaction, HashType};
+use common::{transaction::LeeTransaction, HashType};
+use lee::program::Program;
+use lee::public_transaction::{Message, WitnessSet};
+use lee::{AccountId, PublicTransaction};
+use lee_core::program::{PdaSeed, ProgramId};
 use lp0002_private_multisig_core::ProposalAction;
 use lp0002_private_multisig_host::{
     decode_any_journal_bytes, fixture_guest_input, threshold_proof_image_id_bytes,
     verify_and_execute_program_id_bytes,
 };
-use nssa::program::Program;
-use nssa::public_transaction::{Message, WitnessSet};
-use nssa::{AccountId, PublicTransaction};
-use nssa_core::program::{PdaSeed, ProgramId};
-use sequencer_service_rpc::RpcClient as _;
+
+use sequencer_service_rpc::{RpcClient as _, SequencerClient, SequencerClientBuilder};
 use serde::ser::{SerializeSeq, SerializeTuple, SerializeTupleVariant};
 use serde::Serialize;
 use serde_json::json;
 use sha2::{Digest, Sha256};
-use std::{path::PathBuf, str::FromStr};
+use std::{path::PathBuf, str::FromStr, time::Duration};
 use wallet::WalletCore;
 
 struct VerifyAndExecuteBytesInstruction<'a> {
@@ -77,6 +78,19 @@ fn sha256_hex(bytes: &[u8]) -> String {
     hex::encode(sha256_bytes(bytes))
 }
 
+async fn poll_transaction(
+    client: &SequencerClient,
+    tx_hash: HashType,
+) -> anyhow::Result<Option<u64>> {
+    for _ in 0..60 {
+        if let Some((_, block_id)) = client.get_transaction(tx_hash).await? {
+            return Ok(Some(block_id));
+        }
+        tokio::time::sleep(Duration::from_secs(1)).await;
+    }
+    Ok(None)
+}
+
 fn program_id_from_image_id(image_id: [u8; 32]) -> ProgramId {
     let mut out = [0u32; 8];
     for (idx, chunk) in image_id.chunks_exact(4).enumerate() {
@@ -96,14 +110,14 @@ fn proposal_pda(program_id: &ProgramId, create_key: [u8; 32], proposal_id: [u8; 
 
 fn usage() -> ! {
     eprintln!(
-        "Usage: lp0002-submit-localnet [--submit] [--no-poll] [--tx-hash HEX] [--program-id HEX] [--image-id HEX] [ARTIFACT_DIR]"
+        "Usage: lp0002-submit-localnet [--submit] [--no-poll] [--sequencer-url URL] [--tx-hash HEX] [--from-block N] [--program-id HEX] [--image-id HEX] [--signer BASE58] [--deploy-program PROGRAM.bin] [ARTIFACT_DIR]"
     );
-    eprintln!("Default mode builds transaction evidence only. --submit sends via WalletCore::from_env() to whichever sequencer NSSA_WALLET_HOME_DIR points at (localnet or public testnet).");
-    eprintln!("--tx-hash HEX queries inclusion evidence for an already-submitted transaction without resubmitting.");
-    eprintln!("--program-id HEX overrides the wrapper program id (defaults to the embedded verify_and_execute image id; use the id returned by `wallet deploy-program` for public-testnet deploys).");
+    eprintln!("Default mode builds transaction evidence only. --submit sends to --sequencer-url, LEE_SEQUENCER_URL, or http://127.0.0.1:3040.");
+    eprintln!("--tx-hash HEX queries canonical inclusion evidence for an already-submitted transaction without resubmitting; --from-block bounds the block scan.");
+    eprintln!("--program-id HEX overrides the wrapper program id (defaults to the embedded verify_and_execute image id; --deploy-program validates it against the parsed ProgramBinary before sending).");
     eprintln!("--image-id HEX overrides the threshold-proof image id field (defaults to the embedded value; pass the recorded inner-proof image id when submitting against a different sequencer build).");
     eprintln!("--signer BASE58 funds/signs the public tx with a wallet-held account (required for the public testnet, which rejects nonce-less/unsigned public txs; account_ids are unchanged).");
-    eprintln!("--deploy-program PATH deploys the program ELF (ProgramDeployment) to the configured sequencer and exits; run this once before --submit so the public testnet has the wrapper registered (a Public tx invoking an unregistered program is dropped).");
+    eprintln!("--deploy-program PATH deploys the generated RISC0 ProgramBinary (.bin) to the configured sequencer and exits; raw ELF intermediates are not accepted by LEZ v0.2.4.");
     std::process::exit(2);
 }
 
@@ -118,11 +132,17 @@ async fn main() -> anyhow::Result<()> {
     let mut signer_override: Option<String> = None;
     let mut deploy_program_path: Option<PathBuf> = None;
     let mut from_block: u64 = 1;
+    let mut sequencer_url =
+        std::env::var("LEE_SEQUENCER_URL").unwrap_or_else(|_| "http://127.0.0.1:3040".to_owned());
     let mut args = std::env::args().skip(1).peekable();
     while let Some(arg) = args.next() {
         match arg.as_str() {
             "--submit" => submit = true,
             "--no-poll" => poll = false,
+            "--sequencer-url" => {
+                let Some(url) = args.next() else { usage() };
+                sequencer_url = url;
+            }
             "--deploy-program" => {
                 let Some(p) = args.next() else { usage() };
                 deploy_program_path = Some(PathBuf::from(p));
@@ -155,24 +175,28 @@ async fn main() -> anyhow::Result<()> {
         }
     }
     let dir = artifact_dir.unwrap_or_else(|| PathBuf::from("target/lp0002-risc0-fixture"));
+    let needs_client = submit || tx_hash_to_query.is_some() || deploy_program_path.is_some();
+    let sequencer_client = needs_client
+        .then(|| SequencerClientBuilder::default().build(&sequencer_url))
+        .transpose()?;
 
-    // Optional standalone step: deploy a program ELF (ProgramDeployment) to the
-    // configured sequencer, then exit. Mirrors LP-0013's proven rc3 deploy path:
-    // the deploy tx carries only the ELF bytes (no signer, no accounts, no gas);
+    // Optional standalone step: deploy a generated RISC0 ProgramBinary to the
+    // configured sequencer, then exit. The deploy tx carries only the program
+    // bytes (no signer, no accounts, no gas);
     // a fresh deploy is included in a block, a re-deploy is skipped by the
     // sequencer (ProgramAlreadyExists). The public testnet drops a Public execute
     // tx whose program is not registered, so this must run before --submit there.
-    if let Some(elf_path) = deploy_program_path.as_ref() {
+    if let Some(program_path) = deploy_program_path.as_ref() {
         if !submit {
             eprintln!("--deploy-program requires --submit (it sends a real ProgramDeployment tx)");
             std::process::exit(2);
         }
-        let elf = std::fs::read(elf_path)?;
-        let program =
-            Program::new(elf.clone()).map_err(|e| anyhow::anyhow!("parse program ELF: {e:?}"))?;
+        let program_bytes = std::fs::read(program_path)?;
+        let program = Program::new(program_bytes.clone().into())
+            .map_err(|e| anyhow::anyhow!("parse RISC0 ProgramBinary: {e:?}"))?;
         let computed_id = program.id();
         // Honor --program-id so the check works under RISC0_SKIP_BUILD (which zeroes
-        // the embedded image-id constant). program.id() is computed from the ELF bytes
+        // the embedded image-id constant). program.id() is computed from the program bytes
         // at runtime and is unaffected by SKIP_BUILD, so it is always the real id.
         let expected_image_bytes =
             program_id_override.unwrap_or_else(verify_and_execute_program_id_bytes);
@@ -184,32 +208,35 @@ async fn main() -> anyhow::Result<()> {
         let expected_hex = id_bytes(&expected_id);
         let ids_match = computed_id == expected_id;
         println!(
-            "deploy: elf={} bytes sha256={}",
-            elf.len(),
-            sha256_hex(&elf)
+            "deploy: program_binary={} bytes sha256={}",
+            program_bytes.len(),
+            sha256_hex(&program_bytes)
         );
         println!("deploy: computed_program_id={computed_hex}");
         println!("deploy: expected_program_id={expected_hex}");
         println!("deploy: program_id_matches_execute={ids_match}");
         if !ids_match {
-            eprintln!("WARNING: deployed ELF's content-addressed program id does NOT match the execute tx's referenced program id; the execute will not resolve this program.");
+            anyhow::bail!(
+                "refusing deployment: supplied program id {expected_hex} does not match parsed ProgramBinary id {computed_hex}"
+            );
         }
-        let wallet = WalletCore::from_env()?;
-        let deploy_tx = nssa::ProgramDeploymentTransaction::new(
-            nssa::program_deployment_transaction::Message::new(elf.clone()),
+        let client = sequencer_client
+            .as_ref()
+            .expect("sequencer client constructed for deployment");
+        let deploy_tx = lee::ProgramDeploymentTransaction::new(
+            lee::program_deployment_transaction::Message::new(program_bytes.clone()),
         );
         let mut deploy_evidence = json!({
             "lane": "risc0-heavy-lane-program-deployment",
-            "elf_path": elf_path.display().to_string(),
-            "elf_len": elf.len(),
-            "elf_sha256": sha256_hex(&elf),
+            "program_binary_path": program_path.display().to_string(),
+            "program_binary_len": program_bytes.len(),
+            "program_binary_sha256": sha256_hex(&program_bytes),
             "computed_program_id": computed_hex,
             "expected_program_id": expected_hex,
             "program_id_matches_execute": ids_match,
         });
-        match wallet
-            .sequencer_client
-            .send_transaction(NSSATransaction::ProgramDeployment(deploy_tx))
+        match client
+            .send_transaction(LeeTransaction::ProgramDeployment(deploy_tx))
             .await
         {
             Ok(h) => {
@@ -217,19 +244,22 @@ async fn main() -> anyhow::Result<()> {
                 deploy_evidence["tx_hash"] = json!(h.to_string());
                 println!("deploy: submitted tx_hash={h}");
                 if poll {
-                    let poller = wallet::poller::TxPoller::new(
-                        wallet.config(),
-                        wallet.sequencer_client.clone(),
-                    );
-                    match poller.poll_tx(h).await {
-                        Ok(_) => {
+                    match poll_transaction(client, h).await {
+                        Ok(Some(block_id)) => {
                             deploy_evidence["confirmed"] = json!(true);
+                            deploy_evidence["included_block_id"] = json!(block_id);
                             println!("deploy: confirmed tx_hash={h}");
+                        }
+                        Ok(None) => {
+                            deploy_evidence["confirmed"] = json!(false);
+                            deploy_evidence["poll_error"] =
+                                json!("transaction not found within 60 seconds");
+                            println!("deploy: poll_error=transaction not found within 60 seconds");
                         }
                         Err(err) => {
                             deploy_evidence["confirmed"] = json!(false);
                             deploy_evidence["poll_error"] = json!(err.to_string());
-                            println!("deploy: poll_error={err} (lag, or program already deployed)");
+                            println!("deploy: poll_error={err}");
                         }
                     }
                 }
@@ -244,6 +274,21 @@ async fn main() -> anyhow::Result<()> {
         let deploy_path = dir.join("nssa-deploy-evidence.json");
         std::fs::write(&deploy_path, serde_json::to_vec_pretty(&deploy_evidence)?)?;
         println!("deploy_evidence={}", deploy_path.display());
+        let deployment_failed = deploy_evidence
+            .get("status")
+            .and_then(serde_json::Value::as_str)
+            == Some("submit_error")
+            || (poll
+                && deploy_evidence
+                    .get("confirmed")
+                    .and_then(serde_json::Value::as_bool)
+                    != Some(true));
+        if deployment_failed {
+            anyhow::bail!(
+                "deployment was not confirmed; inspect {}",
+                deploy_path.display()
+            );
+        }
         return Ok(());
     }
 
@@ -295,9 +340,10 @@ async fn main() -> anyhow::Result<()> {
         .collect();
     let account_ids = vec![multisig_state, proposal];
 
-    // Construct the wallet first so a signed public tx can fetch the signer's nonce.
-    let wallet = if submit || tx_hash_to_query.is_some() {
-        Some(WalletCore::from_env()?)
+    // A wallet is only needed to load a funded signer's private key. Unsigned
+    // localnet deploy/execute/query paths use the public sequencer RPC directly.
+    let wallet = if signer_override.is_some() {
+        Some(WalletCore::from_env().await?)
     } else {
         None
     };
@@ -312,12 +358,15 @@ async fn main() -> anyhow::Result<()> {
         .map(AccountId::from_str)
         .transpose()
         .map_err(|e| anyhow::anyhow!("invalid --signer account id: {e:?}"))?;
-    let (nonces, signing_keys): (Vec<_>, Vec<&nssa::PrivateKey>) =
+    let (nonces, signing_keys): (Vec<_>, Vec<&lee::PrivateKey>) =
         if let (true, Some(signer)) = (submit, signer_account) {
-            let w = wallet.as_ref().expect("wallet constructed for submit");
-            let nonces = w.get_accounts_nonces(vec![signer]).await?;
+            let w = wallet.as_ref().expect("wallet constructed for signer");
+            let client = sequencer_client
+                .as_ref()
+                .expect("sequencer client constructed for submit");
+            let nonces = client.get_accounts_nonces(vec![signer]).await?;
             let key = w.get_account_public_signing_key(signer).ok_or_else(|| {
-                anyhow::anyhow!("no signing key for --signer {signer} in NSSA_WALLET_HOME_DIR")
+                anyhow::anyhow!("no signing key for --signer {signer} in LEE_WALLET_HOME_DIR")
             })?;
             (nonces, vec![key])
         } else {
@@ -337,7 +386,7 @@ async fn main() -> anyhow::Result<()> {
 
     let mut evidence = json!({
         "status": if submit { "built_pending_submit" } else { "built_dry_run" },
-        "lane": "risc0-heavy-lane-file-backed-nssa-submit",
+        "lane": "risc0-heavy-lane-file-backed-lee-submit",
         "risc0_dev_mode": "0",
         "program_id": hex::encode(wrapper_image_bytes),
         "threshold_proof_image_id": hex::encode(image_id),
@@ -367,20 +416,15 @@ async fn main() -> anyhow::Result<()> {
     });
 
     if let Some(tx_hash) = tx_hash_to_query {
-        let wallet = wallet.as_ref().expect("wallet constructed for query");
-        let last_block = wallet.sequencer_client.get_last_block_id().await?;
-        let tx_found = wallet
-            .sequencer_client
-            .get_transaction(tx_hash)
-            .await?
-            .is_some();
+        let client = sequencer_client
+            .as_ref()
+            .expect("sequencer client constructed for query");
+        let last_block = client.get_last_block_id().await?;
+        let tx_found = client.get_transaction(tx_hash).await?.is_some();
         let mut included_block_id = None;
         let mut included_block_hash = None;
         let mut included_tx_index = None;
-        let blocks = wallet
-            .sequencer_client
-            .get_block_range(from_block, last_block)
-            .await?;
+        let blocks = client.get_block_range(from_block, last_block).await?;
         'outer: for block in blocks {
             for (idx, candidate) in block.body.transactions.iter().enumerate() {
                 if candidate.hash() == tx_hash {
@@ -391,37 +435,48 @@ async fn main() -> anyhow::Result<()> {
                 }
             }
         }
-        evidence["status"] = json!(if tx_found {
+        let canonically_included = tx_found
+            && included_block_id.is_some()
+            && included_block_hash.is_some()
+            && included_tx_index.is_some();
+        evidence["status"] = json!(if canonically_included {
             "confirmed"
         } else {
             "submitted_not_included"
         });
         evidence["tx_hash"] = json!(tx_hash.to_string());
-        evidence["confirmed"] = json!(tx_found);
+        evidence["confirmed"] = json!(canonically_included);
         evidence["last_block_id"] = json!(last_block);
         evidence["included_block_id"] = json!(included_block_id);
         evidence["included_block_hash"] = json!(included_block_hash);
         evidence["included_tx_index"] = json!(included_tx_index);
-        evidence["compute_unit_note"] = json!("LEZ v0.2.0-rc1 JSON-RPC exposes transaction/block inclusion but not per-transaction compute-unit counters; this evidence records canonical payload size/hash and block inclusion when available.");
+        evidence["compute_unit_note"] = json!("LEZ v0.2.4 JSON-RPC exposes transaction/block inclusion but not per-transaction compute-unit counters; this evidence records canonical payload size/hash and block inclusion when available.");
         if !tx_found {
             evidence["submit_attempt_note"] = json!("Transaction was accepted by sendTransaction but not included. Check sequencer logs for ProgramExecutionFailed details; the wrapper program id and threshold proof image id are recorded separately in this evidence.");
+        } else if !canonically_included {
+            evidence["submit_attempt_note"] = json!(format!(
+                "getTransaction returned the transaction, but canonical block coordinates were not found in scanned range {from_block}..={last_block}"
+            ));
         }
     } else if submit {
-        let wallet = wallet.as_ref().expect("wallet constructed for submit");
-        let tx_hash = wallet
-            .sequencer_client
-            .send_transaction(NSSATransaction::Public(tx))
-            .await?;
+        let client = sequencer_client
+            .as_ref()
+            .expect("sequencer client constructed for submit");
+        let tx_hash = client.send_transaction(LeeTransaction::Public(tx)).await?;
         evidence["status"] = json!("submitted");
         evidence["tx_hash"] = json!(tx_hash.to_string());
         println!("submitted tx_hash={tx_hash}");
         if poll {
-            let poller =
-                wallet::poller::TxPoller::new(wallet.config(), wallet.sequencer_client.clone());
-            match poller.poll_tx(tx_hash).await {
-                Ok(_) => {
+            match poll_transaction(client, tx_hash).await {
+                Ok(Some(block_id)) => {
                     evidence["confirmed"] = json!(true);
+                    evidence["included_block_id"] = json!(block_id);
                     println!("confirmed tx_hash={tx_hash}");
+                }
+                Ok(None) => {
+                    evidence["confirmed"] = json!(false);
+                    evidence["poll_error"] = json!("transaction not found within 60 seconds");
+                    println!("poll_error=transaction not found within 60 seconds");
                 }
                 Err(err) => {
                     evidence["confirmed"] = json!(false);
@@ -446,5 +501,14 @@ async fn main() -> anyhow::Result<()> {
     println!("instruction_data_len={}", instruction_bytes.len());
     println!("instruction_data_sha256={}", sha256_hex(&instruction_bytes));
     println!("evidence={}", path.display());
+    let confirmation_required = tx_hash_to_query.is_some() || (submit && poll);
+    if confirmation_required
+        && evidence
+            .get("confirmed")
+            .and_then(serde_json::Value::as_bool)
+            != Some(true)
+    {
+        anyhow::bail!("transaction was not confirmed; inspect {}", path.display());
+    }
     Ok(())
 }

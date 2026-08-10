@@ -1,5 +1,5 @@
 # Benchmarks
-> Current reset-era refresh (2026-06-28): deploy tx `c7157a473cb512bf7e1803d4377d9f65e9406a7ff98efeda48b65c0d4915a13b` is included on the public LEZ testnet for program id `1557176a639868b0363e9106c75fe0748ceb42e65f5f1a6778dd05b6baebb57d` (ProgramBinary SHA-256 `8f74ccc446990f5437b5f6c6e731deac6653992e0a64abcecdff7bff0c5575e1`). Execute attempts `352eb699507aea4d4ca6963a50bef1473a2b944dfd7713116cbf82eabfeec3bf` and `fc4165ac2437bd6533444c5e010b2d248aed678daadfad277af1dd0f1fef6ca8` locally validate under v0.2.0 but are not included by the public endpoint, so current live execute inclusion remains a transparent blocker and is not claimed. Historical pre-reset txs `82516880...` / `cb8bfd5...` are retained only as audit history.
+> Repository evidence refresh (2026-08-10): exact LEZ v0.2.4 commit `47eba256...` is current. Deploy tx `b15dc325...` is confirmed in block `2373`; proof-backed execute tx `4a985d6f...` is confirmed in block `2374`, index `0`; both direct explorer pages render. `scripts/lez-sequencer-e2e.sh` independently proves the non-dev-mode standalone path. Earlier reset/pre-reset records remain audit history only.
 
 LP-0002 Private Multisig — safe-lane benchmarks, with RISC0 heavy-lane and LEZ payload measurements below.
 
@@ -56,10 +56,11 @@ Total formula: `242 + 32 × approval_count` bytes.
 For a 25-of-50 multisig, that is ~1 KB — well within acceptable on-chain
 payload limits.
 
-## RISC0 Heavy-Lane Measurements
+## Historical RISC0 Heavy-Lane Measurements (superseded 2026-08-10)
 
 The safe-lane table above still uses a **mock SHA-256 receipt seal**. The heavy
-lane now has real RISC0 artifacts generated with `RISC0_DEV_MODE=0` on the M4 Pro.
+lane had real RISC0 artifacts generated with `RISC0_DEV_MODE=0` on the M4 Pro.
+These identifiers document the pre-v0.2.4 run; current identifiers appear below.
 
 Measured fixture run (`target/lp0002-risc0-fixture-new/manifest.txt`):
 
@@ -80,7 +81,7 @@ membership set remain private witness data; the public journal exposes only the
 threshold relation outputs needed by the verifier.
 
 
-## Public-Testnet Deployment Evidence
+## Historical Public-Testnet Deployment Evidence (pre-reset)
 
 The reproducible `verify_and_execute_bytes` wrapper ELF (`cargo risczero build --manifest-path methods/guest/Cargo.toml`, Docker builder `risczero/risc0-guest-builder:r0.1.88.0`; on LEZ ProgramId == ImageID) was deployed to the public LEZ testnet (https://testnet.lez.logos.co/) via the submit binary's `ProgramDeployment` path.
 
@@ -90,12 +91,15 @@ Deployment surface captured on M4 Pro:
 {"program":"verify_and_execute_bytes","program_id":"974939edb6fc9cffd97929dd830a0d75bfc7a09b08c2f3fc87da940aadc0c130","deploy_tx":"82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56","included_block_id":39547,"status":"confirmed"}
 ```
 
-This records the confirmed `ProgramDeployment` of the executable wrapper image on the public LEZ testnet (deploy tx `82516880...` in block `39547`). The wrapper section below records the confirmed execute transaction. The only unavailable metric is a formal per-transaction CU/cycle counter, because the target network surface used here does not expose one.
+This records the historical pre-reset `ProgramDeployment` (deploy tx
+`82516880...` in block `39547`). Current v0.2.4 deploy/execute evidence appears
+below. The only unavailable metric is a formal per-transaction CU/cycle counter,
+because the target network surface used here does not expose one.
 
 
-## SPEL/NSSA Adapter Payload Evidence
+## Historical SPEL/NSSA Adapter Payload Evidence
 
-The heavy-lane wrapper now has a concrete byte-oriented SPEL instruction surface,
+The historical heavy-lane wrapper has a concrete byte-oriented SPEL instruction surface,
 `verify_and_execute_bytes`, plus a host evidence builder. Raw receipt transport
 was attempted first and exceeded the current public-program session limit, so the
 confirmed path sends a compact receipt/journal commitment and retains the full
@@ -117,31 +121,31 @@ Measured artifact: `target/lp0002-risc0-fixture-new/spel-adapter-evidence.json`.
 | Journal SHA-256 | `a8fe85f8d63f948409941b585cbe9244c2d0ae45082bf635173f753037ad4d8e` |
 | Receipt/journal commitment | `be58410de0e0f71642f82f287c39c7f70acb8820cb7468e50927bfd91ee4c850` |
 
-## NSSA Submitter Evidence
+## Current LEE Submitter Evidence
 
-Measured artifacts: `target/lp0002-risc0-fixture-new/nssa-submit-dry-run.json` and `target/lp0002-risc0-fixture-new/nssa-submit-evidence.json`.
+Measured current evidence: `submission/LEZ_V024_LOCAL_E2E_EVIDENCE.json` and `submission/LEZ_V024_PUBLIC_E2E_EVIDENCE.json`.
 
-The native file-backed submitter constructs a public `NSSATransaction::Public` directly from the real receipt, journal, and Borsh action files, avoids shell/argv limits, verifies the real receipt host-side before submission, and sends the compact commitment-bound wrapper payload. Dry-run metrics match the adapter payload exactly:
+The native file-backed submitter constructs a current `LeeTransaction::Public` through the public sequencer RPC client, verifies the real receipt host-side, and sends the compact commitment-bound wrapper payload:
 
 | Metric | Value |
 |---|---:|
 | Instruction | `verify_and_execute_bytes` |
 | Instruction payload | 5,492 B / 1,373 u32 words |
-| Instruction data SHA-256 | `e1dc304173c1f27542b0017e167eb709f47e6bc907888968e9efaf0cd655f3c0` |
-| Receipt SHA-256 | `6e4979983c996ca4154d7eeedb59444105b99d984a69a223ab58d429811b89a7` |
-| Receipt/journal commitment | `be58410de0e0f71642f82f287c39c7f70acb8820cb7468e50927bfd91ee4c850` |
-| Confirmed public-testnet tx hash | `cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697` |
-| Inclusion status | Confirmed in block `39548`, transaction index `0` |
+| Instruction data SHA-256 | `19944c558baa9cfc327fb5d4c078d6097b85cbf929943ec4eec9a82a28bc5170` |
+| Receipt SHA-256 | `212970331ca67e2557899b13f77fcf43855db2362b123c0c2dc3b88797bfd22d` |
+| Receipt/journal commitment | `52948db7bc8b75cd54d7825afe0d3e64f8426cb94879c00852903b581a1c623f` |
+| Confirmed public-testnet tx hash | `4a985d6f1e0d8384e2774e4c62f4e1c714f7542d4647e0b0e4cfd4f08ae0e242` |
+| Inclusion status | Confirmed in block `2374`, transaction index `0` |
 
-LEZ v0.2.0-rc1 JSON-RPC exposes transaction/block inclusion but not per-transaction compute-unit counters. Successful public-testnet inclusion is captured for the compact wrapper path; the missing formal CU counter is recorded as an explicit target-runtime limitation rather than estimated.
+LEZ v0.2.4 JSON-RPC exposes transaction/block inclusion but not per-transaction compute-unit counters. Successful public-testnet inclusion is captured for the compact wrapper path; the missing formal CU counter is recorded as an explicit target-runtime limitation rather than estimated.
 
 ## LEZ Compute-Unit Costs
 
 LEZ (Logos Execution Zone) per-transaction compute-unit pricing/counters are not
-currently exposed by the v0.2.0-rc1 JSON-RPC surface used here. The compact wrapper
-path therefore records block inclusion, payload size/hash, receipt/journal commitment, and the
-sequencer RISC0 execution-time log line (`11.122875ms`). If a later public
-devnet/testnet exposes a stable CU/cycle counter, replace the machine-readable
+currently exposed by the v0.2.4 JSON-RPC surface used here. The compact wrapper
+path therefore records block inclusion, payload size/hash, and receipt/journal
+commitment. If a later public devnet/testnet exposes a stable CU/cycle counter,
+replace the machine-readable
 `cu_metering.available=false` note in `submission/LEZ_COST_BENCHMARKS.json` with
 the chain-native value.
 
@@ -156,33 +160,39 @@ cargo run -p lp0002-private-multisig-host --bin lp0002-lez-execute-artifacts -- 
 cargo run -p lp0002-private-multisig-host --bin lp0002-spel-adapter-evidence -- target/lp0002-risc0-fixture
 cargo run -p lp0002-private-multisig-host --bin lp0002-submit-localnet -- target/lp0002-risc0-fixture
 bash scripts/demo-heavy-lane.sh
+LEZ_SOURCE_DIR=/path/to/logos-execution-zone-v0.2.4 scripts/lez-sequencer-e2e.sh
 ```
 
 The benchmark source is at `consumer-demo/examples/bench.rs`.
 
 ## RISC0-to-LEZ wrapper evidence
 
-The heavy-lane host includes `lp0002-lez-execute-artifacts`, which verifies the real RISC0 receipt with `host::Risc0ReceiptVerifier`, executes the resulting journal through `lez-program::execute_proposal`, and writes `target/lp0002-risc0-fixture-new/lez-execution.json`. The recorded wrapper evidence has `status: executed`, `proposal_state_executed: true`, and `proposal_state_nullifier_count: 2`. `spel-adapter-evidence.json` records the serialized byte payload for the NSSA/SPEL lane. The executable `verify_and_execute_bytes` wrapper has historical pre-reset public LEZ testnet deployment and compact native submitter inclusion in block `39548`; historical tx re-query returns null; current deploy re-query succeeds while current execute attempts remain null, so this is not current-live evidence. CU metering is recorded as unavailable in LEZ tooling.
+The heavy-lane host verifies the real RISC0 receipt, constructs the current LEE payload, and deploys the generated ProgramBinary. `scripts/lez-sequencer-e2e.sh` starts exact LEZ v0.2.4 standalone mode and fails unless deployment, execution, and canonical inclusion all succeed. The same final artifacts are confirmed on public testnet in blocks `2373`/`2374`. CU metering is recorded as unavailable in LEZ tooling.
 
 ## Wrapper Public-Testnet Inclusion Evidence
 
-The executable `verify_and_execute_bytes` wrapper image was deployed on the public LEZ testnet before the June 2026 reset (https://testnet.lez.logos.co/) — deploy tx `82516880f60c2076d78b28ad7b147ac0b05ed247b7bc33a27ac8f68b1d809c56` in block `39547` — and executed with the real `RISC0_DEV_MODE=0` proof artifact set. Raw receipt transport was first attempted and rejected by the current public-program session limit (`Session limit exceeded: 33554432 >= 33554432`), so the successful compact path sends a receipt/journal commitment in the wrapper input and retains the full receipt as file-backed evidence.
+The final `verify_and_execute_bytes` ProgramBinary was deployed and executed on current public LEZ testnet with a fresh `RISC0_DEV_MODE=0` proof. The compact path sends a receipt/journal commitment in wrapper input and retains the full receipt as file-backed evidence.
 
 | Metric | Value |
 |---|---:|
-| Wrapper program id | `974939edb6fc9cffd97929dd830a0d75bfc7a09b08c2f3fc87da940aadc0c130` |
-| Threshold proof image id | `6fc85ce06da1762abec319b4626c12229dc605a5b0283d64c8eab2567b9ee721` |
-| Confirmed tx hash | `cb8bfd5afca3c88a99b12b42a6875bcc2cad419d394da0e39d8ca463ee376697` |
-| Included block id | `39548` |
+| Wrapper program id | `75efdee2321a1e15055bd5d03c1ea1a5665bf3e633683c9fb044a9e1f5941f79` |
+| Threshold proof image id | `e57b90a0fd306a8a6258f4fe7c045d056cf70142408e31a020817aaaba23bac4` |
+| Deploy tx hash | `b15dc325d3ec4332a3f925b27383d932ed7d7605df50f962640149a583a059c8` (block `2373`) |
+| Confirmed execute tx hash | `4a985d6f1e0d8384e2774e4c62f4e1c714f7542d4647e0b0e4cfd4f08ae0e242` |
+| Included block id | `2374` |
 | Included tx index | `0` |
 | Instruction payload | `5,492 bytes` / `1,373 u32 words` |
-| Instruction SHA-256 | `e1dc304173c1f27542b0017e167eb709f47e6bc907888968e9efaf0cd655f3c0` |
-| Receipt bytes retained off-input | `270,334 bytes`, SHA-256 `6e4979983c996ca4154d7eeedb59444105b99d984a69a223ab58d429811b89a7` |
-| Sequencer wrapper execution-time log | `11.122875ms` for the confirmed transaction block check |
+| Instruction SHA-256 | `19944c558baa9cfc327fb5d4c078d6097b85cbf929943ec4eec9a82a28bc5170` |
+| Receipt bytes retained off-input | `270,334 bytes`, SHA-256 `212970331ca67e2557899b13f77fcf43855db2362b123c0c2dc3b88797bfd22d` |
 
-The historical on-chain evidence is recorded in `submission/TESTNET_EVIDENCE.json`; `scripts/ci-verify-testnet.py` now fails closed on the current endpoint when these pre-reset hashes re-query as null against the public sequencer (deploy tx `82516880...`, execute tx `cb8bfd5a...` on https://testnet.lez.logos.co/). LEZ v0.2.0-rc1 does not expose per-transaction CU counters over JSON-RPC, so this is inclusion + payload + sequencer execution-time evidence rather than a formal CU meter.
+Current on-chain evidence is recorded in `submission/LEZ_V024_PUBLIC_E2E_EVIDENCE.json`. Sequencer RPC confirms both transactions and both direct explorer pages now render. LEZ v0.2.4 does not expose per-transaction CU counters over JSON-RPC, so this is inclusion + payload evidence rather than a formal CU meter.
 
 
 ## Machine-readable LEZ Cost Evidence
 
-`submission/LEZ_COST_BENCHMARKS.json` is generated by `python3 scripts/benchmark-lez-costs.py` and records the reproducible wrapper cost surface: account count, instruction payload bytes, RISC0 receipt size, journal hash, receipt/journal commitment, public-testnet inclusion block/tx, and an explicit `cu_metering.available=false` marker because the current `lgs`/NSSA testnet query path does not expose a stable per-transaction compute-unit counter.
+`submission/LEZ_COST_BENCHMARKS.json` is generated from current public v0.2.4
+evidence by `python3 scripts/benchmark-lez-costs.py`; `--check` fails on drift. It
+records account count, instruction payload bytes, RISC0 receipt size, journal
+hash, receipt/journal commitment, public-testnet inclusion block/tx, and an
+explicit `cu_metering.available=false` marker because current LEZ JSON-RPC does
+not expose a stable per-transaction compute-unit counter.

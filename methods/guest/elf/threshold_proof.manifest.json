@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "artifact_kind": "risc0_program_binary",
+  "guest": "threshold_proof",
+  "bytes": 402972,
+  "program_binary_sha256": "ff03aac0e9f900cef8c3011b76d6dd64b9d79ac9377731e1d892fe7cbc245d0f",
+  "image_id": "e57b90a0fd306a8a6258f4fe7c045d056cf70142408e31a020817aaaba23bac4",
+  "source_tree_sha256": "4f76c12f178f298e2129cc8409b9411f0281f591a393808bcee993f94a3bd1cc",
+  "source_commitment_files": [
+    "Cargo.lock",
+    "Cargo.toml",
+    "core/Cargo.toml",
+    "core/src/**/*.rs",
+    "methods/guest/Cargo.toml",
+    "methods/guest/src/bin/threshold_proof.rs"
+  ],
+  "risc0_toolchain": {
+    "cargo_risczero": "3.0.5",
+    "r0vm": "3.0.5",
+    "rust": "1.94.1"
+  },
+  "risc0_dev_mode": "0",
+  "provenance": "Generated from the committed tracked source set with the pinned RISC0 toolchain; build.rs fails closed on ProgramBinary length, SHA-256, ImageID, or source-tree drift. Committed to preserve the public-testnet threshold ImageID across native macOS and Linux host builds."
+}

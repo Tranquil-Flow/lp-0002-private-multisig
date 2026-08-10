@@ -68,32 +68,32 @@ p_scene
 
 # ── Section 7: Heavy lane — proof artifacts ────────────────
 
-say_line "Section seven: the heavy lane begins. We verify the bundled RISC0 DEV MODE zero proof artifacts. Each artifact file is hash-checked against the audited evidence set — the 270 kilobyte receipt, the 1 kilobyte journal, the manifest metadata, and all supporting evidence files. The manifest confirms the image ID, proof ID, threshold of two, and approval count of two."
+say_line "Section seven: the heavy lane begins. We hash-check the bundled pre-reset RISC0 DEV MODE zero proof artifacts as historical evidence. Their archived image ID is labeled explicitly and is not presented as the current wrapper image. The current proof path is reproduced separately by the LEZ version zero point two point four standalone end-to-end script."
 p_scene
 
 # ── Section 8: Heavy lane — LEZ host bridge ────────────────
 
-say_line "Section eight: inspecting the LEZ-shaped host bridge evidence. This shows the execution journal driving the replay-protected state gate — proposal state is executed, nullifier count is two, and the proof ID is bound to the exact proposal context."
+say_line "Section eight: inspecting the archived LEZ-shaped host bridge evidence. This historical journal records the replay-protected state gate, while current execution evidence is shown separately."
 p_scene
 
 # ── Section 9: Heavy lane — NSSA/SPEL payload ──────────────
 
-say_line "Section nine: compact NSSA and SPEL payload evidence. Because the raw 270 kilobyte receipt exceeds current LEZ public-program session limits, the wrapper carries a receipt-and-journal commitment in its input while the full receipt is retained as file artifact evidence. The payload hashes are deterministic and reproducible."
+say_line "Section nine: archived NSSA and SPEL payload evidence. These filenames and payloads are retained only for pre-version-zero-point-two-point-four audit history. The current transaction path uses LEE APIs."
 p_scene
 
 # ── Section 10: Heavy lane — public-testnet inclusion ────────────
 
-say_line "Section ten: confirmed public-testnet inclusion evidence. The wrapper transaction was submitted, confirmed, and included in block one thousand nine hundred ninety-five at transaction index zero. The program ID, image ID, instruction data hashes, and receipt transport mechanism are all recorded."
+say_line "Section ten: current LEZ version zero point two point four public-testnet evidence. Deployment is visible in block two thousand three hundred seventy-three, and proof-backed execution is visible in block two thousand three hundred seventy-four at transaction index zero. Both direct explorer pages render."
 p_scene
 
 # ── Section 11: Final readiness gate ───────────────────────
 
-say_line "Section eleven: final readiness gate. We re-run the implementation validator to confirm that the heavy-lane evidence is coherent with the rest of the submission. All thirty-five required files, eight workspace crates, IDL discriminators, protocol documentation, and compliance matrix sections validate."
+say_line "Section eleven: final readiness gate. We re-run the implementation validator and publication gate to confirm that archived evidence, current version zero point two point four evidence, and reviewer-facing claims remain coherent."
 p_scene
 
 # ── Conclusion ─────────────────────────────────────────────
 
-say_line "In conclusion: LP-0002 is ready for review. Privacy-preserving threshold relations are modeled and tested. Nullifier-based double-vote prevention works. Replay-protected execution is enforced. The SDK provides a clean integration surface. A real RISC0 proof was generated and verified. Native Basecamp module compiles. Confirmed public-testnet inclusion evidence exists. Known transport caveats around receipt size and compute unit metering are documented honestly. All eleven sections pass."
+say_line "In conclusion: LP-0002 is ready for review. Historical proof artifacts retain explicit provenance, while the current version zero point two point four lane generates a fresh non-dev proof, deploys and executes the current wrapper, and verifies canonical inclusion. Current public transactions are explorer-visible. Known transport and compute-unit limitations remain explicit."
 p_scene
 
 say_line "Recording complete. Thank you for reviewing LP-0002."

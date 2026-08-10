@@ -91,8 +91,8 @@ What is live in this video:
   • The consumer demo imports the SDK exactly like a third-party app
   • Five integration scenarios pass end-to-end
   • The submission validator checks docs, IDL, native Basecamp, and evidence gates
-  • Bundled RISC0_DEV_MODE=0 proof artifacts are hash-checked
-  • Confirmed compact LEZ/NSSA public-testnet inclusion evidence is shown
+  • Bundled pre-reset RISC0_DEV_MODE=0 artifacts are hash-checked as history
+  • Current LEZ v0.2.4 deploy/execute explorer evidence is shown separately
   • Native Qt/QML Basecamp module structure is validated
 
 Honesty note:
@@ -206,8 +206,8 @@ pause "$SCENE_PAUSE"
 # 7. HEAVY LANE: PROOF ARTIFACTS
 # ──────────────────────────────────────────────────────────
 
-section "7. Heavy lane — Verify RISC0 proof artifacts"
-step "Hash-check bundled RISC0_DEV_MODE=0 proof artifacts against the audited evidence set"
+section "7. Heavy lane — Verify archived RISC0 proof artifacts"
+step "Hash-check bundled pre-reset RISC0_DEV_MODE=0 artifacts against their audited historical set"
 materialize_bundled_artifacts
 require_file "$ARTIFACT_DIR/receipt.borsh"
 require_file "$ARTIFACT_DIR/journal.borsh"
@@ -241,17 +241,17 @@ for token in [
 ]:
     if token not in manifest:
         raise SystemExit(f'manifest missing {token}')
-print('manifest confirms RISC0_DEV_MODE=0 image/proof ids and 2-of-3 threshold')
+print('archived manifest confirms its historical RISC0_DEV_MODE=0 image/proof ids and 2-of-3 threshold')
 PY
-note "Skipping Rust host receipt verifier to keep demo lightweight; set HEAVY_CARGO_VERIFY=1 to run it."
-result "Bundled RISC0_DEV_MODE=0 artifact hashes and manifest metadata match the audited evidence set"
+note "Archived receipt pins image 6fc85ce0...; current wrapper pins e57b90a0...."
+result "Archived artifact hashes and metadata match their audited historical evidence set"
 pause "$SCENE_PAUSE"
 
 # ──────────────────────────────────────────────────────────
 # 8. HEAVY LANE: LEZ HOST BRIDGE
 # ──────────────────────────────────────────────────────────
 
-section "8. Heavy lane — LEZ-shaped host bridge evidence"
+section "8. Heavy lane — Archived LEZ-shaped host bridge evidence"
 step "Inspect the bundled LEZ execution evidence"
 run_cmd python3 - <<'PY'
 import json, os
@@ -263,14 +263,14 @@ if p.exists():
         if k in data:
             print(f'{k}: {data[k]}')
 PY
-result "The verified journal drives the replay-protected LEZ-shaped execution gate"
+result "The archived journal records the historical replay-protected execution gate"
 pause "$SCENE_PAUSE"
 
 # ──────────────────────────────────────────────────────────
 # 9. HEAVY LANE: NSSA/SPEL PAYLOAD
 # ──────────────────────────────────────────────────────────
 
-section "9. Heavy lane — Compact NSSA/SPEL payload evidence"
+section "9. Heavy lane — Archived NSSA/SPEL payload evidence"
 step "Show deterministic payload hashes and receipt/journal commitment"
 run_cmd python3 - <<'PY'
 import json, os
@@ -282,28 +282,33 @@ for rel in ['spel-adapter-evidence.json', 'nssa-submit-dry-run.json']:
     for k in ['program_id', 'threshold_proof_image_id', 'instruction_data_len', 'instruction_data_sha256', 'receipt_bytes_len', 'receipt_bytes_sha256', 'proof_journal_bytes_sha256', 'receipt_journal_commitment', 'receipt_transport']:
         print(f'  {k}: {data.get(k)}')
 PY
-result "Payload hash and receipt/journal commitment is deterministic and reproducible"
+result "Archived payload hash and receipt/journal commitment are deterministic and reproducible"
 pause "$SCENE_PAUSE"
 
 # ──────────────────────────────────────────────────────────
 # 10. HEAVY LANE: PUBLIC TESTNET INCLUSION
 # ──────────────────────────────────────────────────────────
 
-section "10. Heavy lane — Confirmed public-testnet inclusion evidence"
-step "Print the recorded confirmed public-testnet evidence"
+section "10. Heavy lane — Current LEZ v0.2.4 public-testnet evidence"
+step "Print current RPC-confirmed and explorer-visible deployment/execution evidence"
 run_cmd python3 - <<'PY'
-import json, os
+import json
 from pathlib import Path
-p = Path(os.environ['ARTIFACT_DIR']) / 'nssa-submit-evidence.json'
+p = Path('submission/LEZ_V024_PUBLIC_E2E_EVIDENCE.json')
 if not p.exists():
     raise SystemExit(f'missing {p}')
 data = json.loads(p.read_text())
-for k in ['status', 'confirmed', 'program_id', 'threshold_proof_image_id', 'tx_hash', 'included_block_id', 'included_tx_index', 'instruction_data_len', 'instruction_data_sha256', 'receipt_transport']:
-    print(f'{k}: {data.get(k)}')
-if data.get('status') != 'confirmed':
-    raise SystemExit('public-testnet evidence is not confirmed')
+if data.get('status') != 'confirmed_rpc_and_explorer_visible':
+    raise SystemExit('current public-testnet evidence is not RPC-confirmed and explorer-visible')
+print(f"release: {data['lez']['release']}")
+print(f"threshold_proof_image_id: {data['proof']['threshold_proof_image_id']}")
+for label in ('deployment', 'execution'):
+    tx = data[label]
+    print(f"{label}_tx_hash: {tx['tx_hash']}")
+    print(f"{label}_included_block_id: {tx['included_block_id']}")
+    print(f"{label}_explorer_url: {tx['explorer_url']}")
 PY
-result "Wrapper transaction confirmed in block 39548 — public-testnet inclusion verified"
+result "Current deployment block 2373 and proof-backed execution block 2374 are explorer-visible"
 pause "$SCENE_PAUSE"
 
 # ──────────────────────────────────────────────────────────
@@ -329,8 +334,8 @@ LP-0002 is ready for PR review as a polished submission package:
   • high-level SDK for integrators
   • clone-and-run consumer integration matching the current one-instance criterion
   • native Qt/QML Basecamp package source and validation (builds on M4 Pro)
-  • real RISC0_DEV_MODE=0 proof artifacts retained as reproducible evidence
-  • confirmed compact LEZ/NSSA public-testnet wrapper inclusion evidence
+  • archived RISC0_DEV_MODE=0 proof artifacts retained with explicit old-image provenance
+  • current LEZ v0.2.4 non-dev standalone E2E and public deploy/execute evidence
 
 Known transport/runtime caveats are documented rather than hidden:
   • wrapper input carries compact receipt/journal commitments, not the raw receipt
